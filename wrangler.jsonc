@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "olam-hayadit-site",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  // Static pages from `next build` (output: "export"). Asset requests are free
+  // and do not count towards the Worker request quota.
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    // Only API calls run the Worker code; everything else is served as a static file.
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": { "enabled": true },
+}

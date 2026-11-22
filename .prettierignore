@@ -1,0 +1,9 @@
+.next
+out
+node_modules
+package-lock.json
+playwright-report
+test-results
+.lighthouseci
+.wrangler
+next-env.d.ts
