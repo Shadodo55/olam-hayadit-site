@@ -1,4 +1,6 @@
 # Grouped updates keep the number of PRs (and CI minutes) low.
+# Major npm versions are ignored: they usually need code changes and are
+# upgraded by hand (check `npm outdated` every few months).
 version: 2
 updates:
   - package-ecosystem: npm
@@ -10,6 +12,9 @@ updates:
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

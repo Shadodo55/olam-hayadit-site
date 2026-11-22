@@ -1,27 +1,44 @@
 import type { ReactNode } from "react";
+import { getTranslations } from "next-intl/server";
+import { ConsentManager } from "@/features/consent/ConsentManager";
 import { fontVariables } from "@/lib/fonts";
-import { getDictionary } from "@/lib/i18n/dictionaries";
-import { localeDirection, type Locale } from "@/lib/i18n/locales";
+import { IntlProvider } from "@/lib/i18n/IntlProvider";
+import { localeDirection, localeHref, type Locale } from "@/lib/i18n/locales";
+import { clientMessagesFor } from "@/lib/i18n/messages";
+import { pagePaths } from "@/lib/routes";
+import { SiteFooter } from "./SiteFooter";
+import { SiteHeader } from "./SiteHeader";
 
 /** Shared <html>/<body> shell for both root layouts (Hebrew and English). */
-export function RootDocument({
+export async function RootDocument({
   locale,
   children,
 }: {
   locale: Locale;
   children: ReactNode;
 }) {
-  const t = getDictionary(locale);
+  const t = await getTranslations({ locale, namespace: "common" });
   return (
     <html lang={locale} dir={localeDirection[locale]} className={fontVariables}>
-      <body className="min-h-dvh bg-paper text-ink antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-3 focus:text-paper"
+      <body className="flex min-h-dvh flex-col bg-paper text-ink antialiased">
+        <IntlProvider
+          locale={locale}
+          messages={clientMessagesFor(locale)}
+          timeZone="Asia/Jerusalem"
         >
-          {t.skipToContent}
-        </a>
-        {children}
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-3 focus:text-paper"
+          >
+            {t("skipToContent")}
+          </a>
+          <SiteHeader locale={locale} />
+          <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
+            {children}
+          </main>
+          <SiteFooter locale={locale} />
+          <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
+        </IntlProvider>
       </body>
     </html>
   );

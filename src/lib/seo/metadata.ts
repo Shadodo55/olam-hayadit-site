@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localeHref, type Locale } from "@/lib/i18n/locales";
+import { messagesFor } from "@/lib/i18n/messages";
 
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -11,28 +11,52 @@ export const siteUrl =
  */
 const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
 
-export function baseMetadata(locale: Locale, path = "/"): Metadata {
-  const t = getDictionary(locale);
+function alternates(locale: Locale, path: string): Metadata["alternates"] {
+  return {
+    canonical: localeHref(locale, path),
+    languages: {
+      he: localeHref("he", path),
+      en: localeHref("en", path),
+      "x-default": localeHref("he", path),
+    },
+  };
+}
+
+/** Site-wide defaults, set in each root layout. */
+export function baseMetadata(locale: Locale): Metadata {
+  const { meta } = messagesFor(locale);
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: t.siteTitle, template: `%s | ${t.siteTitle}` },
-    description: t.metaDescription,
-    alternates: {
-      canonical: localeHref(locale, path),
-      languages: {
-        he: localeHref("he", path),
-        en: localeHref("en", path),
-        "x-default": localeHref("he", path),
-      },
-    },
+    title: { default: meta.siteName, template: `%s | ${meta.siteName}` },
+    description: meta.description,
+    alternates: alternates(locale, "/"),
     openGraph: {
       type: "website",
-      siteName: t.siteTitle,
+      siteName: meta.siteName,
       locale: locale === "he" ? "he_IL" : "en_US",
-      url: localeHref(locale, path),
+      url: localeHref(locale, "/"),
     },
     robots: allowIndexing
       ? { index: true, follow: true }
       : { index: false, follow: false },
+  };
+}
+
+/** Per-page metadata: title, canonical and hreflang for `path` (unprefixed). */
+export function pageMetadata(
+  locale: Locale,
+  path: string,
+  title: string,
+  description?: string,
+): Metadata {
+  return {
+    title,
+    ...(description ? { description } : {}),
+    alternates: alternates(locale, path),
+    openGraph: {
+      title,
+      url: localeHref(locale, path),
+      ...(description ? { description } : {}),
+    },
   };
 }

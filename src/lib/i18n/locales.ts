@@ -6,6 +6,17 @@ export const locales = ["he", "en"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "he";
 
+export function isLocale(value: string): value is Locale {
+  return (locales as readonly string[]).includes(value);
+}
+
+/** Map a path in one locale to the same page in the other locale. */
+export function switchLocalePath(pathname: string, target: Locale): string {
+  const withoutPrefix =
+    pathname === "/en" ? "/" : pathname.replace(/^\/en(?=\/)/, "");
+  return localeHref(target, withoutPrefix);
+}
+
 export const localeDirection: Record<Locale, "rtl" | "ltr"> = {
   he: "rtl",
   en: "ltr",
