@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Contrast (WCAG 2.1 AA) on --color-paper:
+ *   ink 15:1, ink-muted 6.3:1, brass-ink 5.6:1 (safe for small text),
+ *   line-strong 3.4:1 (UI borders). --color-brass is for large text / UI only.
+ */
+@theme {
+  --color-paper: #f5f1ea;
+  --color-surface: #ece6dc;
+  --color-ink: #1e1d1b;
+  --color-ink-muted: #5c5852;
+  --color-brass: #a27c3a;
+  --color-brass-ink: #7a5a22;
+  --color-line: #d9d2c6;
+  --color-line-strong: #8c857a;
+
+  --font-display: var(--font-frank-ruhl), "Times New Roman", serif;
+  --font-sans: var(--font-assistant), "Arial", sans-serif;
+
+  --radius-sm: 2px;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
