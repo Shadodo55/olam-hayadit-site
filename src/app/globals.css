@@ -12,6 +12,7 @@
   --color-ink-muted: #5c5852;
   --color-brass: #a27c3a;
   --color-brass-ink: #7a5a22;
+  --color-patina: #5e8c6a;
   --color-line: #d9d2c6;
   --color-line-strong: #8c857a;
 
@@ -46,6 +47,20 @@
   :focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 3px;
+  }
+
+  /* Graphite bands (utility bar, footer, banners): light focus ring. */
+  .on-dark :focus-visible {
+    outline-color: var(--color-paper);
+  }
+
+  /* Lock page scroll while a modal dialog (mobile menu, cookie settings) is open. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  dialog::backdrop {
+    background: rgb(30 29 27 / 0.45);
   }
 
   @media (prefers-reduced-motion: reduce) {

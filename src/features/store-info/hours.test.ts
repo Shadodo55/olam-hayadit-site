@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getOpenStatus,
+  groupHours,
   storeLocalTime,
   toMinutes,
   type WeeklyHours,
@@ -52,14 +53,14 @@ describe("getOpenStatus", () => {
   it("closes exactly at closing time", () => {
     expect(getOpenStatus(HOURS, israelWinter("2026-11-23T18:00:00"))).toEqual({
       state: "closed",
-      opensNext: { dayIndex: 2, time: "07:30", isToday: false },
+      opensNext: { dayIndex: 2, time: "07:30", daysAhead: 1 },
     });
   });
 
   it("opens later today before opening time", () => {
     expect(getOpenStatus(HOURS, israelWinter("2026-11-23T06:00:00"))).toEqual({
       state: "closed",
-      opensNext: { dayIndex: 1, time: "07:30", isToday: true },
+      opensNext: { dayIndex: 1, time: "07:30", daysAhead: 0 },
     });
   });
 
@@ -72,7 +73,7 @@ describe("getOpenStatus", () => {
   it("skips Saturday and reopens on Sunday", () => {
     expect(getOpenStatus(HOURS, israelWinter("2026-11-28T12:00:00"))).toEqual({
       state: "closed",
-      opensNext: { dayIndex: 0, time: "07:30", isToday: false },
+      opensNext: { dayIndex: 0, time: "07:30", daysAhead: 1 },
     });
   });
 
@@ -83,5 +84,41 @@ describe("getOpenStatus", () => {
       state: "closed",
       opensNext: null,
     });
+  });
+});
+
+describe("getOpenStatus across the weekend", () => {
+  it("counts days ahead from Friday afternoon to Sunday", () => {
+    expect(getOpenStatus(HOURS, israelWinter("2026-11-27T14:00:00"))).toEqual({
+      state: "closed",
+      opensNext: { dayIndex: 0, time: "07:30", daysAhead: 2 },
+    });
+  });
+});
+
+describe("groupHours", () => {
+  it("collapses runs of identical days", () => {
+    expect(groupHours(HOURS)).toEqual([
+      { from: 0, to: 4, hours: { opens: "07:30", closes: "18:00" } },
+      { from: 5, to: 5, hours: { opens: "07:30", closes: "13:00" } },
+      { from: 6, to: 6, hours: null },
+    ]);
+  });
+
+  it("keeps closed days that are not adjacent separate", () => {
+    const week = [
+      null,
+      { opens: "09:00", closes: "17:00" },
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
+    expect(groupHours(week).map((g) => [g.from, g.to])).toEqual([
+      [0, 0],
+      [1, 1],
+      [2, 6],
+    ]);
   });
 });

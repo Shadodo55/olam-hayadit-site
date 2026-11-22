@@ -34,6 +34,26 @@ Full approved plan (Hebrew): `docs/plan.md`.
   shared components from `src/features/`. 404: `src/app/global-not-found.tsx`.
 - Fonts: Frank Ruhl Libre (display) + Assistant (text) via `next/font` (self-hosted).
 
+## i18n rules (next-intl)
+
+- UI strings: `src/messages/he.json` and `en.json`. Both must have the same keys
+  (a type check in `src/lib/i18n/messages.ts` enforces it).
+- Server components: `await getTranslations({ locale, namespace })`. **Always pass
+  `locale`**: without it next-intl reads request headers, which breaks static export.
+  Never import `NextIntlClientProvider` from a server file; use
+  `src/lib/i18n/IntlProvider.tsx`.
+- Client components: `useTranslations(ns)`. Only the namespaces listed in
+  `clientMessagesFor()` ship to the browser; add a namespace there if a client
+  component needs it.
+- CMS-style bilingual data uses `Localized` + `localized()`: it falls back to Hebrew
+  and reports `lang`, so render the fallback text with `lang="he"`.
+- Pages that aren't built yet are served by the catch-all "coming soon" routes
+  (`src/app/(he)/[...slug]`, `src/app/(en)/en/[...slug]`). When you build a page,
+  create its own route folder in both trees and add its key to `builtPages` in
+  `src/lib/routes.ts`. Links come from `pagePaths`, never hard-coded strings.
+- Unknown business details render with `<Placeholder>` ([להשלמה]), never invented.
+- Design decisions and tokens: `docs/design-notes.md`.
+
 ## Hard rules
 
 - **Personal data never goes to Sanity** (the dataset is public). Form inquiries:

@@ -16,7 +16,8 @@ export type OpenStatus =
   | { state: "open"; closesAt: string }
   | {
       state: "closed";
-      opensNext: { dayIndex: number; time: string; isToday: boolean } | null;
+      /** daysAhead: 0 = later today, 1 = tomorrow, … */
+      opensNext: { dayIndex: number; time: string; daysAhead: number } | null;
     };
 
 const STORE_TIME_ZONE = "Asia/Jerusalem";
@@ -68,7 +69,7 @@ export function getOpenStatus(hours: WeeklyHours, now: Date): OpenStatus {
   if (today && minutes < toMinutes(today.opens)) {
     return {
       state: "closed",
-      opensNext: { dayIndex, time: today.opens, isToday: true },
+      opensNext: { dayIndex, time: today.opens, daysAhead: 0 },
     };
   }
   for (let offset = 1; offset <= 7; offset++) {
@@ -77,9 +78,34 @@ export function getOpenStatus(hours: WeeklyHours, now: Date): OpenStatus {
     if (next) {
       return {
         state: "closed",
-        opensNext: { dayIndex: nextIndex, time: next.opens, isToday: false },
+        opensNext: { dayIndex: nextIndex, time: next.opens, daysAhead: offset },
       };
     }
   }
   return { state: "closed", opensNext: null };
+}
+
+export interface HoursGroup {
+  /** First and last day index of a run of consecutive days with the same hours. */
+  from: number;
+  to: number;
+  hours: DayHours | null;
+}
+
+/** Collapse a week into runs, e.g. Sun–Thu 07:30–18:00, Fri 07:30–13:00, Sat closed. */
+export function groupHours(hours: WeeklyHours): HoursGroup[] {
+  const groups: HoursGroup[] = [];
+  hours.forEach((day, index) => {
+    const last = groups.at(-1);
+    const same =
+      last &&
+      ((last.hours === null && day === null) ||
+        (last.hours !== null &&
+          day !== null &&
+          last.hours.opens === day.opens &&
+          last.hours.closes === day.closes));
+    if (last && same) last.to = index;
+    else groups.push({ from: index, to: index, hours: day });
+  });
+  return groups;
 }

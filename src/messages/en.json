@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "siteName": "Olam HaYadit",
+    "description": "Handles, hardware and bathroom accessories for homes and professionals. Showroom at 16 Yad Harutsim St., Talpiot, Jerusalem."
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "opensInNewTab": "(opens in a new tab)",
+    "placeholder": "[to be added]",
+    "close": "Close",
+    "breadcrumbs": "Breadcrumb",
+    "home": "Home"
+  },
+  "days": {
+    "long": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+  },
+  "header": {
+    "homeLink": "Olam HaYadit, home page",
+    "mainNav": "Categories",
+    "secondaryNav": "More links",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuTitle": "Menu",
+    "search": "Search",
+    "myList": "My list",
+    "quickActions": "Quick contact",
+    "call": "Call the store",
+    "whatsapp": "WhatsApp",
+    "navigate": "Navigate with Waze",
+    "languageLabel": "עברית",
+    "languageName": "Hebrew"
+  },
+  "status": {
+    "hours": "Opening hours",
+    "openUntil": "Open now, until {time}",
+    "closedOpensToday": "Closed, opens today at {time}",
+    "closedOpensTomorrow": "Closed, opens tomorrow at {time}",
+    "closedOpensOn": "Closed, opens {day} at {time}",
+    "closed": "Closed"
+  },
+  "footer": {
+    "about": "Handles, hardware and bathroom accessories for homes and professionals. Showroom in Talpiot, Jerusalem.",
+    "catalogHeading": "Catalog",
+    "infoHeading": "Information",
+    "visitHeading": "Visit the store",
+    "hoursHeading": "Opening hours",
+    "closedDay": "Closed",
+    "holidayNote": "Hours may change on holidays and holiday eves.",
+    "legalNav": "Legal",
+    "cookieSettings": "Cookie settings",
+    "registration": "Business no.",
+    "email": "Email",
+    "storePhone": "Store phone",
+    "mobilePhone": "Mobile & stock checks",
+    "rights": "© {year} {name}"
+  },
+  "consent": {
+    "title": "Cookies and privacy",
+    "body": "This site only uses the cookies it needs to work. If you agree, we'll also add anonymous usage statistics and external content such as Google Maps. You can change your choice at any time under “Cookie settings” at the bottom of the page.",
+    "acceptAll": "Accept all",
+    "rejectAll": "Reject all",
+    "settings": "Choose by type",
+    "settingsTitle": "Cookie settings",
+    "settingsIntro": "Choose which kinds of cookies and external content to allow on this site.",
+    "necessary": "Necessary",
+    "necessaryDesc": "Required for the site to work, for example to remember this choice. Always on.",
+    "analytics": "Usage statistics",
+    "analyticsDesc": "Anonymous statistics about how the site is used, so we can improve it.",
+    "media": "External content",
+    "mediaDesc": "Google Maps and videos from external services. These services may set their own cookies.",
+    "alwaysOn": "Always on",
+    "save": "Save my choice",
+    "saved": "Your choice was saved.",
+    "policyLink": "Cookie policy"
+  },
+  "pages": {
+    "catalog": "Product catalog",
+    "search": "Search",
+    "myList": "My list",
+    "brands": "Brands",
+    "professionals": "For professionals",
+    "projects": "Projects & inspiration",
+    "catalogs": "Catalogs to download",
+    "visit": "Visit the store",
+    "about": "About",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "measuringGuide": "How to measure a handle",
+    "accessibility": "Accessibility statement",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
+    "cookies": "Cookie policy"
+  },
+  "comingSoon": {
+    "body": "This page is still being built. In the meantime, visit our showroom, call us or ask us on WhatsApp.",
+    "categoryBody": "Products in this category are coming to the site soon. Until then you can see them in our showroom or ask about them on WhatsApp.",
+    "toHome": "Opening hours and address",
+    "askWhatsapp": "Ask on WhatsApp"
+  },
+  "home": {
+    "tagline": "Handles and hardware. Chosen by hand.",
+    "underConstruction": "Our full online catalog is under construction. In the meantime, visit our showroom or get in touch.",
+    "visitHeading": "Visit the showroom",
+    "hoursHeading": "Opening hours",
+    "contactHeading": "Contact"
+  }
+}
