@@ -41,12 +41,12 @@ export function UpcomingSpecialDays({
   return (
     <div className="mt-4">
       <p
-        className={`font-semibold ${tone === "dark" ? "text-paper" : "text-ink"}`}
+        className={`font-semibold ${tone === "dark" ? "text-on-band" : "text-ink"}`}
       >
         {t("specialHours")}
       </p>
       <ul
-        className={`mt-1 ${tone === "dark" ? "text-paper/80" : "text-ink-muted"}`}
+        className={`mt-1 ${tone === "dark" ? "text-on-band/80" : "text-ink-muted"}`}
       >
         {upcoming.map((day) => (
           <li key={day.date}>

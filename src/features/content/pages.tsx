@@ -93,7 +93,7 @@ export async function MeasuringGuidePage({ locale }: { locale: Locale }) {
           {steps.map((step, i) => (
             <li key={step.title} className="border-t-2 border-ink pt-4">
               <span
-                className="font-display text-3xl text-brass-ink tabular"
+                className="font-display text-3xl text-accent-ink tabular"
                 aria-hidden="true"
               >
                 {i + 1}
@@ -126,7 +126,7 @@ export async function MeasuringGuidePage({ locale }: { locale: Locale }) {
 
       <aside
         aria-labelledby="tip"
-        className="mt-14 max-w-prose border-s-4 border-brass ps-5"
+        className="mt-14 max-w-prose border-s-4 border-accent ps-5"
       >
         <h2 id="tip" className="text-xl">
           {t("tipTitle")}
@@ -290,7 +290,7 @@ export async function BrandsPage({ locale }: { locale: Locale }) {
                       className="h-12 w-auto object-contain"
                     />
                   ) : (
-                    <span className="font-display text-2xl group-hover:text-brass-ink">
+                    <span className="font-display text-2xl group-hover:text-accent-ink">
                       {brand.name}
                     </span>
                   )}

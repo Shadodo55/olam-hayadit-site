@@ -2,18 +2,29 @@
  * Button/link-button class names. One place for sizes and variants so every
  * control has the same 44px+ touch target and focus behaviour.
  */
-type Variant = "solid" | "outline" | "quiet" | "onDark" | "paper";
+type Variant =
+  | "solid"
+  | "outline"
+  | "quiet"
+  | "onDark"
+  | "paper"
+  | "onAccent"
+  | "outlineOnAccent";
 type Size = "md" | "sm";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-sm font-semibold transition-colors duration-150 disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  solid: "bg-ink text-paper hover:bg-ink/85",
+  solid: "bg-button text-on-button hover:bg-button/85",
   outline: "border border-line-strong text-ink hover:bg-surface",
   quiet: "text-ink underline-offset-4 hover:underline",
-  onDark: "border border-paper/40 text-paper hover:bg-paper/10",
+  onDark: "border border-on-band/40 text-on-band hover:bg-on-band/10",
   paper: "bg-paper text-ink hover:bg-surface",
+  /** On an accent colour block (home hero). */
+  onAccent: "bg-on-accent text-accent hover:opacity-90",
+  outlineOnAccent:
+    "border-2 border-on-accent text-on-accent hover:bg-on-accent/10",
 };
 
 const sizes: Record<Size, string> = {

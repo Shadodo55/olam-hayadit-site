@@ -79,7 +79,7 @@ test.describe("category filters (desktop)", () => {
     await page.getByLabel("מיון").selectOption("price-asc");
     await expect(page).toHaveURL(/sort=price-asc/);
     const prices = await page
-      .locator("main article p.font-semibold")
+      .getByTestId("card-price")
       .evaluateAll((els) =>
         els.map((el) => Number((el.textContent ?? "").replace(/[^\d.]/g, ""))),
       );

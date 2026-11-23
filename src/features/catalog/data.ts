@@ -9,7 +9,7 @@ import { mapProduct, type Product, type RawProduct } from "./product";
 
 const CATEGORIES_QUERY = `*[_type == "category"]{
   _id, "slug": slug.current, title, allLabel, description, filters,
-  "parent": parent._ref, order
+  "image": image ${IMAGE_PROJECTION}, "parent": parent._ref, order
 }`;
 
 export async function getCategoryTree(): Promise<Category[]> {

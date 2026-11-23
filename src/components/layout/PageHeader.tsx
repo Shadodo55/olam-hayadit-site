@@ -32,7 +32,11 @@ export async function PageHeader({
           { label: title },
         ]}
       />
-      <h1 className="mt-6 text-4xl sm:text-5xl" lang={titleLang}>
+      <span
+        aria-hidden="true"
+        className="mt-6 block h-1.5 w-12 rounded-sm bg-accent"
+      />
+      <h1 className="mt-4 text-4xl sm:text-5xl" lang={titleLang}>
         {title}
       </h1>
       {intro && (

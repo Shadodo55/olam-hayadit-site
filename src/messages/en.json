@@ -124,7 +124,11 @@
     "catalogsTitle": "Catalogs to download",
     "allCatalogs": "All catalogs",
     "projectsTitle": "Projects & inspiration",
-    "allProjects": "All projects"
+    "allProjects": "All projects",
+    "servicesTitle": "What you'll find here",
+    "phoneStore": "Store",
+    "phoneMobile": "Mobile",
+    "callTitle": "Phone numbers"
   },
   "catalog": {
     "filtersTitle": "Filter products",
@@ -312,5 +316,13 @@
   "pagesExtra": {
     "draftNotice": "Draft: the text on this page is still being reviewed and may change.",
     "lastReviewed": "Last updated: {date}"
+  },
+  "theme": {
+    "button": "Colour theme",
+    "legend": "Choose a colour theme (demo)",
+    "note": "A preview to help choose the site's design. Your choice is saved only in this browser.",
+    "logo": "Sign colours",
+    "petrol": "Calm petrol",
+    "classic": "Classic (previous design)"
   }
 }

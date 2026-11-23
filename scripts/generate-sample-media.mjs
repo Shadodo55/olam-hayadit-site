@@ -41,7 +41,7 @@ const context = await browser.newContext({
   recordVideo: { dir: tmp, size: { width: 1280, height: 720 } },
 });
 const page = await context.newPage();
-await page.setContent(`<html><body style="margin:0;background:#ECE6DC;overflow:hidden">
+await page.setContent(`<html><body style="margin:0;background:#EEEEEC;overflow:hidden">
   <style>
     .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
     .h{animation:drift 6s ease-in-out infinite alternate}

@@ -71,7 +71,7 @@ const shapes = {
 function svg(shape, finish) {
   const c = finishes[finish];
   return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750" viewBox="0 0 600 750">
-    <rect width="600" height="750" fill="#ECE6DC"/>
+    <rect width="600" height="750" fill="#EEEEEC"/>
     <ellipse cx="300" cy="560" rx="170" ry="12" fill="#1E1D1B" opacity="0.06"/>
     ${shapes[shape](c)}
     <text x="300" y="705" text-anchor="middle" direction="rtl" font-family="Arial, sans-serif" font-size="22" fill="#5C5852">תמונה לדוגמה</text>

@@ -151,7 +151,7 @@ export function FiltersPanel({
           t("cc"),
           <Link
             href={measureHref}
-            className="shrink-0 text-sm font-normal text-brass-ink underline underline-offset-4"
+            className="shrink-0 text-sm font-normal text-accent-ink underline underline-offset-4"
           >
             {t("howToMeasure")}
           </Link>,

@@ -34,7 +34,7 @@ export function DimensionDrawing({
         width="520"
         height="34"
         rx="17"
-        className="fill-brass"
+        className="fill-accent"
       />
       <rect
         x="140"
@@ -42,7 +42,7 @@ export function DimensionDrawing({
         width="26"
         height="70"
         rx="5"
-        className="fill-brass"
+        className="fill-accent"
       />
       <rect
         x="474"
@@ -50,7 +50,7 @@ export function DimensionDrawing({
         width="26"
         height="70"
         rx="5"
-        className="fill-brass"
+        className="fill-accent"
       />
       {/* screw centre lines */}
       <g className="stroke-ink" strokeWidth="1.5" strokeDasharray="4 6">

@@ -255,6 +255,34 @@ async function main() {
   }
   await patch.commit();
   console.log("Home page media done.");
+
+  // Slogan and services exactly as on the store's sign (real facts, not samples).
+  // setIfMissing: never overwrites what the owner already edited.
+  const localeString = (value: L) => ({
+    _type: "localeString",
+    _key: key(),
+    ...value,
+  });
+  await client
+    .patch("siteSettings")
+    .setIfMissing({
+      slogan: {
+        _type: "localeString",
+        he: "איכות ושירות זה אנחנו!",
+        en: "Quality and service: that's us!",
+      },
+      services: [
+        localeString({ he: "פרזול למטבחים", en: "Kitchen hardware" }),
+        localeString({ he: "כל סוגי הידיות", en: "Every kind of handle" }),
+        localeString({ he: "אביזרי אמבטיה", en: "Bathroom accessories" }),
+        localeString({
+          he: "עבודות אלומיניום ופרזול",
+          en: "Aluminium and hardware work",
+        }),
+      ],
+    })
+    .commit();
+  console.log("Sign slogan and services done.");
 }
 
 main().catch((error) => {

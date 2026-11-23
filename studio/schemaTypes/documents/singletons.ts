@@ -128,6 +128,23 @@ export const siteSettings = defineType({
       validation: requireHebrew,
     }),
     defineField({
+      name: "slogan",
+      title: "סלוגן",
+      description:
+        "משפט קצר מהשלט, מוצג בראש דף הבית. למשל: איכות ושירות זה אנחנו!",
+      type: "localeString",
+      group: "business",
+    }),
+    defineField({
+      name: "services",
+      title: "מה עושים אצלנו (כמו בשלט)",
+      description: "רשימה קצרה שמוצגת כפס בדף הבית. 3 עד 5 פריטים קצרים.",
+      type: "array",
+      group: "business",
+      of: [defineArrayMember({ type: "localeString" })],
+      validation: (r) => r.max(6),
+    }),
+    defineField({
       name: "registrationNumber",
       title: "מספר עוסק / ח״פ",
       type: "string",

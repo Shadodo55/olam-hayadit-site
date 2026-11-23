@@ -193,7 +193,7 @@ async function CatalogLayout({
 
       <header className="mt-6 grid gap-4 lg:grid-cols-12">
         <h1
-          className="text-4xl sm:text-5xl lg:col-span-7"
+          className="text-4xl before:mb-4 before:block before:h-1.5 before:w-12 before:rounded-sm before:bg-accent sm:text-5xl lg:col-span-7"
           lang={title.isFallback ? "he" : undefined}
         >
           {title.value}
