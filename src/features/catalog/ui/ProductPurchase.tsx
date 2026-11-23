@@ -20,10 +20,12 @@ import {
   whatsappText,
   type Selection,
 } from "../variants";
+import { AddToListButton } from "@/features/my-list/AddToListButton";
 import { StockLabel } from "./StockLabel";
 
 interface Props {
   variants: Variant[];
+  slug: string;
   name: string;
   /** Absolute product URL (for the WhatsApp message). */
   url: string;
@@ -62,6 +64,7 @@ export function ProductPurchaseFallback(props: Props) {
 
 function PurchaseView({
   variants,
+  slug,
   name,
   url,
   whatsappId,
@@ -213,6 +216,14 @@ function PurchaseView({
             {t("callCta")}
           </a>
         )}
+      </div>
+      <div className="mt-3">
+        <AddToListButton
+          key={variant.sku}
+          sku={variant.sku}
+          slug={slug}
+          disabled={!onSelect}
+        />
       </div>
     </div>
   );

@@ -104,6 +104,7 @@ export async function ProductPage({
   const phone = settings.phones.store ?? settings.phones.mobile;
   const purchaseProps = {
     variants: product.variants,
+    slug: product.slug,
     name: title.value,
     url: `${siteUrl}${localeHref(locale, productPath(product.slug))}`,
     whatsappId: settings.whatsapp?.waId ?? null,

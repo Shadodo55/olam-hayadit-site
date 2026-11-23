@@ -32,7 +32,7 @@ export function productPath(slug: string): string {
 }
 
 /** Pages that have their own route folder (not served by the catch-all). */
-export const builtPages: readonly PageKey[] = ["catalog"];
+export const builtPages: readonly PageKey[] = ["catalog", "search", "myList"];
 
 export function pageKeyForPath(path: string): PageKey | null {
   const entry = Object.entries(pagePaths).find(([, value]) => value === path);

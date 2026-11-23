@@ -12,4 +12,7 @@ export const pages = [
   { path: "/catalog", lang: "he", dir: "rtl" },
   { path: "/catalog/handles/door", lang: "he", dir: "rtl" },
   { path: "/en/catalog/handles", lang: "en", dir: "ltr" },
+  // search & my list
+  { path: "/search", lang: "he", dir: "rtl" },
+  { path: "/en/my-list", lang: "en", dir: "ltr" },
 ] as const;
