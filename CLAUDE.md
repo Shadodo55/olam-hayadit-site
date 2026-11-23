@@ -93,6 +93,20 @@ CategoryPage.tsx`, `ProductPage.tsx`.
 - Sample products are labelled on cards and pages; e2e tests must not depend on
   specific sample slugs (they pick the first product from a category).
 
+## Content pages
+
+- Home (`features/home/HomePage.tsx`): headline above the media (never text over
+  video). Media: CMS hero video (`HeroVideo`: muted, loop, poster, visible pause,
+  no autoplay with reduced motion) → poster image → `DimensionDrawing` fallback.
+- Content data and pages: `features/content/data.ts` + `features/content/pages.tsx`
+  (visit, measuring guide, about via `CmsPage`, FAQ as `<details>`, brands,
+  projects, PDF catalogs). CMS rich text renders with `components/content/RichText`.
+- Google Maps (`MapEmbed`) loads only after "external content" consent or a click;
+  CSP `frame-src` allows only https://www.google.com. Sanity's CDN is our own
+  content host (no cookies) and is allowed without consent.
+- Sample media: `node scripts/generate-sample-media.mjs`, then
+  `npm run seed:content` in `studio/` (FAQ/about are created only if missing).
+
 ## Search and "My list"
 
 - `/search-index.json` is generated at build (`src/app/(he)/search-index.json/route.ts`,

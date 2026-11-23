@@ -1,5 +1,5 @@
-import { HoldingPage } from "@/features/home/HoldingPage";
+import { HomePage } from "@/features/home/HomePage";
 
-export default function HomePageEn() {
-  return <HoldingPage locale="en" />;
+export default function Page() {
+  return <HomePage locale="en" />;
 }

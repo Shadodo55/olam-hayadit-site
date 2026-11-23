@@ -5,9 +5,17 @@
 export const pages = [
   { path: "/", lang: "he", dir: "rtl" },
   { path: "/en", lang: "en", dir: "ltr" },
-  // "coming soon" content page
+  // content pages
   { path: "/visit", lang: "he", dir: "rtl" },
   { path: "/en/visit", lang: "en", dir: "ltr" },
+  { path: "/measuring-guide", lang: "he", dir: "rtl" },
+  { path: "/about", lang: "he", dir: "rtl" },
+  { path: "/en/faq", lang: "en", dir: "ltr" },
+  { path: "/brands", lang: "he", dir: "rtl" },
+  { path: "/projects", lang: "he", dir: "rtl" },
+  { path: "/catalogs", lang: "he", dir: "rtl" },
+  // still "coming soon"
+  { path: "/contact", lang: "he", dir: "rtl" },
   // catalog
   { path: "/catalog", lang: "he", dir: "rtl" },
   { path: "/catalog/handles/door", lang: "he", dir: "rtl" },

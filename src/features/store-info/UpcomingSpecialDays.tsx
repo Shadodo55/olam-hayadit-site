@@ -14,8 +14,11 @@ const serverSnapshot = () => null;
  */
 export function UpcomingSpecialDays({
   specialDays,
+  tone = "dark",
 }: {
   specialDays: readonly SpecialDay[];
+  /** "dark" = on the graphite footer, "light" = on the paper background. */
+  tone?: "dark" | "light";
 }) {
   const locale = useLocale();
   const t = useTranslations("status");
@@ -37,8 +40,14 @@ export function UpcomingSpecialDays({
 
   return (
     <div className="mt-4">
-      <p className="font-semibold text-paper">{t("specialHours")}</p>
-      <ul className="mt-1 text-paper/80">
+      <p
+        className={`font-semibold ${tone === "dark" ? "text-paper" : "text-ink"}`}
+      >
+        {t("specialHours")}
+      </p>
+      <ul
+        className={`mt-1 ${tone === "dark" ? "text-paper/80" : "text-ink-muted"}`}
+      >
         {upcoming.map((day) => (
           <li key={day.date}>
             {format.format(new Date(`${day.date}T00:00:00Z`))}:{" "}

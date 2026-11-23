@@ -98,6 +98,13 @@ export const catalogFile = defineType({
       type: "number",
       initialValue: 10,
     }),
+    defineField({
+      name: "isSample",
+      title: "קטלוג לדוגמה",
+      description: "קטלוגים לדוגמה יימחקו לפני ההשקה.",
+      type: "boolean",
+      initialValue: false,
+    }),
   ],
   preview: { select: { title: "title.he", media: "cover" } },
 });

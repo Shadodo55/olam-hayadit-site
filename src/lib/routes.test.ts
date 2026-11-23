@@ -5,7 +5,8 @@ import { comingSoonSlugs, pageKeyForPath } from "./routes";
 describe("routes", () => {
   it("pre-renders every planned page that isn't built yet", () => {
     const paths = comingSoonSlugs().map((s) => `/${s.join("/")}`);
-    expect(paths).toContain("/visit");
+    expect(paths).toContain("/contact");
+    expect(paths).not.toContain("/visit");
     expect(paths).not.toContain("/catalog");
     expect(new Set(paths).size).toBe(paths.length);
   });
