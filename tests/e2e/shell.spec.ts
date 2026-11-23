@@ -136,12 +136,16 @@ test.describe("open-now status", () => {
     // Monday 10:00 in Jerusalem
     await page.clock.setFixedTime(new Date("2026-11-23T10:00:00+02:00"));
     await page.goto("/");
-    await expect(page.getByText("פתוח עכשיו, עד 18:00")).toBeVisible();
+    await expect(
+      page.locator("header").getByText("פתוח עכשיו, עד 18:00"),
+    ).toBeVisible();
   });
 
   test("names the next opening day on Friday afternoon", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-11-27T15:00:00+02:00"));
     await page.goto("/en");
-    await expect(page.getByText("Closed, opens Sunday at 07:30")).toBeVisible();
+    await expect(
+      page.locator("header").getByText("Closed, opens Sunday at 07:30"),
+    ).toBeVisible();
   });
 });

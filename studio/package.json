@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "seed": "sanity exec scripts/seed.ts --with-user-token",
     "samples:remove": "sanity exec scripts/remove-samples.ts --with-user-token",
-    "assets:cleanup": "sanity exec scripts/cleanup-assets.ts --with-user-token --"
+    "assets:cleanup": "sanity exec scripts/cleanup-assets.ts --with-user-token --",
+    "seed:content": "sanity exec scripts/seed-content.ts --with-user-token"
   },
   "engines": {
     "node": ">=22.12"

@@ -69,12 +69,17 @@ test("unknown URLs show the bilingual 404 page", async ({ page }) => {
 });
 
 test("no third-party requests are made before consent", async ({ page }) => {
+  // Our own content CDN (Sanity: images, video, PDFs) sets no cookies and is
+  // part of the site. Anything else (maps, analytics, embeds) needs consent.
+  const allowed = new Set(["localhost", "cdn.sanity.io"]);
   const external: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
-    if (url.hostname !== "localhost") external.push(url.href);
+    if (!allowed.has(url.hostname)) external.push(url.href);
   });
-  await page.goto("/");
-  await page.waitForLoadState("networkidle");
+  for (const path of ["/", "/visit", "/catalog/handles"]) {
+    await page.goto(path);
+    await page.waitForLoadState("networkidle");
+  }
   expect(external).toEqual([]);
 });

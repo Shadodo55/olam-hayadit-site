@@ -100,10 +100,31 @@
   },
   "home": {
     "tagline": "Handles and hardware. Chosen by hand.",
-    "underConstruction": "Our full online catalog is under construction. In the meantime, visit our showroom or get in touch.",
+    "intro": "A showroom for handles, hardware and bathroom accessories in Talpiot, Jerusalem. Browse models, finishes and prices here, then come and see them in the store.",
+    "toCatalog": "Browse the catalog",
+    "visitCta": "Hours and address",
+    "privateTitle": "Upgrading your home",
+    "privateBody": "Replacing handles in the kitchen, a wardrobe or a door? Search by finish and hole-to-hole distance, save a list, and come see the models in the store.",
+    "proTitle": "For professionals",
+    "proBody": "Interior designers, carpenters and kitchen makers: handles and hardware for a whole project, from one place.",
+    "proCta": "Information for professionals",
+    "categoriesTitle": "Categories",
+    "productsCount": "{count, plural, =0 {Coming soon} one {1 product} other {# products}}",
+    "newTitle": "New in store",
+    "allProducts": "All products",
+    "brandsTitle": "Brands",
+    "allBrands": "All brands",
+    "measureTitle": "Replacing a handle on an existing cabinet?",
+    "measureBody": "What decides whether a new handle fits the existing holes is the distance between the centres of the two screws. Measure it, then filter the catalog by that size.",
+    "measureCta": "How to measure a handle",
+    "visitTitle": "Come and see up close",
     "visitHeading": "Visit the showroom",
     "hoursHeading": "Opening hours",
-    "contactHeading": "Contact"
+    "contactHeading": "Contact",
+    "catalogsTitle": "Catalogs to download",
+    "allCatalogs": "All catalogs",
+    "projectsTitle": "Projects & inspiration",
+    "allProjects": "All projects"
   },
   "catalog": {
     "filtersTitle": "Filter products",
@@ -221,5 +242,75 @@
     "printTitle": "Product list for a store visit",
     "printedOn": "Printed on {date}",
     "loading": "Loading your list…"
+  },
+  "hero": {
+    "pause": "Pause background video",
+    "play": "Play background video"
+  },
+  "map": {
+    "title": "Map: {name}",
+    "consentText": "The map is shown through Google Maps. Google may set its own cookies.",
+    "showOnce": "Show the map",
+    "showAlways": "Always show maps",
+    "openGoogle": "Open in Google Maps",
+    "openWaze": "Navigate with Waze"
+  },
+  "visit": {
+    "intro": "Our showroom is in the Talpiot industrial area. It is worth checking availability before making a special trip.",
+    "addressTitle": "Address",
+    "hoursTitle": "Opening hours",
+    "today": "Today",
+    "parkingTitle": "Parking",
+    "contactTitle": "Contact",
+    "mapTitle": "Map and directions",
+    "nowTitle": "Right now"
+  },
+  "guide": {
+    "intro": "Want to replace a handle on an existing cabinet without drilling new holes? The measurement that matters is the distance between the centres of the two screw holes, called hole-to-hole or centre-to-centre.",
+    "stepsTitle": "Three steps",
+    "step1Title": "Remove one handle",
+    "step1": "Unscrew it from the inside of the door or drawer. You can also bring the handle to the store.",
+    "step2Title": "Measure centre to centre",
+    "step2": "Measure, in millimetres, from the centre of one hole to the centre of the other, not the length of the whole handle.",
+    "step3Title": "Count how many you need",
+    "step3": "Count the doors and drawers so we can check stock in the finish you chose.",
+    "commonTitle": "Common sizes",
+    "commonBody": "Many cabinet handles follow a 32 mm spacing system. These are the common sizes:",
+    "browseBy": "Handles with {mm} mm spacing",
+    "diagramLabel": "Illustration: a cabinet handle and its two screw holes. The arrow marks the distance between the hole centres, for example 128 mm.",
+    "tipTitle": "Not sure?",
+    "tip": "If you get a slightly different number, such as 127 mm, the size is most likely 128 mm. You can also photograph the handle next to a ruler and send it to us on WhatsApp."
+  },
+  "faq": {
+    "intro": "Answers to questions we hear often. Did not find yours? Ask us on WhatsApp.",
+    "empty": "No questions yet."
+  },
+  "brands": {
+    "intro": "Brands you can find in the store.",
+    "empty": "No brands added yet.",
+    "productsTitle": "Products by {brand}",
+    "website": "Manufacturer website",
+    "noProducts": "There are no products by this brand on the website yet.",
+    "sample": "Sample"
+  },
+  "projects": {
+    "intro": "Projects made with handles and hardware from the store.",
+    "empty": "No projects yet. They will appear here soon.",
+    "productsTitle": "Products in this project",
+    "sample": "Sample"
+  },
+  "catalogs": {
+    "intro": "Catalogs to download as PDF.",
+    "empty": "No catalogs to download yet.",
+    "download": "Download",
+    "fileInfo": "PDF, {size}",
+    "language_he": "in Hebrew",
+    "language_en": "in English",
+    "language_other": "",
+    "sample": "Sample"
+  },
+  "pagesExtra": {
+    "draftNotice": "Draft: the text on this page is still being reviewed and may change.",
+    "lastReviewed": "Last updated: {date}"
   }
 }
