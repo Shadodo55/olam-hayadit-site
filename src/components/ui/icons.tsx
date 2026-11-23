@@ -50,6 +50,13 @@ export const ListIcon = (p: IconProps) => (
   </Svg>
 );
 
+/** A check mark, like the ticks between services on the store's sign. */
+export const CheckIcon = (p: IconProps) => (
+  <Svg strokeWidth={2.6} {...p}>
+    <path d="M4.5 12.5l5 5L19.5 7" />
+  </Svg>
+);
+
 export const PhoneIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M5 4h3.5l1.8 4.5-2.3 1.4a10 10 0 0 0 6.1 6.1l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z" />

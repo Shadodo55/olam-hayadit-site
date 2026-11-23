@@ -5,7 +5,7 @@ import type { StockStatus } from "@/commerce/stock";
 
 const dot: Record<StockStatus, string> = {
   inStore: "bg-patina",
-  specialOrder: "bg-brass",
+  specialOrder: "bg-accent",
   askUs: "bg-line-strong",
   outOfStock: "border border-ink-muted bg-transparent",
 };

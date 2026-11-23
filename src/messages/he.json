@@ -124,7 +124,11 @@
     "catalogsTitle": "קטלוגים להורדה",
     "allCatalogs": "לכל הקטלוגים",
     "projectsTitle": "פרויקטים והשראה",
-    "allProjects": "לכל הפרויקטים"
+    "allProjects": "לכל הפרויקטים",
+    "servicesTitle": "מה תמצאו אצלנו",
+    "phoneStore": "בחנות",
+    "phoneMobile": "נייד",
+    "callTitle": "טלפונים"
   },
   "catalog": {
     "filtersTitle": "סינון מוצרים",
@@ -312,5 +316,13 @@
   "pagesExtra": {
     "draftNotice": "טיוטה: הטקסט בעמוד הזה עדיין בבדיקה ועשוי להשתנות.",
     "lastReviewed": "עודכן לאחרונה: {date}"
+  },
+  "theme": {
+    "button": "ערכת צבעים",
+    "legend": "בחירת ערכת צבעים (דמו)",
+    "note": "תצוגה שעוזרת לבחור את עיצוב האתר. הבחירה נשמרת רק בדפדפן הזה.",
+    "logo": "צבעי השלט",
+    "petrol": "פטרול רגוע",
+    "classic": "קלאסי (העיצוב הקודם)"
   }
 }

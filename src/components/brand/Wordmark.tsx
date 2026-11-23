@@ -2,9 +2,11 @@ import Link from "next/link";
 import { HandleMark } from "@/components/ui/icons";
 
 /**
- * Typographic wordmark. The name comes from the CMS and can be any length:
- * on small screens it wraps instead of overflowing. A placeholder until the store's real logo exists:
- * replace the contents here and every page follows.
+ * Typographic wordmark, styled per theme like the store's sign (heavy
+ * turquoise letters with a black shadow in the "logo" theme). The name comes
+ * from the CMS and can be any length: on small screens it wraps onto two
+ * lines instead of overflowing. Replace with the real logo file when there is
+ * one; every page follows.
  */
 export function Wordmark({
   name,
@@ -23,9 +25,11 @@ export function Wordmark({
       aria-label={label}
       className="inline-flex min-h-11 min-w-0 items-center gap-3"
     >
-      <HandleMark className="hidden shrink-0 text-brass min-[420px]:block" />
+      <HandleMark
+        className={`hidden shrink-0 min-[420px]:block ${tone === "dark" ? "text-wordmark-on-band" : "text-accent"}`}
+      />
       <span
-        className={`min-w-0 font-display text-lg leading-tight text-balance sm:text-[1.375rem] sm:leading-none sm:whitespace-nowrap ${tone === "dark" ? "text-paper" : "text-ink"}`}
+        className={`min-w-0 wordmark text-[1.375rem] leading-[1.05] text-balance sm:text-2xl sm:whitespace-nowrap xl:text-[1.75rem] ${tone === "dark" ? "text-wordmark-on-band" : "text-wordmark"}`}
       >
         {name}
       </span>

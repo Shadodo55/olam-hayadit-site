@@ -2,12 +2,14 @@ import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { getCategoryTree } from "@/features/catalog/data";
 import { ConsentManager } from "@/features/consent/ConsentManager";
+import { ThemePicker } from "@/features/theme/ThemePicker";
 import { fontVariables } from "@/lib/fonts";
 import { IntlProvider } from "@/lib/i18n/IntlProvider";
 import { localeDirection, localeHref, type Locale } from "@/lib/i18n/locales";
 import { clientMessagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
 import { getSiteSettings } from "@/lib/site/settings";
+import { themeInitScript, themePickerEnabled } from "@/lib/theme";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -25,7 +27,21 @@ export async function RootDocument({
     getCategoryTree(),
   ]);
   return (
-    <html lang={locale} dir={localeDirection[locale]} className={fontVariables}>
+    <html
+      lang={locale}
+      dir={localeDirection[locale]}
+      className={fontVariables}
+      // The theme script below may set data-theme before React hydrates.
+      suppressHydrationWarning={themePickerEnabled}
+    >
+      {themePickerEnabled && (
+        // App Router root layout (this component renders <html>): a plain
+        // <head> is correct here; the rule targets the Pages Router.
+        // eslint-disable-next-line @next/next/no-head-element
+        <head>
+          <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        </head>
+      )}
       <body className="flex min-h-dvh flex-col bg-paper text-ink antialiased">
         <IntlProvider
           locale={locale}
@@ -51,6 +67,7 @@ export async function RootDocument({
             settings={settings}
             categories={categories}
           />
+          {themePickerEnabled && <ThemePicker />}
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>

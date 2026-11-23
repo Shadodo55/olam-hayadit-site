@@ -43,7 +43,7 @@ export function MobileMenu({
   const hide = () => dialogRef.current?.close();
 
   const linkClass =
-    "flex min-h-12 items-center text-lg aria-[current=page]:font-semibold aria-[current=page]:text-brass-ink";
+    "flex min-h-12 items-center text-lg aria-[current=page]:font-semibold aria-[current=page]:text-accent-ink";
 
   return (
     <>
@@ -113,7 +113,7 @@ export function MobileMenu({
                                 aria-current={
                                   pathname === link.href ? "page" : undefined
                                 }
-                                className="flex min-h-11 items-center aria-[current=page]:font-semibold aria-[current=page]:text-brass-ink"
+                                className="flex min-h-11 items-center aria-[current=page]:font-semibold aria-[current=page]:text-accent-ink"
                               >
                                 {link.label}
                               </Link>

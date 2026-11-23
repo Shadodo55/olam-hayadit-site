@@ -57,7 +57,13 @@ Full approved plan (Hebrew): `docs/plan.md`.
 - i18n: Hebrew (RTL) at `/`, English (LTR) at `/en`. Two root layouts:
   `src/app/(he)/` and `src/app/(en)/en/`. Route files there stay thin and render
   shared components from `src/features/`. 404: `src/app/global-not-found.tsx`.
-- Fonts: Frank Ruhl Libre (display) + Assistant (text) via `next/font` (self-hosted).
+- Fonts via `next/font` (self-hosted): Rubik (display, brand themes), Frank Ruhl
+  Libre (display, "classic" theme only, not preloaded), Assistant (text).
+- Colour themes (design demo): `logo` (default), `petrol`, `classic`, set with
+  `<html data-theme>`; tokens in `globals.css`, list in `src/lib/theme.ts`. Use the
+  semantic colour classes (`accent`, `on-accent`, `accent-ink`, `button`, `band`,
+  `on-band`, `highlight`…), never raw hex. Every theme must pass axe
+  (`tests/e2e/themes.spec.ts`). Picker off: `NEXT_PUBLIC_THEME_PICKER=off`.
 
 ## i18n rules (next-intl)
 
@@ -95,8 +101,9 @@ CategoryPage.tsx`, `ProductPage.tsx`.
 
 ## Content pages
 
-- Home (`features/home/HomePage.tsx`): headline above the media (never text over
-  video). Media: CMS hero video (`HeroVideo`: muted, loop, poster, visible pause,
+- Home (`features/home/HomePage.tsx`): headline in an accent colour block beside
+  (phones: above) the media, never text over video. Slogan and services strip come
+  from siteSettings (`slogan`, `services`, as on the store's sign). Media: CMS hero video (`HeroVideo`: muted, loop, poster, visible pause,
   no autoplay with reduced motion) → poster image → `DimensionDrawing` fallback.
 - Content data and pages: `features/content/data.ts` + `features/content/pages.tsx`
   (visit, measuring guide, about via `CmsPage`, FAQ as `<details>`, brands,
@@ -140,8 +147,9 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   inside the product document; max 4 images per product.
 - GitHub Actions minutes are limited (2,000/month): content rebuilds run build+deploy
   only; full CI runs on PRs and pushes to `main`.
-- Design: premium/minimal; no gradients, glassmorphism, shadows-on-cards, emoji or
-  stock "happy people" photos. Tokens are in `src/app/globals.css` (`@theme`).
+- Design: bold brand colour blocks from the store's sign; no gradients,
+  glassmorphism, shadows-on-cards, emoji or stock "happy people" photos. Tokens
+  are in `src/app/globals.css` (`@theme`); notes in `docs/design-notes.md`.
 - Site is `noindex` until launch: set `NEXT_PUBLIC_ALLOW_INDEXING=true` and make the
   Lighthouse SEO assertion an error at launch.
 

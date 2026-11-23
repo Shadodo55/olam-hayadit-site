@@ -13,6 +13,10 @@ import { parseIsraeliPhone, type Phone } from "./phone";
  */
 export interface SiteSettings {
   name: Localized;
+  /** Short line from the store's sign, e.g. "איכות ושירות זה אנחנו!". */
+  slogan: Localized | null;
+  /** What the store does, as on the sign (shown as a strip on the home page). */
+  services: Localized[];
   address: {
     street: Localized | null;
     area: Localized | null;
@@ -35,6 +39,8 @@ type RawDay =
   { closed?: boolean; opens?: string; closes?: string } | null | undefined;
 interface RawSettings {
   businessName?: Localized | null;
+  slogan?: Localized | null;
+  services?: (Localized | null)[] | null;
   street?: Localized | null;
   area?: Localized | null;
   city?: Localized | null;
@@ -75,6 +81,10 @@ const filled = (value: Localized | null | undefined): Localized | null =>
 export function mapSettings(raw: RawSettings): SiteSettings {
   return {
     name: filled(raw.businessName) ?? FALLBACK_NAME,
+    slogan: filled(raw.slogan),
+    services: (raw.services ?? [])
+      .map(filled)
+      .filter((v): v is Localized => v !== null),
     address: {
       street: filled(raw.street),
       area: filled(raw.area),
@@ -119,6 +129,17 @@ const FALLBACK_NAME: Localized = {
  */
 export const fallbackSettings: SiteSettings = mapSettings({
   businessName: FALLBACK_NAME,
+  // Slogan and services as written on the store's sign.
+  slogan: {
+    he: "איכות ושירות זה אנחנו!",
+    en: "Quality and service: that's us!",
+  },
+  services: [
+    { he: "פרזול למטבחים", en: "Kitchen hardware" },
+    { he: "כל סוגי הידיות", en: "Every kind of handle" },
+    { he: "אביזרי אמבטיה", en: "Bathroom accessories" },
+    { he: "עבודות אלומיניום ופרזול", en: "Aluminium and hardware work" },
+  ],
   street: { he: "יד חרוצים 16", en: "16 Yad Harutsim St." },
   area: { he: "אזור התעשייה תלפיות", en: "Talpiot Industrial Area" },
   city: { he: "ירושלים", en: "Jerusalem" },
@@ -137,7 +158,7 @@ export const fallbackSettings: SiteSettings = mapSettings({
 });
 
 const SETTINGS_QUERY = `*[_id == "siteSettings"][0]{
-  businessName, street, area, city, parking, geo, storePhone, mobilePhone, whatsapp,
+  businessName, slogan, services, street, area, city, parking, geo, storePhone, mobilePhone, whatsapp,
   email, registrationNumber, instagram, facebook, accessibilityCoordinator,
   accessibilityContact, hours, specialDays[]{date, hours}, hoursNote
 }`;

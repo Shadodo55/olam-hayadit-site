@@ -1,15 +1,23 @@
-import { Assistant, Frank_Ruhl_Libre } from "next/font/google";
+import { Assistant, Frank_Ruhl_Libre, Rubik } from "next/font/google";
 
 // Self-hosted at build time by next/font: no requests to Google at runtime.
-// Variable fonts: one file per script (Hebrew / Latin) covers every weight,
-// instead of one file per weight.
+// Variable fonts: one file per script (Hebrew / Latin) covers every weight.
+// A font is only downloaded when the active theme actually uses it.
+
+/** Bold display face for the brand themes (close to the store's sign lettering). */
+export const rubik = Rubik({
+  subsets: ["hebrew", "latin"],
+  weight: "variable",
+  variable: "--font-rubik",
+  display: "swap",
+});
+
+/** Serif display face for the "classic" theme. */
 export const frankRuhl = Frank_Ruhl_Libre({
   subsets: ["hebrew", "latin"],
   weight: "variable",
   variable: "--font-frank-ruhl",
   display: "swap",
-  // Display font: not preloaded, so it doesn't compete with the body font on
-  // slow mobile connections. Headings render in the fallback serif first.
   preload: false,
 });
 
@@ -20,4 +28,4 @@ export const assistant = Assistant({
   display: "swap",
 });
 
-export const fontVariables = `${frankRuhl.variable} ${assistant.variable}`;
+export const fontVariables = `${rubik.variable} ${frankRuhl.variable} ${assistant.variable}`;

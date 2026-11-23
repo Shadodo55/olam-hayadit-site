@@ -1,4 +1,5 @@
 import type { Localized } from "@/lib/i18n/locales";
+import { toSiteImage, type RawImage, type SiteImage } from "@/lib/sanity/image";
 
 /**
  * Category tree types and pure helpers. The data comes from Sanity
@@ -13,6 +14,8 @@ export interface Category {
   allLabel: Localized;
   description: Localized | null;
   filters: string[];
+  /** Tile image on the home page (falls back to a product image there). */
+  image?: SiteImage;
   children?: readonly Category[];
 }
 
@@ -23,6 +26,7 @@ export interface RawCategory {
   allLabel?: Localized | null;
   description?: Localized | null;
   filters?: string[] | null;
+  image?: RawImage | null;
   parent?: string | null;
   order?: number | null;
 }
@@ -44,6 +48,7 @@ export function buildCategoryTree(raw: readonly RawCategory[]): Category[] {
       )
       .map((c) => {
         const children = depth < 3 ? build(c._id, depth + 1) : [];
+        const image = toSiteImage(c.image);
         return {
           id: c._id,
           slug: c.slug!,
@@ -51,6 +56,7 @@ export function buildCategoryTree(raw: readonly RawCategory[]): Category[] {
           allLabel: c.allLabel?.he ? c.allLabel : c.title!,
           description: c.description?.he ? c.description : null,
           filters: c.filters ?? [],
+          ...(image ? { image } : {}),
           ...(children.length ? { children } : {}),
         };
       });

@@ -37,11 +37,11 @@ export async function SiteFooter({
   const whatsapp = whatsappUrl(settings.whatsapp);
 
   const linkClass =
-    "inline-flex min-h-11 items-center text-paper/80 underline-offset-4 hover:text-paper hover:underline sm:min-h-9";
-  const headingClass = "font-display text-lg text-paper";
+    "inline-flex min-h-11 items-center text-on-band/80 underline-offset-4 hover:text-on-band hover:underline sm:min-h-9";
+  const headingClass = "font-display text-lg text-on-band";
 
   return (
-    <footer className="on-dark mt-24 bg-ink text-paper print:hidden">
+    <footer className="on-dark mt-24 bg-band text-on-band print:hidden">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-10 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <Wordmark
@@ -50,7 +50,7 @@ export async function SiteFooter({
             label={header("homeLink")}
             tone="dark"
           />
-          <p className="mt-4 max-w-sm text-paper/80">{t("about")}</p>
+          <p className="mt-4 max-w-sm text-on-band/80">{t("about")}</p>
         </div>
 
         <nav aria-labelledby="footer-catalog" className="lg:col-span-2">
@@ -87,7 +87,7 @@ export async function SiteFooter({
           <h2 id="footer-visit" className={headingClass}>
             {t("visitHeading")}
           </h2>
-          <address className="mt-3 text-paper/80 not-italic">
+          <address className="mt-3 text-on-band/80 not-italic">
             {street ? localized(street, locale).value : placeholder}
             {city && `, ${localized(city, locale).value}`}
             {area && (
@@ -98,8 +98,10 @@ export async function SiteFooter({
             )}
           </address>
 
-          <h3 className="mt-6 font-semibold text-paper">{t("hoursHeading")}</h3>
-          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-paper/80">
+          <h3 className="mt-6 font-semibold text-on-band">
+            {t("hoursHeading")}
+          </h3>
+          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-on-band/80">
             {groupHours(settings.hours).map((group) => (
               <div key={group.from} className="contents">
                 <dt>
@@ -119,7 +121,7 @@ export async function SiteFooter({
             ))}
           </dl>
           <UpcomingSpecialDays specialDays={settings.specialDays} />
-          <p className="mt-2 text-sm text-paper/70">
+          <p className="mt-2 text-sm text-on-band/70">
             {settings.hoursNote
               ? localized(settings.hoursNote, locale).value
               : t("holidayNote")}
@@ -180,7 +182,7 @@ export async function SiteFooter({
         </section>
       </div>
 
-      <div className="border-t border-paper/15">
+      <div className="border-t border-on-band/15">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <nav aria-label={t("legalNav")}>
             <ul className="flex flex-wrap gap-x-6">
@@ -198,7 +200,7 @@ export async function SiteFooter({
               </li>
             </ul>
           </nav>
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-paper/70">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-on-band/70">
             <span>{t("rights", { year, name })}</span>
             <span>
               {t("registration")} {settings.registrationNumber ?? placeholder}

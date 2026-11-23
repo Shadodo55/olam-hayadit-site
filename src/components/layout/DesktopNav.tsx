@@ -58,7 +58,7 @@ export function DesktopNav({
           const active = isActivePath(pathname, item.href);
           const itemClass = `inline-flex min-h-11 items-center gap-1.5 rounded-sm px-3 text-[0.95rem] hover:bg-surface ${
             active
-              ? "text-ink underline decoration-brass decoration-2 underline-offset-8"
+              ? "text-ink underline decoration-accent decoration-2 underline-offset-8"
               : "text-ink"
           }`;
 
@@ -118,7 +118,7 @@ export function DesktopNav({
                             linkIndex === 0
                               ? "border-b border-line font-semibold"
                               : ""
-                          } ${current ? "text-brass-ink" : ""}`}
+                          } ${current ? "text-accent-ink" : ""}`}
                         >
                           {link.label}
                         </Link>

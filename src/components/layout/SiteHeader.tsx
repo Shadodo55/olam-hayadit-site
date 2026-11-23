@@ -38,7 +38,7 @@ export async function SiteHeader({
   return (
     <header className="print:hidden">
       {/* Utility bar: live status, a few links, language. */}
-      <div className="on-dark bg-ink text-sm text-paper">
+      <div className="on-dark bg-band text-sm text-on-band">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             href={localeHref(locale, pagePaths.visit)}
@@ -58,7 +58,7 @@ export async function SiteHeader({
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="inline-flex min-h-11 items-center text-paper/85 underline-offset-4 hover:text-paper hover:underline"
+                    className="inline-flex min-h-11 items-center text-on-band/85 underline-offset-4 hover:text-on-band hover:underline"
                   >
                     {link.label}
                   </Link>

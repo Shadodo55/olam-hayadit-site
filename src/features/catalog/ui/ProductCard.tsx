@@ -29,7 +29,7 @@ export function ProductCard({
 
   return (
     <article className="group relative flex h-full flex-col has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink">
-      <div className="relative aspect-[4/5] overflow-hidden bg-surface">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-surface">
         {card.image ? (
           <>
             <Image
@@ -62,12 +62,12 @@ export function ProductCard({
         ) : null}
         <div className="absolute start-2 top-2 flex flex-wrap gap-1">
           {card.isNew && (
-            <span className="bg-paper px-2 py-0.5 text-xs font-semibold text-brass-ink">
+            <span className="rounded-sm bg-highlight px-2 py-0.5 text-xs font-bold text-on-highlight">
               {t("new")}
             </span>
           )}
           {card.isSample && (
-            <span className="bg-ink px-2 py-0.5 text-xs font-semibold text-paper">
+            <span className="rounded-sm bg-ink px-2 py-0.5 text-xs font-semibold text-paper">
               {t("sample")}
             </span>
           )}
@@ -75,7 +75,7 @@ export function ProductCard({
       </div>
 
       <Heading
-        className="mt-3 font-display text-lg leading-snug"
+        className="mt-3 font-display text-lg leading-snug group-hover:text-accent-ink"
         lang={title.isFallback ? "he" : undefined}
       >
         <Link
@@ -86,7 +86,7 @@ export function ProductCard({
         </Link>
       </Heading>
 
-      <p className="mt-1 font-semibold tabular">
+      <p className="mt-1 text-lg font-bold tabular" data-testid="card-price">
         {card.priceMin === card.priceMax ? price : t("priceFrom", { price })}
       </p>
 
