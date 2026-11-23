@@ -92,6 +92,19 @@ CategoryPage.tsx`, `ProductPage.tsx`.
 - Which filters a category shows is set per category in the CMS (`filters`).
 - Sample products are labelled on cards and pages; e2e tests must not depend on
   specific sample slugs (they pick the first product from a category).
+
+## Search and "My list"
+
+- `/search-index.json` is generated at build (`src/app/(he)/search-index.json/route.ts`,
+  `features/search/search-index.ts`) and loaded lazily by `useSearchIndex()`.
+  Search is MiniSearch in the browser (`features/search/search.ts`): Hebrew
+  normalisation (final letters, niqqud, gershayim), prefix + light fuzzy, AND.
+- "My list" (`/my-list`) stores only `{ sku, slug, qty }` in localStorage
+  (`commerce/list.ts`, `features/my-list/list-store.ts`); names/prices always come
+  from the current index, so they're never stale. Same LineItem shape for a cart later.
+- No autofocus on page load (it skips the skip-link for keyboard users).
+- Visible button text must be part of its accessible name (axe
+  `label-content-name-mismatch`): add context with `sr-only` text, not `aria-label`.
 - Design decisions and tokens: `docs/design-notes.md`.
 
 ## Hard rules
@@ -146,7 +159,8 @@ Unit tests sit next to the code (`*.test.ts`).
 Windows notes: in the owner's PowerShell, `.ps1` scripts are blocked; use
 `npm.cmd`/`npx.cmd` there. Windows PowerShell 5.1 `Get-Content`/`Set-Content` break
 Hebrew text: never use them to edit source files. Lighthouse can't launch Chrome
-locally; it runs in CI.
+locally; it runs in CI. The project is inside OneDrive: if a build fails with
+`EPERM ... unlink .next/...`, delete `.next` and build again.
 
 ## Git
 

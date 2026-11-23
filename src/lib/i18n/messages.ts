@@ -22,6 +22,8 @@ const clientNamespaces = [
   "days",
   "catalog",
   "product",
+  "search",
+  "list",
 ] as const;
 
 export function clientMessagesFor(

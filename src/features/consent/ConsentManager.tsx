@@ -74,7 +74,7 @@ export function ConsentManager({ policyHref }: { policyHref: string }) {
       {consent === null && (
         <section
           aria-labelledby="consent-title"
-          className="on-dark fixed inset-x-0 bottom-0 z-40 border-t border-paper/20 bg-ink text-paper"
+          className="on-dark fixed inset-x-0 bottom-0 z-40 border-t border-paper/20 bg-ink text-paper print:hidden"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10 lg:px-8">
             <div className="max-w-2xl">

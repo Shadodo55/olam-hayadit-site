@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ListIcon, SearchIcon } from "@/components/ui/icons";
 import type { Category } from "@/features/catalog/category-tree";
+import { MyListBadge } from "@/features/my-list/MyListBadge";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
@@ -35,7 +36,7 @@ export async function SiteHeader({
     "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-sm px-2 hover:bg-surface";
 
   return (
-    <header>
+    <header className="print:hidden">
       {/* Utility bar: live status, a few links, language. */}
       <div className="on-dark bg-ink text-sm text-paper">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -97,6 +98,7 @@ export async function SiteHeader({
             >
               <ListIcon />
               <span className="sr-only lg:not-sr-only">{t("myList")}</span>
+              <MyListBadge />
             </Link>
           </div>
         </div>

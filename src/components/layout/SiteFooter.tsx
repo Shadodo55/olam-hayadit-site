@@ -41,7 +41,7 @@ export async function SiteFooter({
   const headingClass = "font-display text-lg text-paper";
 
   return (
-    <footer className="on-dark mt-24 bg-ink text-paper">
+    <footer className="on-dark mt-24 bg-ink text-paper print:hidden">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-10 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <Wordmark
