@@ -1,8 +1,12 @@
 import type { StructureResolver } from "sanity/structure";
 
-/** The Studio's side menu, in Hebrew, in the order the store owner uses it. */
+/**
+ * The Studio's side menu, in Hebrew, in the order the store owner uses it.
+ * Every S.list() / S.documentList() needs an explicit .id() in Sanity 6.
+ */
 export const structure: StructureResolver = (S) =>
   S.list()
+    .id("root")
     .title("ניהול האתר")
     .items([
       S.listItem()
@@ -29,6 +33,7 @@ export const structure: StructureResolver = (S) =>
         .id("products")
         .child(
           S.list()
+            .id("products-menu")
             .title("מוצרים")
             .items([
               S.listItem()
@@ -43,6 +48,7 @@ export const structure: StructureResolver = (S) =>
                     .title("בחרו קטגוריה")
                     .child((categoryId) =>
                       S.documentList()
+                        .id(`category-products-${categoryId}`)
                         .title("מוצרים בקטגוריה")
                         .schemaType("product")
                         .filter(
@@ -56,6 +62,7 @@ export const structure: StructureResolver = (S) =>
                 .id("newProducts")
                 .child(
                   S.documentList()
+                    .id("new-products-list")
                     .title("חדשים בחנות")
                     .schemaType("product")
                     .filter('_type == "product" && isNew == true'),
@@ -65,6 +72,7 @@ export const structure: StructureResolver = (S) =>
                 .id("sampleProducts")
                 .child(
                   S.documentList()
+                    .id("sample-products-list")
                     .title("מוצרים לדוגמה")
                     .schemaType("product")
                     .filter('_type == "product" && isSample == true'),
