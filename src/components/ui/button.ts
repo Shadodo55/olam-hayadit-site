@@ -9,7 +9,8 @@ type Variant =
   | "onDark"
   | "paper"
   | "onAccent"
-  | "outlineOnAccent";
+  | "outlineOnAccent"
+  | "highlight";
 type Size = "md" | "sm";
 
 const base =
@@ -23,6 +24,8 @@ const variants: Record<Variant, string> = {
   paper: "bg-paper text-ink hover:bg-surface",
   /** On an accent colour block (home hero). */
   onAccent: "bg-on-accent text-accent hover:opacity-90",
+  /** Brass: the primary action on a dark band. */
+  highlight: "bg-highlight text-on-highlight hover:bg-highlight/90",
   outlineOnAccent:
     "border-2 border-on-accent text-on-accent hover:bg-on-accent/10",
 };

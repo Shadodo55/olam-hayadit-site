@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Wordmark } from "@/components/brand/Wordmark";
-import { ListIcon, SearchIcon } from "@/components/ui/icons";
+import { ListIcon, PhoneIcon, SearchIcon } from "@/components/ui/icons";
 import type { Category } from "@/features/catalog/category-tree";
 import { MyListBadge } from "@/features/my-list/MyListBadge";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
@@ -32,47 +32,66 @@ export async function SiteHeader({
   const secondary = pageLinks(locale, secondaryPages);
   const utilityLinks = pageLinks(locale, ["professionals", "visit"]);
 
+  const footer = await getTranslations({ locale, namespace: "footer" });
+  const phones = [
+    { label: footer("storePhone"), phone: settings.phones.store },
+    { label: footer("mobilePhone"), phone: settings.phones.mobile },
+  ].flatMap(({ label, phone }) => (phone ? [{ label, phone }] : []));
+
   const iconLink =
-    "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-sm px-2 hover:bg-surface";
+    "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-sm px-2 font-medium hover:bg-surface";
+  const utilityLink =
+    "inline-flex min-h-10 items-center gap-1.5 text-on-band/85 underline-offset-4 hover:text-on-band hover:underline";
 
   return (
-    <header className="print:hidden">
-      {/* Utility bar: live status, a few links, language. */}
-      <div className="on-dark bg-band text-sm text-on-band">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <>
+      {/* Utility bar: live status, phones, a few links, language. Scrolls away. */}
+      <div className="on-dark bg-band text-sm text-on-band print:hidden">
+        <nav
+          aria-label={t("secondaryNav")}
+          className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+        >
           <Link
             href={localeHref(locale, pagePaths.visit)}
-            className="inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+            className="inline-flex min-h-10 items-center underline-offset-4 hover:underline"
           >
             <OpenStatus
               hours={settings.hours}
               specialDays={settings.specialDays}
             />
           </Link>
-          <nav
-            aria-label={t("secondaryNav")}
-            className="flex items-center gap-5"
-          >
-            <ul className="hidden items-center gap-5 lg:flex">
+          <div className="flex items-center gap-6">
+            <ul className="hidden items-center gap-6 lg:flex">
+              {phones.map(({ label, phone }) => (
+                <li key={label}>
+                  <a href={`tel:${phone.e164}`} className={utilityLink}>
+                    <PhoneIcon width={16} height={16} />
+                    {label}
+                    <span
+                      dir="ltr"
+                      className="font-semibold text-on-band tabular"
+                    >
+                      {phone.display}
+                    </span>
+                  </a>
+                </li>
+              ))}
               {utilityLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="inline-flex min-h-11 items-center text-on-band/85 underline-offset-4 hover:text-on-band hover:underline"
-                  >
+                  <Link href={link.href} className={utilityLink}>
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
             <LanguageSwitcher />
-          </nav>
-        </div>
+          </div>
+        </nav>
       </div>
 
-      {/* Main bar */}
-      <div className="border-b border-line">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:min-h-20 lg:gap-8 lg:px-8">
+      {/* Main bar: stays at the top while scrolling. */}
+      <header className="sticky top-0 z-30 border-b border-line bg-paper print:hidden">
+        <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:min-h-20 lg:gap-10 lg:px-8">
           <MobileMenu
             items={nav}
             secondary={secondary}
@@ -90,19 +109,19 @@ export async function SiteHeader({
               className={iconLink}
             >
               <SearchIcon />
-              <span className="sr-only lg:not-sr-only">{t("search")}</span>
+              <span className="sr-only xl:not-sr-only">{t("search")}</span>
             </Link>
             <Link
               href={localeHref(locale, pagePaths.myList)}
               className={iconLink}
             >
               <ListIcon />
-              <span className="sr-only lg:not-sr-only">{t("myList")}</span>
+              <span className="sr-only xl:not-sr-only">{t("myList")}</span>
               <MyListBadge />
             </Link>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

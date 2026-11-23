@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Colour themes (design demo, see src/lib/theme.ts). The default "logo"
+ * Colour themes (design demo, see src/lib/theme.ts). The default "petrol"
  * theme is covered by a11y.spec.ts; here every other theme must also pass
  * axe (contrast!) on the main page types, and the picker must work by keyboard.
  */
@@ -37,7 +37,7 @@ async function expectNoAxeViolations(page: Page) {
   ).toEqual([]);
 }
 
-for (const theme of ["petrol", "classic"]) {
+for (const theme of ["logo", "classic"]) {
   test.describe(`theme ${theme}`, () => {
     test.beforeEach(async ({ page }) => {
       await useTheme(page, theme);
@@ -69,7 +69,7 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   isMobile,
 }) => {
   test.skip(isMobile, "keyboard use is checked on desktop");
-  await useTheme(page, "logo");
+  await useTheme(page, "petrol");
   await page.goto("/");
   const html = page.locator("html");
   await expect(html).not.toHaveAttribute("data-theme", /.+/);
@@ -80,16 +80,17 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   await expect(button).toHaveAttribute("aria-expanded", "true");
 
   const group = page.getByRole("group", { name: "בחירת ערכת צבעים (דמו)" });
-  await expect(group.getByRole("radio", { name: "צבעי השלט" })).toBeChecked();
-  await group.getByRole("radio", { name: "צבעי השלט" }).focus();
+  const petrol = group.getByRole("radio", { name: "פטרול (ברירת מחדל)" });
+  await expect(petrol).toBeChecked();
+  await petrol.focus();
   await page.keyboard.press("ArrowDown");
-  await expect(group.getByRole("radio", { name: "פטרול רגוע" })).toBeChecked();
-  await expect(html).toHaveAttribute("data-theme", "petrol");
+  await expect(group.getByRole("radio", { name: "צבעי השלט" })).toBeChecked();
+  await expect(html).toHaveAttribute("data-theme", "logo");
 
   await page.keyboard.press("Escape");
   await expect(button).toBeFocused();
   await expect(button).toHaveAttribute("aria-expanded", "false");
 
   await page.reload();
-  await expect(html).toHaveAttribute("data-theme", "petrol");
+  await expect(html).toHaveAttribute("data-theme", "logo");
 });

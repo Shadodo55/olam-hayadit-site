@@ -19,8 +19,8 @@ import {
 
 /** Decorative preview colours per theme: paper, accent, band, highlight. */
 const swatches: Record<Theme, readonly string[]> = {
+  petrol: ["#ffffff", "#0e5e66", "#0d2b2f", "#d4b98a"],
   logo: ["#ffffff", "#1aa39a", "#0e1716", "#c8102e"],
-  petrol: ["#f5f5f2", "#0e5e66", "#0d2b2f", "#b3462b"],
   classic: ["#f5f1ea", "#d8c49c", "#1e1d1b", "#7a5a22"],
 };
 

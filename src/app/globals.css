@@ -3,18 +3,57 @@
 /*
  * Design tokens, semantic (what a colour is FOR, not what it looks like).
  * Three themes, switchable with <html data-theme="…"> (see lib/theme.ts):
- *   logo    (default) white + the sign's turquoise + black + red accent
- *   petrol  calm deep petrol + sand
+ *   petrol  (default) deep petrol + brass, chosen by the store
+ *   logo    the sign's turquoise + black + red
  *   classic the original cream / brass / serif look
  *
  * Contrast is checked by axe in every theme (tests/e2e/themes.spec.ts):
  *   ink, ink-muted, accent-ink on paper/surface >= 4.5:1
- *   on-accent on accent, on-button on button, on-band on band >= 4.5:1
+ *   on-accent on accent, on-button on button, on-band on band,
+ *   accent-on-band on band, on-highlight on highlight >= 4.5:1
  *   line-strong on paper >= 3:1 (UI borders)
  *   accent is for colour BLOCKS (with on-accent text) and large text only.
  */
 @theme {
-  /* theme "logo" (default) */
+  /* theme "petrol" (default) */
+  --color-paper: #ffffff;
+  --color-surface: #f0f2f1;
+  --color-ink: #172426;
+  --color-ink-muted: #4f5b5d;
+  --color-accent: #0e5e66;
+  --color-on-accent: #ffffff;
+  --color-accent-ink: #0e5e66;
+  --color-button: #0e5e66;
+  --color-on-button: #ffffff;
+  /* Brass: the metal of the products. Ribbon, primary button on dark bands. */
+  --color-highlight: #d4b98a;
+  --color-on-highlight: #0d2b2f;
+  --color-band: #0d2b2f;
+  --color-on-band: #ffffff;
+  --color-patina: #2e8b57;
+  --color-line: #dde2e0;
+  --color-line-strong: #7d8b8c;
+  --color-wordmark: #0e5e66;
+  --color-wordmark-on-band: #ffffff;
+  --color-accent-on-band: #d4b98a;
+
+  --font-display: var(--font-plex), "Arial", sans-serif;
+  --font-sans: var(--font-assistant), "Arial", sans-serif;
+
+  --radius-sm: 4px;
+}
+
+:root {
+  /* Large display text (h1) is light and precise; h2/h3 are medium. */
+  --display-weight: 300;
+  --heading-weight: 500;
+  --heading-tracking: -0.015em;
+  --wordmark-shadow: none;
+  --wordmark-weight: 500;
+}
+
+/* The store's sign: turquoise, black and red, heavy lettering. */
+[data-theme="logo"] {
   --color-paper: #ffffff;
   --color-surface: #eaf5f4;
   --color-ink: #121212;
@@ -28,50 +67,17 @@
   --color-on-highlight: #ffffff;
   --color-band: #0e1716;
   --color-on-band: #ffffff;
-  --color-patina: #2e8b57;
   --color-line: #d5e3e1;
   --color-line-strong: #7e9693;
   --color-wordmark: #1aa39a;
   --color-wordmark-on-band: #1aa39a;
   --color-accent-on-band: #1aa39a;
-
   --font-display: var(--font-rubik), "Arial", sans-serif;
-  --font-sans: var(--font-assistant), "Arial", sans-serif;
-
-  --radius-sm: 4px;
-}
-
-:root {
-  --heading-weight: 800;
+  --display-weight: 800;
+  --heading-weight: 700;
   --heading-tracking: -0.01em;
   --wordmark-shadow: 2px 2px 0 #121212;
   --wordmark-weight: 800;
-}
-
-/* Calm, premium take on the brand colour. */
-[data-theme="petrol"] {
-  --color-paper: #f5f5f2;
-  --color-surface: #e7ecea;
-  --color-ink: #1a2224;
-  --color-ink-muted: #4f5b5d;
-  --color-accent: #0e5e66;
-  --color-on-accent: #ffffff;
-  --color-accent-ink: #0e5e66;
-  --color-button: #0e5e66;
-  --color-on-button: #ffffff;
-  --color-highlight: #b3462b;
-  --color-on-highlight: #ffffff;
-  --color-band: #0d2b2f;
-  --color-on-band: #ffffff;
-  --color-line: #d6dcda;
-  --color-line-strong: #7d8b8c;
-  --color-wordmark: #0e5e66;
-  --color-wordmark-on-band: #ffffff;
-  --color-accent-on-band: #7fc4c4;
-  --font-display: var(--font-rubik), "Arial", sans-serif;
-  --radius-sm: 6px;
-  --heading-weight: 700;
-  --wordmark-shadow: none;
 }
 
 /* The original design (cream, brass, serif), kept for comparison. */
@@ -85,8 +91,8 @@
   --color-accent-ink: #7a5a22;
   --color-button: #1e1d1b;
   --color-on-button: #f5f1ea;
-  --color-highlight: #7a5a22;
-  --color-on-highlight: #ffffff;
+  --color-highlight: #d8c49c;
+  --color-on-highlight: #1e1d1b;
   --color-band: #1e1d1b;
   --color-on-band: #f5f1ea;
   --color-patina: #5e8c6a;
@@ -97,10 +103,9 @@
   --color-accent-on-band: #d8c49c;
   --font-display: var(--font-frank-ruhl), "Times New Roman", serif;
   --radius-sm: 2px;
+  --display-weight: 400;
   --heading-weight: 500;
   --heading-tracking: 0;
-  --wordmark-shadow: none;
-  --wordmark-weight: 500;
 }
 
 @layer base {
@@ -124,6 +129,15 @@
     letter-spacing: var(--heading-tracking);
     line-height: 1.1;
     text-wrap: balance;
+  }
+
+  h1 {
+    font-weight: var(--display-weight);
+  }
+
+  /* The main header bar is sticky: keep anchored targets below it. */
+  html {
+    scroll-padding-top: 6rem;
   }
 
   :focus-visible {
@@ -173,6 +187,21 @@
   letter-spacing: -0.01em;
 }
 
+/* Large light titles (hero, bands): the theme's display weight. */
+@utility display-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.1;
+}
+
+/* A full-width light band, even when the element sits in a centred container. */
+@utility page-band {
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 100vmax var(--color-surface);
+  clip-path: inset(0 -100vmax);
+}
+
 /* Section headings: a short accent bar above the title. */
 @utility section-title {
   font-family: var(--font-display);
@@ -181,8 +210,8 @@
   &::before {
     content: "";
     display: block;
-    width: 3rem;
-    height: 0.3rem;
+    width: 2.75rem;
+    height: 3px;
     margin-block-end: 0.875rem;
     background-color: var(--color-accent);
     border-radius: var(--radius-sm);

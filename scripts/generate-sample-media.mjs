@@ -23,17 +23,53 @@ const OUT = join(import.meta.dirname, "..", "studio", "seed", "media");
 const IMAGES = join(import.meta.dirname, "..", "studio", "seed", "images");
 mkdirSync(OUT, { recursive: true });
 
-const handle = (fill, edge) => `
-  <svg viewBox="0 0 600 220" width="720" height="264" aria-hidden="true">
-    <ellipse cx="300" cy="200" rx="230" ry="12" fill="#1E1D1B" opacity="0.07"/>
-    <rect x="40" y="70" width="520" height="40" rx="20" fill="${fill}" stroke="${edge}" stroke-width="3"/>
-    <rect x="110" y="104" width="32" height="80" rx="7" fill="${fill}" stroke="${edge}" stroke-width="3"/>
-    <rect x="458" y="104" width="32" height="80" rx="7" fill="${fill}" stroke="${edge}" stroke-width="3"/>
-  </svg>`;
+// Studio scene: three handles in different finishes, metal shading, soft
+// shadows. Objects sit in the upper-middle band: on desktop the hero's text
+// panel covers the lower corner of the frame.
+const metal = {
+  gold: ["#7d5d22", "#f1d690", "#c49a45", "#e3c278", "#8a6a2c"],
+  black: ["#0f0f0f", "#4a4a4a", "#202020", "#333333", "#0c0c0c"],
+  nickel: ["#6f736f", "#eef0ed", "#a9aca8", "#d6d8d5", "#767a76"],
+};
+const grads = Object.entries(metal)
+  .map(([name, stops]) => {
+    const st = stops
+      .map(
+        (c, i) =>
+          `<stop offset="${(i / (stops.length - 1)) * 100}%" stop-color="${c}"/>`,
+      )
+      .join("");
+    return `<linearGradient id="v-${name}" x1="0" y1="0" x2="0" y2="1">${st}</linearGradient>
+      <linearGradient id="h-${name}" x1="0" y1="0" x2="1" y2="0">${st}</linearGradient>
+      <radialGradient id="r-${name}" cx="0.38" cy="0.32" r="0.75"><stop offset="0%" stop-color="${stops[1]}"/><stop offset="45%" stop-color="${stops[2]}"/><stop offset="100%" stop-color="${stops[0]}"/></radialGradient>`;
+  })
+  .join("");
+const floor = (cx, y, w) => `
+  <ellipse cx="${cx}" cy="${y + 20}" rx="${w / 2}" ry="26" fill="#1b2a2c" opacity="0.15" filter="url(#soft)"/>
+  <ellipse cx="${cx}" cy="${y + 6}" rx="${w / 2.3}" ry="7" fill="#1b2a2c" opacity="0.2" filter="url(#contact)"/>`;
+const scene = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>${grads}
+    <radialGradient id="studio" cx="0.5" cy="0.35" r="0.8"><stop offset="0%" stop-color="#fbfcfb"/><stop offset="100%" stop-color="#dfe4e3"/></radialGradient>
+    <filter id="soft" filterUnits="userSpaceOnUse" x="0" y="0" width="1280" height="720"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="contact" filterUnits="userSpaceOnUse" x="0" y="0" width="1280" height="720"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1280" height="720" fill="url(#studio)"/>
+  <g>${floor(330, 360, 420)}
+    <rect x="190" y="276" width="28" height="84" rx="8" fill="url(#h-gold)"/>
+    <rect x="442" y="276" width="28" height="84" rx="8" fill="url(#h-gold)"/>
+    <rect x="120" y="248" width="420" height="38" rx="19" fill="url(#v-gold)"/></g>
+  <g>${floor(660, 380, 200)}
+    <rect x="642" y="318" width="36" height="58" rx="10" fill="url(#h-black)"/>
+    <circle cx="660" cy="262" r="86" fill="url(#r-black)"/></g>
+  <g>${floor(990, 360, 380)}
+    <circle cx="880" cy="280" r="70" fill="url(#r-nickel)"/>
+    <rect x="862" y="258" width="290" height="44" rx="22" fill="url(#v-nickel)"/>
+    <circle cx="880" cy="280" r="31" fill="url(#r-nickel)"/></g>
+</svg>`;
 
 const browser = await chromium.launch();
 
-// 1) Hero video: slow, calm drift (loops smoothly: out and back).
+// 1) Hero video: a slow, calm push-in on the scene (loops: in and back out).
 const tmp = join(OUT, "_rec");
 rmSync(tmp, { recursive: true, force: true });
 const context = await browser.newContext({
@@ -41,14 +77,13 @@ const context = await browser.newContext({
   recordVideo: { dir: tmp, size: { width: 1280, height: 720 } },
 });
 const page = await context.newPage();
-await page.setContent(`<html><body style="margin:0;background:#EEEEEC;overflow:hidden">
+await page.setContent(`<html><body style="margin:0;background:#e6eae9;overflow:hidden">
   <style>
-    .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-    .h{animation:drift 6s ease-in-out infinite alternate}
-    @keyframes drift{from{transform:translateX(-60px) rotate(-2deg)}to{transform:translateX(60px) rotate(2deg)}}
-    .l{position:absolute;bottom:24px;left:0;right:0;text-align:center;font:22px Arial;color:#5C5852;direction:rtl}
+    .s{position:absolute;inset:0;animation:push 6s ease-in-out infinite alternate;transform-origin:50% 40%}
+    @keyframes push{from{transform:scale(1)}to{transform:scale(1.06)}}
+    .l{position:absolute;top:20px;left:0;right:0;text-align:center;font:18px Arial;color:#6b7577;direction:rtl}
   </style>
-  <div class="stage"><div class="h">${handle("#2B2A28", "#111110")}</div></div>
+  <div class="s">${scene}</div>
   <div class="l">וידאו לדוגמה</div></body></html>`);
 // Poster = a still of the same scene (shown before playback / with reduced motion).
 await page.screenshot({ path: join(OUT, "sample-hero-poster.png") });
@@ -63,12 +98,12 @@ const img = (name) =>
   `data:image/png;base64,${readFileSync(join(IMAGES, name)).toString("base64")}`;
 const pdfPage = await browser.newPage();
 await pdfPage.setContent(`<html dir="rtl"><body style="font-family:Arial;margin:0;color:#1E1D1B">
-  <section style="height:277mm;padding:30mm;box-sizing:border-box;background:#F5F1EA">
+  <section style="height:277mm;padding:30mm;box-sizing:border-box;background:#F0F2F1">
     <p style="font-size:14pt;color:#5C5852">קטלוג לדוגמה, להמחשה בלבד</p>
     <h1 style="font-size:40pt;margin:20mm 0 6mm">ידיות לארונות ולמטבח</h1>
     <p style="font-size:14pt">הקטלוג הזה נוצר אוטומטית כדי להדגים את עמוד הקטלוגים באתר.
     בעלת החנות תחליף אותו בקטלוגים האמיתיים של הספקים.</p>
-    ${handle("#A27C3A", "#7A5A22")}
+    <div style="width:180mm;overflow:hidden">${scene.replace(/width="1280" height="720"/, `width="100%"`)}</div>
   </section>
   <section style="padding:20mm;break-before:page">
     <h2 style="font-size:20pt">מוצרים לדוגמה</h2>

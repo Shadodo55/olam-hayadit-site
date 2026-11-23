@@ -189,44 +189,46 @@ async function CatalogLayout({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <Breadcrumbs items={crumbs} label={common("breadcrumbs")} />
+      <div className="-mt-8 page-band pt-6 pb-10">
+        <Breadcrumbs items={crumbs} label={common("breadcrumbs")} />
 
-      <header className="mt-6 grid gap-4 lg:grid-cols-12">
-        <h1
-          className="text-4xl before:mb-4 before:block before:h-1.5 before:w-12 before:rounded-sm before:bg-accent sm:text-5xl lg:col-span-7"
-          lang={title.isFallback ? "he" : undefined}
-        >
-          {title.value}
-        </h1>
-        {description && (
-          <p
-            className="max-w-prose self-end text-lg text-ink-muted lg:col-span-5"
-            lang={description.isFallback ? "he" : undefined}
+        <header className="mt-6 grid gap-4 lg:grid-cols-12">
+          <h1
+            className="text-4xl before:mb-5 before:block before:h-[3px] before:w-11 before:rounded-sm before:bg-accent sm:text-5xl lg:col-span-7"
+            lang={title.isFallback ? "he" : undefined}
           >
-            {description.value}
-          </p>
-        )}
-      </header>
+            {title.value}
+          </h1>
+          {description && (
+            <p
+              className="max-w-prose self-end text-lg text-ink-muted lg:col-span-5"
+              lang={description.isFallback ? "he" : undefined}
+            >
+              {description.value}
+            </p>
+          )}
+        </header>
 
-      {subcategories.length > 0 && (
-        <nav aria-label={t("subcategories")} className="mt-8">
-          <ul className="flex flex-wrap gap-2">
-            {subcategories.map((sub) => (
-              <li key={sub.href}>
-                <Link
-                  href={sub.href}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line-strong px-4 hover:bg-surface"
-                >
-                  {sub.label}
-                  <span className="text-sm text-ink-muted tabular">
-                    {sub.count}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+        {subcategories.length > 0 && (
+          <nav aria-label={t("subcategories")} className="mt-8">
+            <ul className="flex flex-wrap gap-2">
+              {subcategories.map((sub) => (
+                <li key={sub.href}>
+                  <Link
+                    href={sub.href}
+                    className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line-strong bg-paper px-4 font-medium hover:border-accent"
+                  >
+                    {sub.label}
+                    <span className="text-sm text-ink-muted tabular">
+                      {sub.count}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
 
       <div className="mt-10">
         {cards.length === 0 ? (

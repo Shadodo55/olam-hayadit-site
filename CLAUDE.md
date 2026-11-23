@@ -57,9 +57,11 @@ Full approved plan (Hebrew): `docs/plan.md`.
 - i18n: Hebrew (RTL) at `/`, English (LTR) at `/en`. Two root layouts:
   `src/app/(he)/` and `src/app/(en)/en/`. Route files there stay thin and render
   shared components from `src/features/`. 404: `src/app/global-not-found.tsx`.
-- Fonts via `next/font` (self-hosted): Rubik (display, brand themes), Frank Ruhl
-  Libre (display, "classic" theme only, not preloaded), Assistant (text).
-- Colour themes (design demo): `logo` (default), `petrol`, `classic`, set with
+- Fonts via `next/font` (self-hosted): IBM Plex Sans Hebrew (display, default
+  theme; weights 300/500 only, so no bold on headings), Rubik ("logo" theme) and
+  Frank Ruhl Libre ("classic"), both not preloaded, Assistant (text).
+- Colour themes (design demo): `petrol` (default, chosen by the store), `logo`,
+  `classic`, set with
   `<html data-theme>`; tokens in `globals.css`, list in `src/lib/theme.ts`. Use the
   semantic colour classes (`accent`, `on-accent`, `accent-ink`, `button`, `band`,
   `on-band`, `highlight`…), never raw hex. Every theme must pass axe
@@ -101,8 +103,8 @@ CategoryPage.tsx`, `ProductPage.tsx`.
 
 ## Content pages
 
-- Home (`features/home/HomePage.tsx`): headline in an accent colour block beside
-  (phones: above) the media, never text over video. Slogan and services strip come
+- Home (`features/home/HomePage.tsx`): full-width media with a solid dark panel
+  overlapping its lower edge (phones: below it), never text over video. Slogan and services strip come
   from siteSettings (`slogan`, `services`, as on the store's sign). Media: CMS hero video (`HeroVideo`: muted, loop, poster, visible pause,
   no autoplay with reduced motion) → poster image → `DimensionDrawing` fallback.
 - Content data and pages: `features/content/data.ts` + `features/content/pages.tsx`

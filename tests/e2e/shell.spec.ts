@@ -137,7 +137,9 @@ test.describe("open-now status", () => {
     await page.clock.setFixedTime(new Date("2026-11-23T10:00:00+02:00"));
     await page.goto("/");
     await expect(
-      page.locator("header").getByText("פתוח עכשיו, עד 18:00"),
+      page
+        .getByRole("navigation", { name: "קישורים נוספים" })
+        .getByText("פתוח עכשיו, עד 18:00"),
     ).toBeVisible();
   });
 
@@ -145,7 +147,9 @@ test.describe("open-now status", () => {
     await page.clock.setFixedTime(new Date("2026-11-27T15:00:00+02:00"));
     await page.goto("/en");
     await expect(
-      page.locator("header").getByText("Closed, opens Sunday at 07:30"),
+      page
+        .getByRole("navigation", { name: "More links" })
+        .getByText("Closed, opens Sunday at 07:30"),
     ).toBeVisible();
   });
 });
