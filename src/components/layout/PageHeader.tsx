@@ -23,7 +23,7 @@ export async function PageHeader({
 }) {
   const common = await getTranslations({ locale, namespace: "common" });
   return (
-    <header>
+    <header className="-mt-10 page-band pt-8 pb-10">
       <Breadcrumbs
         label={common("breadcrumbs")}
         items={[
@@ -34,9 +34,9 @@ export async function PageHeader({
       />
       <span
         aria-hidden="true"
-        className="mt-6 block h-1.5 w-12 rounded-sm bg-accent"
+        className="mt-6 block h-[3px] w-11 rounded-sm bg-accent"
       />
-      <h1 className="mt-4 text-4xl sm:text-5xl" lang={titleLang}>
+      <h1 className="mt-5 text-4xl sm:text-5xl" lang={titleLang}>
         {title}
       </h1>
       {intro && (

@@ -56,7 +56,7 @@ export function DesktopNav({
       <ul className="flex items-center gap-1">
         {items.map((item, index) => {
           const active = isActivePath(pathname, item.href);
-          const itemClass = `inline-flex min-h-11 items-center gap-1.5 rounded-sm px-3 text-[0.95rem] hover:bg-surface ${
+          const itemClass = `inline-flex min-h-11 items-center gap-1.5 rounded-sm px-3 font-medium hover:bg-surface ${
             active
               ? "text-ink underline decoration-accent decoration-2 underline-offset-8"
               : "text-ink"
@@ -100,7 +100,7 @@ export function DesktopNav({
               <div
                 id={panelId}
                 hidden={!open}
-                className="absolute start-0 top-full z-30 mt-2 min-w-64 border border-line-strong bg-paper py-2"
+                className="absolute start-0 top-full z-30 mt-3 min-w-64 rounded-sm border border-line bg-paper py-2"
               >
                 <ul>
                   {[

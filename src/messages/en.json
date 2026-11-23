@@ -53,7 +53,8 @@
     "email": "Email",
     "storePhone": "Store phone",
     "mobilePhone": "Mobile & stock checks",
-    "rights": "© {year} {name}"
+    "rights": "© {year} {name}",
+    "ctaTitle": "Come and see them in our showroom"
   },
   "consent": {
     "title": "Cookies and privacy",
@@ -103,8 +104,6 @@
     "intro": "A showroom for handles, hardware and bathroom accessories in Talpiot, Jerusalem. Browse models, finishes and prices here, then come and see them in the store.",
     "toCatalog": "Browse the catalog",
     "visitCta": "Hours and address",
-    "privateTitle": "Upgrading your home",
-    "privateBody": "Replacing handles in the kitchen, a wardrobe or a door? Search by finish and hole-to-hole distance, save a list, and come see the models in the store.",
     "proTitle": "For professionals",
     "proBody": "Interior designers, carpenters and kitchen makers: handles and hardware for a whole project, from one place.",
     "proCta": "Information for professionals",
@@ -128,7 +127,8 @@
     "servicesTitle": "What you'll find here",
     "phoneStore": "Store",
     "phoneMobile": "Mobile",
-    "callTitle": "Phone numbers"
+    "callTitle": "Phone numbers",
+    "proPhoneLabel": "Mobile for professionals and stock checks"
   },
   "catalog": {
     "filtersTitle": "Filter products",
@@ -321,8 +321,8 @@
     "button": "Colour theme",
     "legend": "Choose a colour theme (demo)",
     "note": "A preview to help choose the site's design. Your choice is saved only in this browser.",
+    "petrol": "Petrol (default)",
     "logo": "Sign colours",
-    "petrol": "Calm petrol",
-    "classic": "Classic (previous design)"
+    "classic": "Classic (first design)"
   }
 }

@@ -7,30 +7,29 @@ carpenters) and homeowners planning a visit. The site's job is to **prepare a vi
 to the showroom**: "you choose a handle by hand". Product photography carries the
 visual weight; the brand colours give the site its energy.
 
-## Design refresh (based on the store's sign)
+## Current design: "official showroom" (petrol)
 
-The first design (cream, brass, a serif) read as quiet but boring. The refresh
-takes its cues from the store's own sign: heavy turquoise lettering with a black
-shadow, a red ribbon ("איכות ושירות זה אנחנו!"), and a strip of services
-separated by ticks. Reference sites (Buster + Punch, Armac Martin, Superfront)
-were studied for structure only: big product imagery, the brand colour used as
-large flat blocks, bold type, dark framing bands.
+The store chose the petrol palette and asked for a more official, high-end
+look. Direction: a precise, technical feel, like a dimensioned drawing of a
+handle, with the products' own metal (brass) as the only warm accent.
 
-What changed:
-
-- **Hero:** a full-height accent colour block (headline, slogan ribbon, CTAs,
-  phone numbers) beside the media. On phones the block comes first. Text is
-  never over the video.
-- **Services strip** from the sign, on the dark band (CMS: siteSettings
-  `services`; slogan in `slogan`).
-- **Two audiences** as two panels: home owners on `surface`, professionals on
-  the dark `band`.
-- **Category tiles** with pictures (category image from the CMS, else the
-  first product photo). Tiles always fill whole rows (see `tileSpan`).
-- **Section titles** have a short accent bar (`section-title` utility; inner
-  pages get the same bar above the h1).
-- **Product cards:** rounded image, red "new" badge, bolder price.
-- Sample images are on a neutral grey (`#EEEEEC`) so they suit every theme.
+- **Type:** IBM Plex Sans Hebrew for headings (300 for large titles, 500 for
+  headings and the wordmark), Assistant for text. Plex only ships 300 and 500:
+  never put `font-semibold`/`font-bold` on a heading (it would be faked).
+- **Header:** a dark utility bar (open-now status, both phone numbers, links,
+  language) that scrolls away, and a white main bar that stays at the top.
+- **Hero:** full-width media; a dark petrol panel (slogan with a brass rule,
+  light headline, brass primary button, address) overlaps its lower edge on
+  desktop. The sign's services sit beside the panel. Text never sits on the
+  video itself.
+- **Categories:** picture tiles; with 5, 9, 13… categories the first is a
+  large 2×2 tile ("bento"), otherwise equal tiles that fill whole rows.
+- **Bands:** professionals on the brand colour (with the mobile number and
+  WhatsApp), the measuring guide on a light band, inner page headers on a
+  light band (`page-band`). The footer opens with an invitation to the
+  showroom and the three ways to get in touch.
+- **Sample images:** studio-style renders (metal shading, soft shadows) so the
+  site can be judged before real photos exist.
 
 ## Themes (demo while the store chooses)
 
@@ -38,18 +37,18 @@ Three themes, switched with `<html data-theme>`; tokens in `src/app/globals.css`
 the list in `src/lib/theme.ts`. A floating picker ("ערכת צבעים") saves the choice
 in localStorage; an inline `<head>` script applies it before the first paint.
 
-| Token        | logo (default)          | petrol        | classic        |
-| ------------ | ----------------------- | ------------- | -------------- |
-| paper        | `#FFFFFF`               | `#F5F5F2`     | `#F5F1EA`      |
-| surface      | `#EAF5F4`               | `#E7ECEA`     | `#ECE6DC`      |
-| ink          | `#121212`               | `#1A2224`     | `#1E1D1B`      |
-| accent       | `#1AA39A` (sign)        | `#0E5E66`     | `#D8C49C`      |
-| on-accent    | ink (6.0:1)             | white (7.5:1) | ink            |
-| accent-ink   | `#0A6B64` (small text)  | `#0E5E66`     | `#7A5A22`      |
-| button       | `#0A6B64` + white       | `#0E5E66`     | ink + paper    |
-| highlight    | `#C8102E` (sign ribbon) | `#B3462B`     | `#7A5A22`      |
-| band         | `#0E1716`               | `#0D2B2F`     | `#1E1D1B`      |
-| display font | Rubik 800 + shadow      | Rubik 700     | Frank Ruhl 500 |
+| Token        | logo                    | petrol (default) | classic        |
+| ------------ | ----------------------- | ---------------- | -------------- |
+| paper        | `#FFFFFF`               | `#F5F5F2`        | `#F5F1EA`      |
+| surface      | `#EAF5F4`               | `#E7ECEA`        | `#ECE6DC`      |
+| ink          | `#121212`               | `#1A2224`        | `#1E1D1B`      |
+| accent       | `#1AA39A` (sign)        | `#0E5E66`        | `#D8C49C`      |
+| on-accent    | ink (6.0:1)             | white (7.5:1)    | ink            |
+| accent-ink   | `#0A6B64` (small text)  | `#0E5E66`        | `#7A5A22`      |
+| button       | `#0A6B64` + white       | `#0E5E66`        | ink + paper    |
+| highlight    | `#C8102E` (sign ribbon) | `#B3462B`        | `#7A5A22`      |
+| band         | `#0E1716`               | `#0D2B2F`        | `#1E1D1B`      |
+| display font | Rubik 800 + shadow      | Rubik 700        | Frank Ruhl 500 |
 
 Rules:
 

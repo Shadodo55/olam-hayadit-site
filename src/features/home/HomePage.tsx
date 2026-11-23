@@ -3,14 +3,15 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { DimensionDrawing } from "@/components/brand/DimensionDrawing";
 import { buttonClass } from "@/components/ui/button";
-import { CheckIcon, PhoneIcon } from "@/components/ui/icons";
-import { categoryPath } from "@/features/catalog/category-tree";
+import { ChatIcon, CheckIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
+import { categoryPath, type Category } from "@/features/catalog/category-tree";
 import {
   getCategoryTree,
   getProducts,
   productsInCategory,
 } from "@/features/catalog/data";
 import { sortCards, toCardData } from "@/features/catalog/listing";
+import type { Product } from "@/features/catalog/product";
 import { ProductGrid } from "@/features/catalog/ui/ProductCard";
 import {
   formatFileSize,
@@ -24,35 +25,44 @@ import { StoreVisit } from "@/features/store-info/StoreVisit";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import sanityImageLoader from "@/lib/sanity/image-loader";
 import { pagePaths } from "@/lib/routes";
-import { getSiteSettings } from "@/lib/site/settings";
+import { getSiteSettings, whatsappUrl } from "@/lib/site/settings";
 import { HeroVideo } from "./HeroVideo";
 
 const container = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8";
-/** Lines a full-bleed block's text up with the centred container. */
-const alignStart =
-  "px-4 sm:px-6 lg:ps-[max(2rem,calc((100vw-80rem)/2+2rem))] lg:pe-12";
 const moreLink =
   "inline-flex min-h-11 items-center font-semibold underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-ink";
 
 /**
- * Category tiles fill whole rows: 2 per row on phones and 3 on desktop
- * (6-column grid), with the first tiles widened when the count doesn't divide.
+ * Category tiles. With 5, 9, 13… categories the first one is a large tile
+ * (2×2) beside the others ("bento"); otherwise all tiles are equal. Either way
+ * the rows are always full, on phones (2 columns) and desktop.
  */
-function tileSpan(index: number, count: number) {
+function tileLayout(index: number, count: number) {
+  const bento = count >= 5 && (count - 5) % 4 === 0;
   const fullOnPhone = count % 2 === 1 && index === 0;
+  const phoneImage = fullOnPhone ? "aspect-[16/9]" : "aspect-[4/3]";
+  if (bento) {
+    const big = index === 0;
+    return {
+      grid: "lg:grid-cols-4",
+      item: `${fullOnPhone ? "col-span-2" : ""} ${big ? "lg:col-span-2 lg:row-span-2" : "lg:col-span-1"}`,
+      image: `${phoneImage} ${big ? "lg:aspect-auto lg:min-h-80 lg:flex-1" : "lg:aspect-[4/3]"}`,
+    };
+  }
   const rest = count % 3;
   const half = rest === 2 && index < 2;
   const full = rest === 1 && index === 0;
   return {
-    item: [
-      fullOnPhone ? "col-span-2" : "",
-      full ? "lg:col-span-6" : half ? "lg:col-span-3" : "lg:col-span-2",
-    ].join(" "),
-    image: [
-      fullOnPhone ? "aspect-[16/9]" : "aspect-[4/3]",
-      full ? "lg:aspect-[3/1]" : half ? "lg:aspect-[16/9]" : "lg:aspect-[4/3]",
-    ].join(" "),
+    grid: "lg:grid-cols-6",
+    item: `${fullOnPhone ? "col-span-2" : ""} ${full ? "lg:col-span-6" : half ? "lg:col-span-3" : "lg:col-span-2"}`,
+    image: `${phoneImage} ${full ? "lg:aspect-[3/1]" : half ? "lg:aspect-[16/9]" : "lg:aspect-[4/3]"}`,
   };
+}
+
+function tileImage(category: Category, inCategory: readonly Product[]) {
+  return (
+    category.image ?? inCategory.find((p) => p.images[0])?.images[0] ?? null
+  );
 }
 
 export async function HomePage({ locale }: { locale: Locale }) {
@@ -61,6 +71,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     catalogT,
     projectsT,
     catalogsT,
+    header,
+    common,
     home,
     settings,
     tree,
@@ -73,6 +85,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     getTranslations({ locale, namespace: "catalog" }),
     getTranslations({ locale, namespace: "projects" }),
     getTranslations({ locale, namespace: "catalogs" }),
+    getTranslations({ locale, namespace: "header" }),
+    getTranslations({ locale, namespace: "common" }),
     getHomeContent(),
     getSiteSettings(),
     getCategoryTree(),
@@ -90,10 +104,12 @@ export async function HomePage({ locale }: { locale: Locale }) {
     : { value: t("intro"), isFallback: false };
   const slogan = settings.slogan ? localized(settings.slogan, locale) : null;
   const services = settings.services.map((s) => localized(s, locale));
-  const phones = [
-    { label: t("phoneStore"), phone: settings.phones.store },
-    { label: t("phoneMobile"), phone: settings.phones.mobile },
-  ].flatMap(({ label, phone }) => (phone ? [{ label, phone }] : []));
+  const { street, area, city } = settings.address;
+  const address = [street, area, city]
+    .flatMap((part) => (part ? [localized(part, locale).value] : []))
+    .join(", ");
+  const proPhone = settings.phones.mobile ?? settings.phones.store;
+  const whatsapp = whatsappUrl(settings.whatsapp);
 
   const picked = home.featuredProductIds.length
     ? home.featuredProductIds
@@ -113,68 +129,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      {/* Hero: a colour block with the words beside (or above) the media,
-          never text over the video. */}
-      <section aria-labelledby="hero-title" className="grid lg:grid-cols-2">
-        <div
-          className={`${alignStart} flex flex-col items-start justify-center bg-accent py-12 text-on-accent sm:py-16 lg:py-20`}
-        >
-          {slogan && (
-            <p
-              className="mb-6 -rotate-1 rounded-sm bg-highlight px-3 py-1 font-display text-lg font-bold text-on-highlight sm:text-xl"
-              lang={slogan.isFallback ? "he" : undefined}
-            >
-              {slogan.value}
-            </p>
-          )}
-          <h1
-            id="hero-title"
-            className="text-5xl leading-[1.02] sm:text-6xl xl:text-7xl"
-            lang={headline.isFallback ? "he" : undefined}
-          >
-            {headline.value}
-          </h1>
-          <p
-            className="mt-5 max-w-xl text-lg"
-            lang={intro.isFallback ? "he" : undefined}
-          >
-            {intro.value}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={localeHref(locale, pagePaths.catalog)}
-              className={buttonClass("onAccent")}
-            >
-              {t("toCatalog")}
-            </Link>
-            <Link
-              href={localeHref(locale, pagePaths.visit)}
-              className={buttonClass("outlineOnAccent")}
-            >
-              {t("visitCta")}
-            </Link>
-          </div>
-          {phones.length > 0 && (
-            <ul
-              aria-label={t("callTitle")}
-              className="mt-8 flex flex-wrap gap-x-6 gap-y-1"
-            >
-              {phones.map(({ label, phone }) => (
-                <li key={label}>
-                  <a
-                    href={`tel:${phone.e164}`}
-                    className="inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline"
-                  >
-                    <PhoneIcon />
-                    {label} <span dir="ltr">{phone.display}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="relative aspect-[4/3] overflow-hidden bg-surface lg:aspect-auto lg:min-h-[36rem]">
+      {/* Hero: full-width media; the words sit on a solid panel that overlaps
+          its lower edge on desktop (never text over the video itself). */}
+      <section aria-labelledby="hero-title">
+        <div className="relative aspect-[4/3] overflow-hidden bg-surface sm:aspect-[16/9] lg:aspect-auto lg:h-[min(80vh,48rem)]">
           {home.video ? (
             <HeroVideo
               src={home.video.src}
@@ -183,7 +141,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               mobileType={home.videoMobile?.type ?? null}
               poster={
                 home.poster
-                  ? sanityImageLoader({ src: home.poster.src, width: 1600 })
+                  ? sanityImageLoader({ src: home.poster.src, width: 1920 })
                   : null
               }
             />
@@ -193,116 +151,150 @@ export async function HomePage({ locale }: { locale: Locale }) {
               alt={localized(home.poster.alt, locale).value}
               fill
               priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              sizes="100vw"
               className="object-cover"
               style={{ objectPosition: home.poster.objectPosition }}
             />
           ) : (
             <div className="flex size-full items-center justify-center p-8">
-              <DimensionDrawing className="w-full max-w-2xl" />
+              <DimensionDrawing className="w-full max-w-3xl" />
             </div>
+          )}
+        </div>
+
+        <div
+          className={`${container} relative lg:grid lg:grid-cols-12 lg:gap-12`}
+        >
+          <div className="on-dark -mx-4 bg-band px-6 py-10 text-on-band sm:-mx-6 sm:px-10 sm:py-12 lg:relative lg:z-10 lg:col-span-7 lg:mx-0 lg:-mt-72 lg:px-12 lg:py-14 xl:col-span-6">
+            {slogan && (
+              <p
+                className="flex items-center gap-3 font-display text-lg font-medium text-accent-on-band"
+                lang={slogan.isFallback ? "he" : undefined}
+              >
+                <span
+                  aria-hidden="true"
+                  className="h-px w-10 shrink-0 bg-accent-on-band"
+                />
+                {slogan.value}
+              </p>
+            )}
+            <h1
+              id="hero-title"
+              className="mt-5 text-5xl leading-[1.05] sm:text-6xl xl:text-[4.25rem]"
+              lang={headline.isFallback ? "he" : undefined}
+            >
+              {headline.value}
+            </h1>
+            <p
+              className="mt-6 max-w-xl text-lg text-on-band/85"
+              lang={intro.isFallback ? "he" : undefined}
+            >
+              {intro.value}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href={localeHref(locale, pagePaths.catalog)}
+                className={buttonClass("highlight")}
+              >
+                {t("toCatalog")}
+              </Link>
+              <Link
+                href={localeHref(locale, pagePaths.visit)}
+                className={buttonClass("onDark")}
+              >
+                {t("visitCta")}
+              </Link>
+            </div>
+            {address && (
+              <p className="mt-8 flex items-start gap-2 border-t border-on-band/15 pt-6 text-on-band/85">
+                <PinIcon className="mt-0.5 shrink-0 text-accent-on-band" />
+                {address}
+              </p>
+            )}
+          </div>
+
+          {/* What the store does, as on its sign */}
+          {services.length > 0 && (
+            <ul
+              aria-label={t("servicesTitle")}
+              className="mt-10 divide-y divide-line border-y border-line lg:col-span-5 lg:mt-12 lg:self-start xl:col-span-6"
+            >
+              {services.map((service) => (
+                <li
+                  key={service.value}
+                  className="flex items-center gap-4 py-5"
+                  lang={service.isFallback ? "he" : undefined}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full border border-accent text-accent-ink"
+                  >
+                    <CheckIcon width={18} height={18} />
+                  </span>
+                  <span className="font-display text-lg font-medium sm:text-xl">
+                    {service.value}
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </section>
 
-      {/* Services, as on the store's sign */}
-      {services.length > 0 && (
-        <div className="on-dark bg-band text-on-band">
-          <ul
-            aria-label={t("servicesTitle")}
-            className={`${container} flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-5 lg:justify-between`}
-          >
-            {services.map((service) => (
-              <li
-                key={service.value}
-                className="inline-flex items-center gap-2 font-display text-lg font-bold"
-                lang={service.isFallback ? "he" : undefined}
-              >
-                <CheckIcon className="shrink-0 text-accent-on-band" />
-                {service.value}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Two audiences: home owners on a light panel, professionals on a dark one */}
-      <section
-        className={`${container} grid gap-4 pt-16 sm:pt-20 md:grid-cols-2 md:gap-6`}
-      >
-        <div className="flex flex-col items-start rounded-sm bg-surface p-8 sm:p-10">
-          <h2 className="text-2xl sm:text-3xl">{t("privateTitle")}</h2>
-          <p className="mt-3 mb-6 max-w-prose text-ink-muted">
-            {t("privateBody")}
-          </p>
-          <Link
-            href={localeHref(locale, pagePaths.catalog)}
-            className={buttonClass("solid", "md", "mt-auto")}
-          >
-            {t("toCatalog")}
-          </Link>
-        </div>
-        <div className="on-dark flex flex-col items-start rounded-sm bg-band p-8 text-on-band sm:p-10">
-          <h2 className="text-2xl sm:text-3xl">{t("proTitle")}</h2>
-          <p className="mt-3 mb-6 max-w-prose text-on-band/85">
-            {t("proBody")}
-          </p>
-          <Link
-            href={localeHref(locale, pagePaths.professionals)}
-            className={buttonClass("onDark", "md", "mt-auto")}
-          >
-            {t("proCta")}
-          </Link>
-        </div>
-      </section>
-
-      {/* Categories: picture tiles (category image, else a product photo) */}
+      {/* Categories */}
       <section
         aria-labelledby="home-categories"
-        className={`${container} py-16 sm:py-20`}
+        className={`${container} py-16 sm:py-24`}
       >
-        <h2 id="home-categories" className="section-title">
-          {t("categoriesTitle")}
-        </h2>
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="home-categories" className="section-title">
+            {t("categoriesTitle")}
+          </h2>
+          <Link
+            href={localeHref(locale, pagePaths.catalog)}
+            className={moreLink}
+          >
+            {t("allProducts")}
+          </Link>
+        </div>
+        <ul
+          className={`mt-10 grid grid-cols-2 gap-3 sm:gap-5 ${tileLayout(0, tree.length).grid}`}
+        >
           {tree.map((category, index) => {
             const inCategory = productsInCategory(products, category);
-            const image =
-              category.image ??
-              inCategory.find((p) => p.images[0])?.images[0] ??
-              null;
+            const image = tileImage(category, inCategory);
             const name = localized(category.name, locale);
-            const wide = tileSpan(index, tree.length);
+            const layout = tileLayout(index, tree.length);
             return (
-              <li key={category.id} className={wide.item}>
+              <li key={category.id} className={`flex ${layout.item}`}>
                 <Link
                   href={localeHref(locale, categoryPath(category.slug))}
-                  className="group flex h-full flex-col overflow-hidden rounded-sm border border-line hover:border-accent"
+                  className="group flex w-full flex-col"
                 >
                   <span
-                    className={`relative block overflow-hidden bg-surface ${wide.image}`}
+                    className={`relative block overflow-hidden rounded-sm bg-surface ${layout.image}`}
                   >
                     {image ? (
                       <Image
                         src={image.src}
                         alt=""
                         fill
-                        sizes="(min-width: 1024px) 30vw, 50vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 40vw, 50vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         style={{ objectPosition: image.objectPosition }}
                       />
                     ) : (
                       <DimensionDrawing className="absolute inset-0 m-auto w-3/4" />
                     )}
                   </span>
-                  <span className="flex flex-1 flex-col gap-1 border-t-4 border-accent p-4">
+                  <span className="flex flex-col gap-0.5 pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                     <span
-                      className="font-display text-xl font-bold sm:text-2xl"
+                      className="font-display text-xl font-medium underline-offset-4 group-hover:underline sm:text-2xl"
                       lang={name.isFallback ? "he" : undefined}
                     >
                       {name.value}
                     </span>
-                    <span className="text-sm text-ink-muted tabular">
+                    <span className="shrink-0 text-sm text-ink-muted tabular">
                       {t("productsCount", { count: inCategory.length })}
                     </span>
                   </span>
@@ -314,51 +306,109 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {featuredCards.length > 0 && (
-        <section aria-labelledby="home-new" className={`${container} pb-16`}>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 id="home-new" className="section-title">
-              {t("newTitle")}
-            </h2>
-            <Link
-              href={localeHref(locale, pagePaths.catalog)}
-              className={moreLink}
-            >
-              {t("allProducts")}
-            </Link>
-          </div>
-          <div className="mt-8">
-            <ProductGrid cards={featuredCards} />
+        <section
+          aria-labelledby="home-new"
+          className="border-t border-line py-16 sm:py-24"
+        >
+          <div className={container}>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 id="home-new" className="section-title">
+                {t("newTitle")}
+              </h2>
+              <Link
+                href={localeHref(locale, pagePaths.catalog)}
+                className={moreLink}
+              >
+                {t("allProducts")}
+              </Link>
+            </div>
+            <div className="mt-10">
+              <ProductGrid cards={featuredCards} />
+            </div>
           </div>
         </section>
       )}
 
-      {/* Measuring guide teaser */}
-      <section aria-labelledby="home-measure" className="bg-surface">
+      {/* Professionals: the brand colour as a full-width band */}
+      <section aria-labelledby="home-pro" className="bg-accent text-on-accent">
         <div
-          className={`${container} grid items-center gap-8 py-14 lg:grid-cols-12`}
+          className={`${container} grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:items-center`}
         >
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-7">
+            <h2 id="home-pro" className="display-title text-4xl sm:text-5xl">
+              {t("proTitle")}
+            </h2>
+            <p className="mt-5 max-w-xl text-lg">{t("proBody")}</p>
+            <Link
+              href={localeHref(locale, pagePaths.professionals)}
+              className={buttonClass("onAccent", "md", "mt-8")}
+            >
+              {t("proCta")}
+            </Link>
+          </div>
+          {proPhone && (
+            <div className="border-on-accent/30 lg:col-span-5 lg:border-s lg:ps-12">
+              <p className="text-lg">{t("proPhoneLabel")}</p>
+              <a
+                href={`tel:${proPhone.e164}`}
+                className="mt-2 inline-flex min-h-11 items-center gap-3 display-title text-3xl underline-offset-8 hover:underline sm:text-4xl"
+              >
+                <PhoneIcon width={28} height={28} />
+                <span dir="ltr" className="tabular">
+                  {proPhone.display}
+                </span>
+              </a>
+              {whatsapp && (
+                <div>
+                  <a
+                    href={whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonClass("outlineOnAccent", "md", "mt-6")}
+                  >
+                    <ChatIcon />
+                    {header("whatsapp")}
+                    <span className="sr-only"> {common("opensInNewTab")}</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Measuring guide: the technical drawing is the visual */}
+      <section
+        aria-labelledby="home-measure"
+        className="page-band py-16 sm:py-24"
+      >
+        <div
+          className={`${container} grid items-center gap-10 lg:grid-cols-12`}
+        >
+          <div className="lg:col-span-5">
             <h2 id="home-measure" className="section-title">
               {t("measureTitle")}
             </h2>
-            <p className="mt-3 max-w-prose text-ink-muted">
+            <p className="mt-4 max-w-prose text-lg text-ink-muted">
               {t("measureBody")}
             </p>
             <Link
               href={localeHref(locale, pagePaths.measuringGuide)}
-              className={buttonClass("solid", "md", "mt-6")}
+              className={buttonClass("solid", "md", "mt-8")}
             >
               {t("measureCta")}
             </Link>
           </div>
-          <DimensionDrawing className="w-full max-w-xl lg:col-span-6" />
+          <div className="rounded-sm border border-line bg-paper p-6 sm:p-10 lg:col-span-7">
+            <DimensionDrawing className="w-full" />
+          </div>
         </div>
       </section>
 
       {projects.length > 0 && (
         <section
           aria-labelledby="home-projects"
-          className={`${container} py-16`}
+          className={`${container} border-t border-line py-16 sm:py-24`}
         >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 id="home-projects" className="section-title">
@@ -371,7 +421,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
               {t("allProjects")}
             </Link>
           </div>
-          <ul className="mt-8 grid gap-8 md:grid-cols-3">
+          <ul
+            className={`mt-10 grid gap-8 ${projects.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}
+          >
             {projects.slice(0, 3).map((project) => (
               <li key={project.id}>
                 <ProjectCard
@@ -385,105 +437,106 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </section>
       )}
 
-      {shownBrands.length > 0 && (
-        <section
-          aria-labelledby="home-brands"
-          className={`${container} border-t border-line py-12`}
+      {(shownBrands.length > 0 || catalogFiles.length > 0) && (
+        <div
+          className={`${container} grid gap-14 border-t border-line py-16 lg:grid-cols-2`}
         >
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 id="home-brands" className="section-title">
-              {t("brandsTitle")}
-            </h2>
-            <Link
-              href={localeHref(locale, pagePaths.brands)}
-              className={moreLink}
-            >
-              {t("allBrands")}
-            </Link>
-          </div>
-          <ul className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4">
-            {shownBrands.map((brand) => (
-              <li key={brand.id}>
+          {shownBrands.length > 0 && (
+            <section aria-labelledby="home-brands">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <h2 id="home-brands" className="section-title">
+                  {t("brandsTitle")}
+                </h2>
                 <Link
-                  href={localeHref(locale, `/brands/${brand.slug}`)}
-                  className="inline-flex min-h-11 items-center"
+                  href={localeHref(locale, pagePaths.brands)}
+                  className={moreLink}
                 >
-                  {brand.logo ? (
-                    <Image
-                      src={brand.logo.src}
-                      alt={brand.name}
-                      width={140}
-                      height={48}
-                      className="h-10 w-auto object-contain"
-                    />
-                  ) : (
-                    <span className="font-display text-xl font-bold">
-                      {brand.name}
-                    </span>
-                  )}
+                  {t("allBrands")}
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+              </div>
+              <ul className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4">
+                {shownBrands.map((brand) => (
+                  <li key={brand.id}>
+                    <Link
+                      href={localeHref(locale, `/brands/${brand.slug}`)}
+                      className="inline-flex min-h-11 items-center"
+                    >
+                      {brand.logo ? (
+                        <Image
+                          src={brand.logo.src}
+                          alt={brand.name}
+                          width={140}
+                          height={48}
+                          className="h-10 w-auto object-contain"
+                        />
+                      ) : (
+                        <span className="font-display text-xl font-medium">
+                          {brand.name}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-      {catalogFiles.length > 0 && (
-        <section
-          aria-labelledby="home-catalogs"
-          className={`${container} border-t border-line py-12`}
-        >
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 id="home-catalogs" className="section-title">
-              {t("catalogsTitle")}
-            </h2>
-            <Link
-              href={localeHref(locale, pagePaths.catalogs)}
-              className={moreLink}
-            >
-              {t("allCatalogs")}
-            </Link>
-          </div>
-          <ul className="mt-6 divide-y divide-line border-y border-line">
-            {catalogFiles.slice(0, 3).map((file) => {
-              const title = localized(file.title, locale).value;
-              return (
-                <li key={file.id}>
-                  <a
-                    href={`${file.url}?dl=`}
-                    className="flex min-h-12 items-center justify-between gap-4 py-3 hover:underline"
-                  >
-                    <span>{title}</span>
-                    <span className="shrink-0 text-sm text-ink-muted">
-                      {catalogsT("fileInfo", {
-                        size: file.size
-                          ? formatFileSize(file.size, locale)
-                          : "",
-                      })}
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+          {catalogFiles.length > 0 && (
+            <section aria-labelledby="home-catalogs">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <h2 id="home-catalogs" className="section-title">
+                  {t("catalogsTitle")}
+                </h2>
+                <Link
+                  href={localeHref(locale, pagePaths.catalogs)}
+                  className={moreLink}
+                >
+                  {t("allCatalogs")}
+                </Link>
+              </div>
+              <ul className="mt-8 divide-y divide-line border-y border-line">
+                {catalogFiles.slice(0, 3).map((file) => {
+                  const title = localized(file.title, locale).value;
+                  return (
+                    <li key={file.id}>
+                      <a
+                        href={`${file.url}?dl=`}
+                        className="flex min-h-12 items-center justify-between gap-4 py-3 hover:underline"
+                      >
+                        <span>{title}</span>
+                        <span className="shrink-0 text-sm text-ink-muted">
+                          {catalogsT("fileInfo", {
+                            size: file.size
+                              ? formatFileSize(file.size, locale)
+                              : "",
+                          })}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+        </div>
       )}
 
       <section
         aria-labelledby="home-visit"
-        className={`${container} border-t border-line py-16`}
+        className="border-t border-line pt-16 sm:pt-24"
       >
-        <h2 id="home-visit" className="section-title">
-          {t("visitTitle")}
-        </h2>
-        <div className="mt-8">
-          <StoreVisit locale={locale} settings={settings} headingLevel={3} />
+        <div className={container}>
+          <h2 id="home-visit" className="section-title">
+            {t("visitTitle")}
+          </h2>
+          <div className="mt-10">
+            <StoreVisit locale={locale} settings={settings} headingLevel={3} />
+          </div>
+          <p className="mt-12 text-sm text-ink-muted">
+            {catalogT("priceNote")}
+          </p>
         </div>
       </section>
-
-      <p className={`${container} text-sm text-ink-muted`}>
-        {catalogT("priceNote")}
-      </p>
     </>
   );
 }
