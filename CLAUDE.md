@@ -41,6 +41,9 @@ Full approved plan (Hebrew): `docs/plan.md`.
 - Document IDs must never contain `.` (dotted IDs are private in a public dataset).
 - The website reads Sanity only at build time via `sanityFetch()` in
   `src/lib/sanity/client.ts` (memoized per worker; a failed fetch fails the build).
+- Next.js caches build-time fetches in `.next/cache/fetch-cache` FOREVER. The
+  `prebuild` script deletes it so every build gets fresh content; never cache
+  `.next/cache` in CI (that once made published edits not appear).
   UI components never query Sanity: they get domain types from
   `src/features/catalog/data.ts`, `src/lib/site/settings.ts`, etc.
 - Mapping CMS → domain happens in one place per type (`mapProduct`, `mapSettings`,
