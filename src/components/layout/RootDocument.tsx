@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import { getCategoryTree } from "@/features/catalog/data";
 import { ConsentManager } from "@/features/consent/ConsentManager";
 import { fontVariables } from "@/lib/fonts";
 import { IntlProvider } from "@/lib/i18n/IntlProvider";
 import { localeDirection, localeHref, type Locale } from "@/lib/i18n/locales";
 import { clientMessagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
+import { getSiteSettings } from "@/lib/site/settings";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -17,7 +19,11 @@ export async function RootDocument({
   locale: Locale;
   children: ReactNode;
 }) {
-  const t = await getTranslations({ locale, namespace: "common" });
+  const [t, settings, categories] = await Promise.all([
+    getTranslations({ locale, namespace: "common" }),
+    getSiteSettings(),
+    getCategoryTree(),
+  ]);
   return (
     <html lang={locale} dir={localeDirection[locale]} className={fontVariables}>
       <body className="flex min-h-dvh flex-col bg-paper text-ink antialiased">
@@ -32,11 +38,19 @@ export async function RootDocument({
           >
             {t("skipToContent")}
           </a>
-          <SiteHeader locale={locale} />
+          <SiteHeader
+            locale={locale}
+            settings={settings}
+            categories={categories}
+          />
           <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
             {children}
           </main>
-          <SiteFooter locale={locale} />
+          <SiteFooter
+            locale={locale}
+            settings={settings}
+            categories={categories}
+          />
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>

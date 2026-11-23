@@ -14,12 +14,7 @@ import {
 } from "@/components/ui/icons";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import type { NavItem, NavLink } from "./nav-types";
-
-export interface QuickActions {
-  tel: string;
-  whatsapp: string;
-  waze: string;
-}
+import type { QuickActions } from "./site-nav";
 
 /**
  * Small-screen menu in a native modal <dialog>: the browser handles focus
@@ -170,32 +165,36 @@ export function MobileMenu({
               <h3 id="mobile-quick" className="sr-only">
                 {t("quickActions")}
               </h3>
-              <div className="grid grid-cols-3 gap-2">
-                <a
-                  href={quick.tel}
-                  className={buttonClass(
-                    "outline",
-                    "sm",
-                    "flex-col gap-1! py-2",
-                  )}
-                >
-                  <PhoneIcon />
-                  {t("call")}
-                </a>
-                <a
-                  href={quick.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={buttonClass(
-                    "outline",
-                    "sm",
-                    "flex-col gap-1! py-2",
-                  )}
-                >
-                  <ChatIcon />
-                  {t("whatsapp")}
-                  <span className="sr-only">{common("opensInNewTab")}</span>
-                </a>
+              <div className="grid auto-cols-fr grid-flow-col gap-2">
+                {quick.tel && (
+                  <a
+                    href={quick.tel}
+                    className={buttonClass(
+                      "outline",
+                      "sm",
+                      "flex-col gap-1! py-2",
+                    )}
+                  >
+                    <PhoneIcon />
+                    {t("call")}
+                  </a>
+                )}
+                {quick.whatsapp && (
+                  <a
+                    href={quick.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonClass(
+                      "outline",
+                      "sm",
+                      "flex-col gap-1! py-2",
+                    )}
+                  >
+                    <ChatIcon />
+                    {t("whatsapp")}
+                    <span className="sr-only">{common("opensInNewTab")}</span>
+                  </a>
+                )}
                 <a
                   href={quick.waze}
                   target="_blank"

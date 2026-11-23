@@ -36,7 +36,8 @@
     "closedOpensToday": "סגור כרגע, נפתח היום ב-{time}",
     "closedOpensTomorrow": "סגור כרגע, נפתח מחר ב-{time}",
     "closedOpensOn": "סגור כרגע, נפתח ביום {day} ב-{time}",
-    "closed": "סגור כרגע"
+    "closed": "סגור כרגע",
+    "specialHours": "שעות מיוחדות"
   },
   "footer": {
     "about": "ידיות, פרזול ואביזרי אמבטיה לבית ולבעלי מקצוע. אולם תצוגה בתלפיות, ירושלים.",

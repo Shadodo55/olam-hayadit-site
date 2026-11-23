@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useSyncExternalStore } from "react";
-import { getOpenStatus, type WeeklyHours } from "./hours";
+import { getOpenStatus, type SpecialDay, type WeeklyHours } from "./hours";
 import { statusMessage } from "./status-message";
 
 /** A clock that ticks once a minute. `null` while pre-rendering (no "now" at build time). */
@@ -19,7 +19,13 @@ const serverSnapshot = () => null;
  * The static HTML shows a neutral "Opening hours" label; the real status is
  * computed in the browser (in the store's time zone) after load.
  */
-export function OpenStatus({ hours }: { hours: WeeklyHours }) {
+export function OpenStatus({
+  hours,
+  specialDays = [],
+}: {
+  hours: WeeklyHours;
+  specialDays?: readonly SpecialDay[];
+}) {
   const t = useTranslations("status");
   const days = useTranslations("days");
   const minute = useSyncExternalStore(
@@ -41,7 +47,7 @@ export function OpenStatus({ hours }: { hours: WeeklyHours }) {
   }
 
   const message = statusMessage(
-    getOpenStatus(hours, new Date(minute * MINUTE)),
+    getOpenStatus(hours, new Date(minute * MINUTE), specialDays),
   );
   const isOpen = message.key === "openUntil";
   let text: string;

@@ -1,4 +1,7 @@
-import { allCategorySlugPaths } from "@/features/catalog/category-tree";
+import {
+  allCategorySlugPaths,
+  type Category,
+} from "@/features/catalog/category-tree";
 
 /**
  * Every content page of the site (same paths in both languages; English adds
@@ -37,11 +40,11 @@ export function pageKeyForPath(path: string): PageKey | null {
 }
 
 /** Slug arrays the catch-all route must pre-render (pages + catalog categories). */
-export function comingSoonSlugs(): string[][] {
+export function comingSoonSlugs(tree: readonly Category[]): string[][] {
   const pages = (Object.keys(pagePaths) as PageKey[])
     .filter((key) => !builtPages.includes(key))
     .map((key) => pagePaths[key].slice(1).split("/"));
-  const categories = allCategorySlugPaths().map((slugs) => [
+  const categories = allCategorySlugPaths(tree).map((slugs) => [
     "catalog",
     ...slugs,
   ]);

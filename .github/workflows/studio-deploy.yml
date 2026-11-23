@@ -1,0 +1,47 @@
+# Deploys the Sanity Studio (content admin at olam-hayadit.sanity.studio)
+# when its code changes on main. Uses a deploy-only Sanity token.
+name: Studio deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "studio/**"
+      - ".github/workflows/studio-deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: studio-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: studio
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+
+      - run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Validate schema
+        run: npx sanity schema validate
+
+      - name: Deploy studio
+        run: npx sanity deploy --yes
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}

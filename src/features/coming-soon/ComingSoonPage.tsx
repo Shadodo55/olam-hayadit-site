@@ -7,12 +7,14 @@ import { buttonClass } from "@/components/ui/button";
 import {
   categoryPath,
   findCategoryChain,
+  type Category,
 } from "@/features/catalog/category-tree";
+import { getCategoryTree } from "@/features/catalog/data";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { messagesFor } from "@/lib/i18n/messages";
 import { pageKeyForPath, pagePaths } from "@/lib/routes";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { whatsappUrl } from "@/lib/site/business";
+import { getSiteSettings, whatsappUrl } from "@/lib/site/settings";
 
 interface Resolved {
   path: string;
@@ -22,7 +24,11 @@ interface Resolved {
 }
 
 /** Turn a catch-all slug into a planned page or catalog category. */
-function resolve(locale: Locale, slug: string[]): Resolved | null {
+function resolve(
+  locale: Locale,
+  slug: string[],
+  tree: readonly Category[],
+): Resolved | null {
   const messages = messagesFor(locale);
   const path = `/${slug.join("/")}`;
   const home: Crumb = { label: messages.common.home, href: localeHref(locale) };
@@ -34,7 +40,7 @@ function resolve(locale: Locale, slug: string[]): Resolved | null {
   }
 
   if (slug[0] === "catalog") {
-    const chain = findCategoryChain(slug.slice(1));
+    const chain = findCategoryChain(tree, slug.slice(1));
     if (!chain) return null;
     const catalog: Crumb = {
       label: messages.pages.catalog,
@@ -62,8 +68,11 @@ function resolve(locale: Locale, slug: string[]): Resolved | null {
   return null;
 }
 
-export function comingSoonMetadata(locale: Locale, slug: string[]): Metadata {
-  const page = resolve(locale, slug);
+export async function comingSoonMetadata(
+  locale: Locale,
+  slug: string[],
+): Promise<Metadata> {
+  const page = resolve(locale, slug, await getCategoryTree());
   return page ? pageMetadata(locale, page.path, page.title) : {};
 }
 
@@ -75,10 +84,15 @@ export async function ComingSoonPage({
   locale: Locale;
   slug: string[];
 }) {
-  const page = resolve(locale, slug);
+  const [tree, settings, t, common] = await Promise.all([
+    getCategoryTree(),
+    getSiteSettings(),
+    getTranslations({ locale, namespace: "comingSoon" }),
+    getTranslations({ locale, namespace: "common" }),
+  ]);
+  const page = resolve(locale, slug, tree);
   if (!page) notFound();
-  const t = await getTranslations({ locale, namespace: "comingSoon" });
-  const common = await getTranslations({ locale, namespace: "common" });
+  const whatsapp = whatsappUrl(settings.whatsapp);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -92,15 +106,17 @@ export async function ComingSoonPage({
           <Link href={localeHref(locale)} className={buttonClass("solid")}>
             {t("toHome")}
           </Link>
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonClass("outline")}
-          >
-            {t("askWhatsapp")}
-            <span className="sr-only"> {common("opensInNewTab")}</span>
-          </a>
+          {whatsapp && (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonClass("outline")}
+            >
+              {t("askWhatsapp")}
+              <span className="sr-only"> {common("opensInNewTab")}</span>
+            </a>
+          )}
         </div>
       </div>
     </div>
