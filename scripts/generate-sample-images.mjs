@@ -79,12 +79,20 @@ function svg(shape, finish) {
 }
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 600, height: 750 }, deviceScaleFactor: 2 });
+const page = await browser.newPage({
+  viewport: { width: 600, height: 750 },
+  deviceScaleFactor: 2,
+});
 let count = 0;
 for (const shape of Object.keys(shapes)) {
   for (const finish of Object.keys(finishes)) {
-    await page.setContent(`<html><body style="margin:0">${svg(shape, finish)}</body></html>`);
-    await page.screenshot({ path: join(OUT, `sample-${shape}-${finish}.png`), type: "png" });
+    await page.setContent(
+      `<html><body style="margin:0">${svg(shape, finish)}</body></html>`,
+    );
+    await page.screenshot({
+      path: join(OUT, `sample-${shape}-${finish}.png`),
+      type: "png",
+    });
     count++;
   }
 }
