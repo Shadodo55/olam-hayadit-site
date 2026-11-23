@@ -28,7 +28,29 @@ Full approved plan (Hebrew): `docs/plan.md`.
 - Hosting: Cloudflare Workers + Static Assets (`wrangler.jsonc`). The Worker in
   `worker/` runs only for `/api/*`; all pages are static files.
 - CMS: Sanity (project `gntr6ikv`, dataset `production`, **public**). Content
-  updates trigger a rebuild via GitHub `repository_dispatch` (phase 3).
+  updates trigger a rebuild via GitHub `repository_dispatch` (`content-deploy.yml`).
+
+## Sanity / data rules
+
+- Studio lives in `studio/` (own `package.json`, deployed to
+  https://olam-hayadit.sanity.studio by `studio-deploy.yml` on changes to `studio/**`).
+  All field titles/help are Hebrew; Hebrew inputs are wrapped with `RtlInput`.
+- Schemas: `studio/schemaTypes/`. Bilingual fields use `localeString` /
+  `localeText` / `localeBlocks` (`{ he, en }`), required ones use `requireHebrew`.
+  Images use `altImage` (alt text required). Variants live INSIDE the product.
+- Document IDs must never contain `.` (dotted IDs are private in a public dataset).
+- The website reads Sanity only at build time via `sanityFetch()` in
+  `src/lib/sanity/client.ts` (memoized per worker; a failed fetch fails the build).
+  UI components never query Sanity: they get domain types from
+  `src/features/catalog/data.ts`, `src/lib/site/settings.ts`, etc.
+- Mapping CMS → domain happens in one place per type (`mapProduct`, `mapSettings`,
+  `buildCategoryTree`) and drops incomplete content (no Hebrew title, no price).
+  CMS prices are shekels; the domain uses integer agorot (`src/commerce/money.ts`).
+- Images: `toSiteImage()` + `next/image` with the custom loader
+  `src/lib/sanity/image-loader.ts` (Sanity CDN, `auto=format` → AVIF/WebP).
+- Sample content: `isSample: true`; seed with `npm run seed` (in `studio/`, after
+  `node scripts/generate-sample-images.mjs`), remove with `npm run samples:remove`,
+  delete unused uploads with `npm run assets:cleanup` (`-- --dry` to preview).
 - i18n: Hebrew (RTL) at `/`, English (LTR) at `/en`. Two root layouts:
   `src/app/(he)/` and `src/app/(en)/en/`. Route files there stay thin and render
   shared components from `src/features/`. 404: `src/app/global-not-found.tsx`.

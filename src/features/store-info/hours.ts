@@ -32,14 +32,29 @@ export function toMinutes(hhmm: string): number {
   return hours * 60 + minutes;
 }
 
-/** Day of week (0 = Sunday) and minutes since midnight in the store's time zone. */
+/** A date with different hours (holiday, holiday eve, closure). */
+export interface SpecialDay {
+  /** "YYYY-MM-DD" in Israel. */
+  date: string;
+  /** `null` = closed all day. */
+  hours: DayHours | null;
+}
+
+/**
+ * Day of week (0 = Sunday), minutes since midnight and calendar date
+ * ("YYYY-MM-DD") in the store's time zone.
+ */
 export function storeLocalTime(now: Date): {
   dayIndex: number;
   minutes: number;
+  date: string;
 } {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: STORE_TIME_ZONE,
     weekday: "short",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     hourCycle: "h23",
@@ -52,33 +67,55 @@ export function storeLocalTime(now: Date): {
   return {
     dayIndex,
     minutes: Number(get("hour")) * 60 + Number(get("minute")),
+    date: `${get("year")}-${get("month")}-${get("day")}`,
   };
 }
 
-export function getOpenStatus(hours: WeeklyHours, now: Date): OpenStatus {
-  const { dayIndex, minutes } = storeLocalTime(now);
-  const today = hours[dayIndex] ?? null;
+/** "YYYY-MM-DD" plus `days` (calendar arithmetic, no time zone involved). */
+export function addDays(date: string, days: number): string {
+  const [y, m, d] = date.split("-").map(Number) as [number, number, number];
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
 
+export function getOpenStatus(
+  hours: WeeklyHours,
+  now: Date,
+  specialDays: readonly SpecialDay[] = [],
+): OpenStatus {
+  const local = storeLocalTime(now);
+  const hoursOn = (offset: number): DayHours | null => {
+    const special = specialDays.find(
+      (s) => s.date === addDays(local.date, offset),
+    );
+    return special
+      ? special.hours
+      : (hours[(local.dayIndex + offset) % 7] ?? null);
+  };
+
+  const today = hoursOn(0);
   if (
     today &&
-    minutes >= toMinutes(today.opens) &&
-    minutes < toMinutes(today.closes)
+    local.minutes >= toMinutes(today.opens) &&
+    local.minutes < toMinutes(today.closes)
   ) {
     return { state: "open", closesAt: today.closes };
   }
-  if (today && minutes < toMinutes(today.opens)) {
+  if (today && local.minutes < toMinutes(today.opens)) {
     return {
       state: "closed",
-      opensNext: { dayIndex, time: today.opens, daysAhead: 0 },
+      opensNext: { dayIndex: local.dayIndex, time: today.opens, daysAhead: 0 },
     };
   }
-  for (let offset = 1; offset <= 7; offset++) {
-    const nextIndex = (dayIndex + offset) % 7;
-    const next = hours[nextIndex];
+  for (let offset = 1; offset <= 14; offset++) {
+    const next = hoursOn(offset);
     if (next) {
       return {
         state: "closed",
-        opensNext: { dayIndex: nextIndex, time: next.opens, daysAhead: offset },
+        opensNext: {
+          dayIndex: (local.dayIndex + offset) % 7,
+          time: next.opens,
+          daysAhead: offset,
+        },
       };
     }
   }

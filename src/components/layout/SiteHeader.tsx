@@ -2,10 +2,11 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ListIcon, SearchIcon } from "@/components/ui/icons";
+import type { Category } from "@/features/catalog/category-tree";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
-import { localeHref, type Locale } from "@/lib/i18n/locales";
+import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
-import { business } from "@/lib/site/business";
+import type { SiteSettings } from "@/lib/site/settings";
 import { DesktopNav } from "./DesktopNav";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
@@ -16,9 +17,17 @@ import {
   secondaryPages,
 } from "./site-nav";
 
-export async function SiteHeader({ locale }: { locale: Locale }) {
+export async function SiteHeader({
+  locale,
+  settings,
+  categories,
+}: {
+  locale: Locale;
+  settings: SiteSettings;
+  categories: readonly Category[];
+}) {
   const t = await getTranslations({ locale, namespace: "header" });
-  const categories = categoryNav(locale);
+  const nav = categoryNav(locale, categories);
   const secondary = pageLinks(locale, secondaryPages);
   const utilityLinks = pageLinks(locale, ["professionals", "visit"]);
 
@@ -34,7 +43,10 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
             href={localeHref(locale, pagePaths.visit)}
             className="inline-flex min-h-11 items-center underline-offset-4 hover:underline"
           >
-            <OpenStatus hours={business.hours} />
+            <OpenStatus
+              hours={settings.hours}
+              specialDays={settings.specialDays}
+            />
           </Link>
           <nav
             aria-label={t("secondaryNav")}
@@ -61,16 +73,16 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
       <div className="border-b border-line">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:min-h-20 lg:gap-8 lg:px-8">
           <MobileMenu
-            items={categories}
+            items={nav}
             secondary={secondary}
-            quick={quickActions()}
+            quick={quickActions(settings)}
           />
           <Wordmark
-            name={business.name[locale]}
+            name={localized(settings.name, locale).value}
             href={localeHref(locale)}
             label={t("homeLink")}
           />
-          <DesktopNav items={categories} label={t("mainNav")} />
+          <DesktopNav items={nav} label={t("mainNav")} />
           <div className="ms-auto flex items-center gap-1">
             <Link
               href={localeHref(locale, pagePaths.search)}

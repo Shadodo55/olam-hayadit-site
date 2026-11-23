@@ -2,10 +2,12 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Placeholder } from "@/components/ui/Placeholder";
+import type { Category } from "@/features/catalog/category-tree";
 import { CookieSettingsButton } from "@/features/consent/CookieSettingsButton";
 import { groupHours } from "@/features/store-info/hours";
-import { localeHref, type Locale } from "@/lib/i18n/locales";
-import { business, wazeUrl, whatsappUrl } from "@/lib/site/business";
+import { UpcomingSpecialDays } from "@/features/store-info/UpcomingSpecialDays";
+import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
+import { wazeUrl, whatsappUrl, type SiteSettings } from "@/lib/site/settings";
 import {
   categoryNav,
   footerInfoPages,
@@ -13,7 +15,15 @@ import {
   pageLinks,
 } from "./site-nav";
 
-export async function SiteFooter({ locale }: { locale: Locale }) {
+export async function SiteFooter({
+  locale,
+  settings,
+  categories,
+}: {
+  locale: Locale;
+  settings: SiteSettings;
+  categories: readonly Category[];
+}) {
   const t = await getTranslations({ locale, namespace: "footer" });
   const common = await getTranslations({ locale, namespace: "common" });
   const header = await getTranslations({ locale, namespace: "header" });
@@ -21,6 +31,10 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
     "long",
   ).split(",");
   const year = new Date().getFullYear();
+  const name = localized(settings.name, locale).value;
+  const { street, area, city } = settings.address;
+  const placeholder = <Placeholder label={common("placeholder")} />;
+  const whatsapp = whatsappUrl(settings.whatsapp);
 
   const linkClass =
     "inline-flex min-h-11 items-center text-paper/80 underline-offset-4 hover:text-paper hover:underline sm:min-h-9";
@@ -31,7 +45,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-10 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <Wordmark
-            name={business.name[locale]}
+            name={name}
             href={localeHref(locale)}
             label={header("homeLink")}
             tone="dark"
@@ -44,7 +58,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             {t("catalogHeading")}
           </h2>
           <ul className="mt-3">
-            {categoryNav(locale).map((item) => (
+            {categoryNav(locale, categories).map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className={linkClass}>
                   {item.label}
@@ -74,14 +88,19 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             {t("visitHeading")}
           </h2>
           <address className="mt-3 text-paper/80 not-italic">
-            {business.address.street[locale]}, {business.address.city[locale]}
-            <br />
-            {business.address.area[locale]}
+            {street ? localized(street, locale).value : placeholder}
+            {city && `, ${localized(city, locale).value}`}
+            {area && (
+              <>
+                <br />
+                {localized(area, locale).value}
+              </>
+            )}
           </address>
 
           <h3 className="mt-6 font-semibold text-paper">{t("hoursHeading")}</h3>
           <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-paper/80">
-            {groupHours(business.hours).map((group) => (
+            {groupHours(settings.hours).map((group) => (
               <div key={group.from} className="contents">
                 <dt>
                   {days[group.from]}
@@ -99,45 +118,56 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
               </div>
             ))}
           </dl>
-          <p className="mt-2 text-sm text-paper/70">{t("holidayNote")}</p>
+          <UpcomingSpecialDays specialDays={settings.specialDays} />
+          <p className="mt-2 text-sm text-paper/70">
+            {settings.hoursNote
+              ? localized(settings.hoursNote, locale).value
+              : t("holidayNote")}
+          </p>
 
           <ul className="mt-6 space-y-1">
+            {settings.phones.store && (
+              <li>
+                <a
+                  href={`tel:${settings.phones.store.e164}`}
+                  className={linkClass}
+                >
+                  {t("storePhone")}:&nbsp;
+                  <span dir="ltr" className="tabular">
+                    {settings.phones.store.display}
+                  </span>
+                </a>
+              </li>
+            )}
+            {settings.phones.mobile && (
+              <li>
+                <a
+                  href={`tel:${settings.phones.mobile.e164}`}
+                  className={linkClass}
+                >
+                  {t("mobilePhone")}:&nbsp;
+                  <span dir="ltr" className="tabular">
+                    {settings.phones.mobile.display}
+                  </span>
+                </a>
+              </li>
+            )}
+            {whatsapp && (
+              <li>
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={linkClass}
+                >
+                  {header("whatsapp")}
+                  <span className="sr-only"> {common("opensInNewTab")}</span>
+                </a>
+              </li>
+            )}
             <li>
               <a
-                href={`tel:${business.phones.store.e164}`}
-                className={linkClass}
-              >
-                {t("storePhone")}:&nbsp;
-                <span dir="ltr" className="tabular">
-                  {business.phones.store.display}
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href={`tel:${business.phones.mobile.e164}`}
-                className={linkClass}
-              >
-                {t("mobilePhone")}:&nbsp;
-                <span dir="ltr" className="tabular">
-                  {business.phones.mobile.display}
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href={whatsappUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkClass}
-              >
-                {header("whatsapp")}
-                <span className="sr-only"> {common("opensInNewTab")}</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href={wazeUrl()}
+                href={wazeUrl(settings)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={linkClass}
@@ -169,16 +199,22 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             </ul>
           </nav>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-paper/70">
-            <span>{t("rights", { year, name: business.name[locale] })}</span>
+            <span>{t("rights", { year, name })}</span>
             <span>
-              {t("registration")}{" "}
-              {business.registrationNumber ?? (
-                <Placeholder label={common("placeholder")} />
-              )}
+              {t("registration")} {settings.registrationNumber ?? placeholder}
             </span>
             <span>
               {t("email")}:{" "}
-              {business.email ?? <Placeholder label={common("placeholder")} />}
+              {settings.email ? (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="underline underline-offset-4"
+                >
+                  {settings.email}
+                </a>
+              ) : (
+                placeholder
+              )}
             </span>
           </div>
         </div>

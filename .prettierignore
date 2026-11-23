@@ -7,3 +7,7 @@ test-results
 .lighthouseci
 .wrangler
 next-env.d.ts
+studio/node_modules
+studio/dist
+studio/.sanity
+studio/seed/images

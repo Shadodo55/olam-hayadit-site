@@ -36,7 +36,8 @@
     "closedOpensToday": "Closed, opens today at {time}",
     "closedOpensTomorrow": "Closed, opens tomorrow at {time}",
     "closedOpensOn": "Closed, opens {day} at {time}",
-    "closed": "Closed"
+    "closed": "Closed",
+    "specialHours": "Special hours"
   },
   "footer": {
     "about": "Handles, hardware and bathroom accessories for homes and professionals. Showroom in Talpiot, Jerusalem.",

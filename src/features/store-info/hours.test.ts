@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  addDays,
   getOpenStatus,
   groupHours,
   storeLocalTime,
@@ -37,6 +38,7 @@ describe("storeLocalTime", () => {
     expect(storeLocalTime(new Date("2026-11-28T23:30:00Z"))).toEqual({
       dayIndex: 0,
       minutes: 90,
+      date: "2026-11-29",
     });
   });
 });
@@ -120,5 +122,46 @@ describe("groupHours", () => {
       [1, 1],
       [2, 6],
     ]);
+  });
+});
+
+describe("special days (holidays)", () => {
+  it("adds days across month and year ends", () => {
+    expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
+    expect(addDays("2027-03-01", -1)).toBe("2027-02-28");
+  });
+
+  it("uses short hours on a holiday eve", () => {
+    const eve = [
+      { date: "2026-11-23", hours: { opens: "07:30", closes: "13:00" } },
+    ];
+    expect(
+      getOpenStatus(HOURS, israelWinter("2026-11-23T14:00:00"), eve),
+    ).toEqual({
+      state: "closed",
+      opensNext: { dayIndex: 2, time: "07:30", daysAhead: 1 },
+    });
+  });
+
+  it("skips a closed holiday when looking for the next opening", () => {
+    const holiday = [{ date: "2026-11-24", hours: null }];
+    expect(
+      getOpenStatus(HOURS, israelWinter("2026-11-23T19:00:00"), holiday),
+    ).toEqual({
+      state: "closed",
+      opensNext: { dayIndex: 3, time: "07:30", daysAhead: 2 },
+    });
+  });
+
+  it("opens on a special day even if it is normally closed", () => {
+    const saturdayOpen = [
+      { date: "2026-11-28", hours: { opens: "10:00", closes: "12:00" } },
+    ];
+    expect(
+      getOpenStatus(HOURS, israelWinter("2026-11-28T11:00:00"), saturdayOpen),
+    ).toEqual({
+      state: "open",
+      closesAt: "12:00",
+    });
   });
 });

@@ -21,6 +21,9 @@ const eslintConfig = defineConfig([
     "test-results/**",
     ".lighthouseci/**",
     ".wrangler/**",
+    "studio/node_modules/**",
+    "studio/dist/**",
+    "studio/.sanity/**",
   ]),
 ]);
 

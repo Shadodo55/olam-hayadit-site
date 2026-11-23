@@ -7,9 +7,12 @@ import createNextIntlPlugin from "next-intl/plugin";
  */
 const nextConfig: NextConfig = {
   output: "export",
-  // Static export cannot use the default image optimizer. Phase 3 switches to a
-  // custom loader backed by the Sanity image CDN (AVIF/WebP, responsive sizes).
-  images: { unoptimized: true },
+  // Static export can't use the built-in optimizer: the Sanity image CDN
+  // resizes and serves AVIF/WebP instead (see the loader file).
+  images: {
+    loader: "custom",
+    loaderFile: "./src/lib/sanity/image-loader.ts",
+  },
   experimental: {
     // Two root layouts (Hebrew and English) need a global 404 page.
     globalNotFound: true,
