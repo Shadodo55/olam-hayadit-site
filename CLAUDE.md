@@ -77,6 +77,21 @@ Full approved plan (Hebrew): `docs/plan.md`.
   create its own route folder in both trees and add its key to `builtPages` in
   `src/lib/routes.ts`. Links come from `pagePaths`, never hard-coded strings.
 - Unknown business details render with `<Placeholder>` ([להשלמה]), never invented.
+
+## Catalog
+
+- Routes: `/catalog` (index), `/catalog/[...slug]` (category, incl. subcategories'
+  products), `/product/[slug]` (variant in `?sku=`). Pages: `src/features/catalog/
+CategoryPage.tsx`, `ProductPage.tsx`.
+- Listing logic is pure and unit-tested in `listing.ts` (filters, sort, facets,
+  URL format `?finish=gold&cc=128&price=20-100&stock=1&sort=price-asc`) and
+  `variants.ts` (variant selection, WhatsApp text). UI only renders.
+- Filters/variant pickers keep state in React and mirror it to the URL with
+  `history.replaceState` (instant UI; reading the URL only on load). Components
+  using `useSearchParams` sit in `<Suspense>` with a full static fallback (SEO).
+- Which filters a category shows is set per category in the CMS (`filters`).
+- Sample products are labelled on cards and pages; e2e tests must not depend on
+  specific sample slugs (they pick the first product from a category).
 - Design decisions and tokens: `docs/design-notes.md`.
 
 ## Hard rules
