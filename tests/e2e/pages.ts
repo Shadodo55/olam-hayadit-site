@@ -8,7 +8,8 @@ export const pages = [
   // "coming soon" content page
   { path: "/visit", lang: "he", dir: "rtl" },
   { path: "/en/visit", lang: "en", dir: "ltr" },
-  // catalog category (placeholder until phase 4)
+  // catalog
+  { path: "/catalog", lang: "he", dir: "rtl" },
   { path: "/catalog/handles/door", lang: "he", dir: "rtl" },
   { path: "/en/catalog/handles", lang: "en", dir: "ltr" },
 ] as const;

@@ -1,26 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildCategoryTree } from "@/features/catalog/category-tree";
 import { switchLocalePath } from "@/lib/i18n/locales";
 import { comingSoonSlugs, pageKeyForPath } from "./routes";
 
-const tree = buildCategoryTree([
-  { _id: "h", slug: "handles", title: { he: "ידיות" }, order: 1 },
-  {
-    _id: "d",
-    slug: "door",
-    title: { he: "ידיות לדלתות" },
-    parent: "h",
-    order: 1,
-  },
-]);
-
 describe("routes", () => {
-  it("pre-renders every planned page and category", () => {
-    const paths = comingSoonSlugs(tree).map((s) => `/${s.join("/")}`);
+  it("pre-renders every planned page that isn't built yet", () => {
+    const paths = comingSoonSlugs().map((s) => `/${s.join("/")}`);
     expect(paths).toContain("/visit");
-    expect(paths).toContain("/catalog");
-    expect(paths).toContain("/catalog/handles");
-    expect(paths).toContain("/catalog/handles/door");
+    expect(paths).not.toContain("/catalog");
     expect(new Set(paths).size).toBe(paths.length);
   });
 

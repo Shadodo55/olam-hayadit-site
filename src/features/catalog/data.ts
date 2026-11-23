@@ -48,3 +48,24 @@ export async function getProducts(): Promise<Product[]> {
   );
   return raw.map(mapProduct).filter((p): p is Product => p !== null);
 }
+
+/** A category's own id plus all its descendants' ids. */
+export function categoryAndDescendantIds(category: Category): string[] {
+  return [
+    category.id,
+    ...(category.children ?? []).flatMap(categoryAndDescendantIds),
+  ];
+}
+
+/** Products in a category or any of its subcategories. */
+export function productsInCategory(
+  products: readonly Product[],
+  category: Category,
+): Product[] {
+  const ids = new Set(categoryAndDescendantIds(category));
+  return products.filter((p) => p.categoryIds.some((id) => ids.has(id)));
+}
+
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  return (await getProducts()).find((p) => p.slug === slug) ?? null;
+}

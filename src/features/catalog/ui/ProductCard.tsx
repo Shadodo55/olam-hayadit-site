@@ -1,0 +1,135 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { formatPrice } from "@/commerce/money";
+import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
+import { productPath } from "@/lib/routes";
+import type { ProductCardData } from "../listing";
+import { StockLabel } from "./StockLabel";
+
+const SIZES =
+  "(min-width: 1280px) 22vw, (min-width: 1024px) 28vw, (min-width: 640px) 45vw, 50vw";
+
+export function ProductCard({
+  card,
+  headingLevel = 3,
+  priority = false,
+}: {
+  card: ProductCardData;
+  headingLevel?: 2 | 3;
+  priority?: boolean;
+}) {
+  const locale = useLocale() as Locale;
+  const t = useTranslations("catalog");
+  const title = localized(card.title, locale);
+  const Heading = headingLevel === 2 ? "h2" : "h3";
+  const price = formatPrice(card.priceMin, locale);
+
+  return (
+    <article className="group relative flex h-full flex-col has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink">
+      <div className="relative aspect-[4/5] overflow-hidden bg-surface">
+        {card.image ? (
+          <>
+            <Image
+              src={card.image.src}
+              alt=""
+              fill
+              sizes={SIZES}
+              priority={priority}
+              className={`object-contain transition-opacity duration-300 ${card.hoverImage ? "group-hover:opacity-0" : ""}`}
+              style={{ objectPosition: card.image.objectPosition }}
+              {...(card.image.blurDataURL
+                ? {
+                    placeholder: "blur" as const,
+                    blurDataURL: card.image.blurDataURL,
+                  }
+                : {})}
+            />
+            {card.hoverImage && (
+              <Image
+                src={card.hoverImage.src}
+                alt=""
+                fill
+                sizes={SIZES}
+                loading="lazy"
+                className="object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{ objectPosition: card.hoverImage.objectPosition }}
+              />
+            )}
+          </>
+        ) : null}
+        <div className="absolute start-2 top-2 flex flex-wrap gap-1">
+          {card.isNew && (
+            <span className="bg-paper px-2 py-0.5 text-xs font-semibold text-brass-ink">
+              {t("new")}
+            </span>
+          )}
+          {card.isSample && (
+            <span className="bg-ink px-2 py-0.5 text-xs font-semibold text-paper">
+              {t("sample")}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <Heading
+        className="mt-3 font-display text-lg leading-snug"
+        lang={title.isFallback ? "he" : undefined}
+      >
+        <Link
+          href={localeHref(locale, productPath(card.slug))}
+          className="after:absolute after:inset-0 focus-visible:outline-none"
+        >
+          {title.value}
+        </Link>
+      </Heading>
+
+      <p className="mt-1 font-semibold tabular">
+        {card.priceMin === card.priceMax ? price : t("priceFrom", { price })}
+      </p>
+
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pt-2 text-sm text-ink-muted">
+        <StockLabel status={card.stock} />
+        {card.finishes.length > 1 && (
+          <span className="inline-flex items-center gap-1">
+            {card.finishes.slice(0, 5).map((f) => (
+              <span
+                key={f.slug}
+                aria-hidden="true"
+                className="size-3 rounded-full border border-line-strong"
+                style={{ backgroundColor: f.swatch ?? "transparent" }}
+              />
+            ))}
+            <span className="sr-only">
+              {t("finishesCount", { count: card.finishes.length })}
+            </span>
+          </span>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export function ProductGrid({
+  cards,
+  headingLevel = 3,
+}: {
+  cards: readonly ProductCardData[];
+  headingLevel?: 2 | 3;
+}) {
+  return (
+    <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 xl:grid-cols-4">
+      {cards.map((card, index) => (
+        <li key={card.id}>
+          <ProductCard
+            card={card}
+            headingLevel={headingLevel}
+            priority={index < 4}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}

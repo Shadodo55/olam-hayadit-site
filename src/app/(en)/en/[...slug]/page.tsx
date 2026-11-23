@@ -2,14 +2,13 @@ import {
   ComingSoonPage,
   comingSoonMetadata,
 } from "@/features/coming-soon/ComingSoonPage";
-import { getCategoryTree } from "@/features/catalog/data";
 import { comingSoonSlugs } from "@/lib/routes";
 
 /** Planned pages that aren't built yet (see src/lib/routes.ts). */
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  return comingSoonSlugs(await getCategoryTree()).map((slug) => ({ slug }));
+export function generateStaticParams() {
+  return comingSoonSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/en/[...slug]">) {
