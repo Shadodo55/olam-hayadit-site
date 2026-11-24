@@ -1,13 +1,19 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Wordmark } from "@/components/brand/Wordmark";
-import { ListIcon, PhoneIcon, SearchIcon } from "@/components/ui/icons";
+import { buttonClass } from "@/components/ui/button";
+import {
+  ChatIcon,
+  ListIcon,
+  PhoneIcon,
+  SearchIcon,
+} from "@/components/ui/icons";
 import type { Category } from "@/features/catalog/category-tree";
 import { MyListBadge } from "@/features/my-list/MyListBadge";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
-import type { SiteSettings } from "@/lib/site/settings";
+import { whatsappUrl, type SiteSettings } from "@/lib/site/settings";
 import { DesktopNav } from "./DesktopNav";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
@@ -33,6 +39,8 @@ export async function SiteHeader({
   const utilityLinks = pageLinks(locale, ["professionals", "visit"]);
 
   const footer = await getTranslations({ locale, namespace: "footer" });
+  const common = await getTranslations({ locale, namespace: "common" });
+  const whatsapp = whatsappUrl(settings.whatsapp);
   const phones = [
     { label: footer("storePhone"), phone: settings.phones.store },
     { label: footer("mobilePhone"), phone: settings.phones.mobile },
@@ -104,6 +112,22 @@ export async function SiteHeader({
           />
           <DesktopNav items={nav} label={t("mainNav")} />
           <div className="ms-auto flex items-center gap-1">
+            {whatsapp && (
+              // Wide screens only (phones have the bottom action bar). A wrapper,
+              // because the button's own display class would beat `hidden`.
+              <div className="me-3 hidden lg:block">
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={buttonClass("solid", "sm")}
+                >
+                  <ChatIcon />
+                  {t("whatsapp")}
+                  <span className="sr-only"> {common("opensInNewTab")}</span>
+                </a>
+              </div>
+            )}
             <Link
               href={localeHref(locale, pagePaths.search)}
               className={iconLink}

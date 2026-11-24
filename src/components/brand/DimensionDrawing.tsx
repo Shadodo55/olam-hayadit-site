@@ -59,16 +59,29 @@ export function DimensionDrawing({
       </g>
       {/* dimension line with arrow heads */}
       <g className="stroke-ink" strokeWidth="2" fill="none">
-        <line x1="153" y1="222" x2="487" y2="222" />
-        <path d="M168 214 L153 222 L168 230" />
-        <path d="M472 214 L487 222 L472 230" />
+        <line
+          x1="153"
+          y1="222"
+          x2="487"
+          y2="222"
+          pathLength={1}
+          className="draw"
+        />
+        <path d="M168 214 L153 222 L168 230" className="draw-fade" />
+        <path d="M472 214 L487 222 L472 230" className="draw-fade" />
       </g>
-      <rect x="265" y="206" width="110" height="32" className="fill-paper" />
+      <rect
+        x="265"
+        y="206"
+        width="110"
+        height="32"
+        className="draw-fade fill-paper"
+      />
       <text
+        className="draw-fade fill-ink"
         x="320"
         y="229"
         textAnchor="middle"
-        className="fill-ink"
         style={{ font: "600 22px var(--font-assistant), Arial, sans-serif" }}
       >
         {mm} mm

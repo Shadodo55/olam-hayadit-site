@@ -28,7 +28,9 @@
     "whatsapp": "WhatsApp",
     "navigate": "Navigate with Waze",
     "languageLabel": "עברית",
-    "languageName": "Hebrew"
+    "languageName": "Hebrew",
+    "callShort": "Call",
+    "navigateShort": "Directions"
   },
   "status": {
     "hours": "Opening hours",
@@ -119,7 +121,28 @@
     "projectsTitle": "Projects & inspiration",
     "allProjects": "All projects",
     "servicesTitle": "What you'll find here",
-    "proPhoneLabel": "Mobile for professionals and stock checks"
+    "proPhoneLabel": "Mobile for professionals and stock checks",
+    "whatsappCta": "Check stock on WhatsApp",
+    "trustTitle": "Why buy from us",
+    "yearsLabel": "years of experience",
+    "familyTitle": "Family business",
+    "familyBody": "in Talpiot, Jerusalem",
+    "showroomTitle": "Showroom",
+    "showroomBody": "See and touch before you buy",
+    "stockTitle": "Stock check",
+    "stockBody": "on WhatsApp, before you come",
+    "howTitle": "How it works",
+    "how1Title": "Choose online",
+    "how1Body": "Filter by finish and hole-to-hole distance, and save what you like to My list.",
+    "how1Cta": "Browse the catalog",
+    "how2Title": "Send it to us",
+    "how2Body": "Send the list on WhatsApp or call, and we check stock, finishes and sizes.",
+    "how2Cta": "Send on WhatsApp",
+    "how3Title": "Come and see",
+    "how3Body": "In our showroom in Talpiot, Jerusalem. A handle is chosen by hand.",
+    "how3Cta": "Directions",
+    "marqueePause": "Pause the motion",
+    "marqueePlay": "Play the motion"
   },
   "catalog": {
     "filtersTitle": "Filter products",

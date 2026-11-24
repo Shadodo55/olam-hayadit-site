@@ -50,6 +50,13 @@ export const ListIcon = (p: IconProps) => (
   </Svg>
 );
 
+/** "Forward" arrow: points right in English; add rtl:-scale-x-100 for Hebrew. */
+export const ArrowIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </Svg>
+);
+
 /** A check mark, like the ticks between services on the store's sign. */
 export const CheckIcon = (p: IconProps) => (
   <Svg strokeWidth={2.6} {...p}>

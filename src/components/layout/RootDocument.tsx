@@ -9,6 +9,7 @@ import { clientMessagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
 import { getSiteSettings } from "@/lib/site/settings";
 import { themeInitScript, themePickerEnabled } from "@/lib/theme";
+import { MobileActionBar } from "./MobileActionBar";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -66,6 +67,9 @@ export async function RootDocument({
             settings={settings}
             categories={categories}
           />
+          {/* Room for the phone action bar, so it never covers the footer. */}
+          <div aria-hidden="true" className="h-16 lg:hidden print:hidden" />
+          <MobileActionBar locale={locale} settings={settings} />
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>

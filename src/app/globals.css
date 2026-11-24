@@ -272,3 +272,205 @@
     font-weight: 600;
   }
 }
+
+/*
+ * ---------- Motion ----------
+ * Everything here runs only when the visitor hasn't asked for reduced motion,
+ * and nothing hides content without it: with no animation support (or motion
+ * off) the page is simply static. Scroll effects use CSS scroll-driven
+ * animations (no JavaScript); browsers without them show the final state.
+ */
+@property --count {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+/* A number that counts up when it scrolls into view (the real number is also
+   in the DOM for screen readers; this one is aria-hidden). */
+.count-up {
+  --count: var(--to);
+  counter-reset: n var(--count);
+}
+.count-up::before {
+  content: counter(n);
+}
+
+/* The services band: a static, wrapped list unless motion is allowed. */
+.marquee-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.marquee-copy {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance: items rise in order (--i). */
+  .rise {
+    animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 150ms);
+  }
+  /* Words of the headline slide up out of a mask. */
+  .mask-word {
+    display: inline-block;
+    overflow: hidden;
+    padding-block-end: 0.12em;
+    margin-block-end: -0.12em;
+    vertical-align: bottom;
+  }
+  .mask-word > span {
+    display: inline-block;
+    animation: mask-up 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 250ms);
+  }
+  .grow-line {
+    animation: grow-line 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
+  }
+  [dir="rtl"] .grow-line {
+    transform-origin: right;
+  }
+  [dir="ltr"] .grow-line {
+    transform-origin: left;
+  }
+  .ken-burns {
+    animation: ken-burns 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .slide-up {
+    animation: slide-up 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both;
+  }
+
+  /* Services band: an endless, slow row (pausable: hover, focus or button). */
+  .marquee-track {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: max-content;
+    animation: marquee 45s linear infinite;
+  }
+  [dir="rtl"] .marquee-track {
+    animation-name: marquee-rtl;
+  }
+  .marquee-copy {
+    display: inline-flex;
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track,
+  .marquee[data-paused="true"] .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Sections rise in as they enter the screen; grids stagger naturally. */
+    [data-reveal="self"],
+    [data-reveal="children"] > * {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+    /* The hero picture drifts slower than the page (parallax). */
+    .parallax {
+      animation: parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    /* Lines that draw themselves (pathLength="1"). */
+    .draw {
+      stroke-dasharray: 1;
+      animation: draw linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+    .draw-fade {
+      animation: fade linear both;
+      animation-timeline: view();
+      animation-range: cover 35% cover 50%;
+    }
+    .count-up {
+      animation: count linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+    /* A connector that grows across the steps as they scroll in. */
+    .grow-on-view {
+      animation: grow-line linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    [dir="rtl"] .grow-on-view {
+      transform-origin: right;
+    }
+    [dir="ltr"] .grow-on-view {
+      transform-origin: left;
+    }
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes mask-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes grow-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes ken-burns {
+  from {
+    transform: scale(1.08);
+  }
+}
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-rtl {
+  to {
+    transform: translateX(50%);
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+@keyframes parallax {
+  from {
+    transform: scale(1.1) translateY(0);
+  }
+  to {
+    transform: scale(1.1) translateY(4%);
+  }
+}
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes count {
+  from {
+    --count: 0;
+  }
+}

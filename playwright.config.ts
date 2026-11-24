@@ -22,6 +22,9 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: "retain-on-failure",
+    // Axe must judge the final look, not text that is mid-animation. Motion
+    // itself is checked in motion.spec.ts (which turns it back on).
+    contextOptions: { reducedMotion: "reduce" },
   },
   projects: [
     { name: "mobile", use: { ...devices["Pixel 7"] } },

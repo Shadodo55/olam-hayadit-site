@@ -28,7 +28,7 @@ export function ProductCard({
   const price = formatPrice(card.priceMin, locale);
 
   return (
-    <article className="group relative flex h-full flex-col has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink">
+    <article className="group relative flex h-full flex-col transition-transform duration-300 hover:-translate-y-1 has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink">
       <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-surface">
         {card.image ? (
           <>
@@ -115,12 +115,18 @@ export function ProductCard({
 export function ProductGrid({
   cards,
   headingLevel = 3,
+  scroller = false,
 }: {
   cards: readonly ProductCardData[];
   headingLevel?: 2 | 3;
+  /** On phones: one swipeable row (scroll-snap) instead of a grid. */
+  scroller?: boolean;
 }) {
+  const layout = scroller
+    ? "-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4 [&>li]:w-[72%] [&>li]:shrink-0 [&>li]:snap-start sm:[&>li]:w-auto"
+    : "grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 xl:grid-cols-4";
   return (
-    <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 xl:grid-cols-4">
+    <ul className={layout}>
       {cards.map((card, index) => (
         <li key={card.id}>
           <ProductCard

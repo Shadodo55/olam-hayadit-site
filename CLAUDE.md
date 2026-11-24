@@ -108,6 +108,20 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   overlapping its lower edge (phones: below it), never text over video. Slogan and services strip come
   from siteSettings (`slogan`, `services`, as on the store's sign). Media: CMS hero video (`HeroVideo`: muted, loop, poster, visible pause,
   no autoplay with reduced motion) → poster image → `DimensionDrawing` fallback.
+- Home conversion & motion (owner asked for "more motion, like premium sites";
+  the store has 20+ years, `siteSettings.yearsExperience`): live open-status pill,
+  WhatsApp CTA, trust grid (years count-up, family business, showroom, stock
+  check), services marquee (pausable button + hover/focus; static list with
+  reduced motion), "how it works" steps, phone action bar (`MobileActionBar`,
+  call/WhatsApp/Waze; a spacer keeps it off the footer), WhatsApp button in the
+  desktop header.
+- Motion lives in `globals.css` (end of file): `.rise`/`.mask-word` (hero
+  entrance), `data-reveal="self|children"` (CSS scroll-driven, no JS),
+  `.parallax`, `.draw`, `.count-up`. Everything sits inside
+  `prefers-reduced-motion: no-preference`, and nothing hides content without
+  it. Never move the hero video's pause button (`mediaClassName` targets only
+  the `<video>`). Playwright runs with reduced motion so axe judges the final
+  look; `tests/e2e/motion.spec.ts` turns motion on and checks it ends visible.
 - Content data and pages: `features/content/data.ts` + `features/content/pages.tsx`
   (visit, measuring guide, about via `CmsPage`, FAQ as `<details>`, brands,
   projects, PDF catalogs). CMS rich text renders with `components/content/RichText`.

@@ -14,12 +14,15 @@ export function HeroVideo({
   mobileSrc,
   mobileType,
   poster,
+  mediaClassName = "",
 }: {
   src: string;
   type: string;
   mobileSrc?: string | null;
   mobileType?: string | null;
   poster?: string | null;
+  /** Extra classes for the <video> only (e.g. parallax), never the button. */
+  mediaClassName?: string;
 }) {
   const t = useTranslations("hero");
   const ref = useRef<HTMLVideoElement>(null);
@@ -58,7 +61,7 @@ export function HeroVideo({
         tabIndex={-1}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        className="absolute inset-0 size-full object-cover"
+        className={`absolute inset-0 size-full object-cover ${mediaClassName}`}
         data-testid="hero-video"
       >
         {mobileSrc && (
