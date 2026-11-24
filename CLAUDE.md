@@ -80,10 +80,11 @@ Full approved plan (Hebrew): `docs/plan.md`.
   component needs it.
 - CMS-style bilingual data uses `Localized` + `localized()`: it falls back to Hebrew
   and reports `lang`, so render the fallback text with `lang="he"`.
-- Pages that aren't built yet are served by the catch-all "coming soon" routes
-  (`src/app/(he)/[...slug]`, `src/app/(en)/en/[...slug]`). When you build a page,
-  create its own route folder in both trees and add its key to `builtPages` in
-  `src/lib/routes.ts`. Links come from `pagePaths`, never hard-coded strings.
+- Every page has its own route folder in both trees (there is no catch-all
+  "coming soon" route any more: with `output: export` a catch-all with no params
+  fails the build). A new page: add it to `pagePaths` in `src/lib/routes.ts`,
+  create both route folders, add it to `tests/e2e/pages.ts`. Links come from
+  `pagePaths`, never hard-coded strings.
 - Unknown business details render with `<Placeholder>` ([להשלמה]), never invented.
 
 ## Catalog
@@ -115,6 +116,31 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   content host (no cookies) and is allowed without consent.
 - Sample media: `node scripts/generate-sample-media.mjs`, then
   `npm run seed:content` in `studio/` (FAQ/about are created only if missing).
+
+## Forms and legal pages
+
+- `/contact` and `/professionals` (`features/forms/pages.tsx`): `InquiryForm`
+  (client) posts JSON to `/api/inquiry` (`worker/inquiry.ts`). One validator for
+  browser and Worker: `features/forms/inquiry.ts` (returns error codes; the words
+  are in the `forms` messages). It imports with relative paths: the Worker
+  bundles it too (no `@/` alias there).
+- Worker checks, in order: same Origin, body ≤ 16 KB, honeypot `website`
+  (silently accepted), configured, rate limit (binding, 3/min per IP), fields,
+  Turnstile, then a D1 copy, then the Resend email. Without `RESEND_API_KEY`,
+  `INQUIRY_TO_EMAIL` and `TURNSTILE_SECRET_KEY` (Wrangler secrets) it answers 503
+  `not_configured` and stores nothing; the form then offers phone/WhatsApp.
+- Turnstile loads only on the first focus inside a form, never on page view (the
+  consent test covers `/contact`). CSP allows `challenges.cloudflare.com` for
+  script and frame. Site key: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (falls back to
+  Cloudflare's always-pass test key).
+- D1 `olam-hayadit-inquiries`, schema in `worker/migrations/`. Apply a new
+  migration with `npx wrangler d1 migrations apply olam-hayadit-inquiries --remote`.
+  A daily cron (`scheduled`) deletes copies older than 12 months.
+- Legal pages (`/accessibility`, `/privacy`, `/terms`, `/cookies`):
+  `features/legal/` (`content-he.tsx`, `content-en.tsx`). They are DRAFTS for a
+  lawyer, marked on the page. Business facts are injected from siteSettings
+  (missing → `<Placeholder>`); update `LEGAL_UPDATED` when the text changes.
+  Shipping/returns drafts live in `docs/drafts/` and are not published.
 
 ## Search and "My list"
 

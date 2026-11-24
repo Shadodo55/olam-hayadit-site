@@ -14,8 +14,14 @@ export const pages = [
   { path: "/brands", lang: "he", dir: "rtl" },
   { path: "/projects", lang: "he", dir: "rtl" },
   { path: "/catalogs", lang: "he", dir: "rtl" },
-  // still "coming soon"
+  // forms
   { path: "/contact", lang: "he", dir: "rtl" },
+  { path: "/en/professionals", lang: "en", dir: "ltr" },
+  // legal drafts
+  { path: "/accessibility", lang: "he", dir: "rtl" },
+  { path: "/en/privacy", lang: "en", dir: "ltr" },
+  { path: "/terms", lang: "he", dir: "rtl" },
+  { path: "/cookies", lang: "he", dir: "rtl" },
   // catalog
   { path: "/catalog", lang: "he", dir: "rtl" },
   { path: "/catalog/handles/door", lang: "he", dir: "rtl" },

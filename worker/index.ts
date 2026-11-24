@@ -2,12 +2,14 @@
  * Cloudflare Worker. Runs ONLY for /api/* (see wrangler.jsonc "run_worker_first").
  * Static pages are served directly from the assets binding.
  *
- * Phase 7 adds the form endpoints here (Turnstile, rate limiting, Resend email,
- * D1 copy). Personal data must never be sent to Sanity (see CLAUDE.md).
+ * /api/inquiry: the contact and professionals forms (see ./inquiry.ts).
+ * A daily cron deletes inquiry copies older than 12 months.
+ * Personal data must never be sent to Sanity (see CLAUDE.md).
  */
+import { deleteOldInquiries, handleInquiry, type InquiryEnv } from "./inquiry";
 import { securityHeaders } from "./security-headers";
 
-export interface Env {
+export interface Env extends InquiryEnv {
   ASSETS: Fetcher;
 }
 
@@ -32,6 +34,10 @@ export async function handleRequest(
     return json({ ok: true });
   }
 
+  if (url.pathname === "/api/inquiry") {
+    return handleInquiry(request, env, json);
+  }
+
   if (url.pathname.startsWith("/api/")) {
     return json({ error: "not_found" }, { status: 404 });
   }
@@ -41,4 +47,7 @@ export async function handleRequest(
 
 export default {
   fetch: handleRequest,
+  async scheduled(_controller, env) {
+    if (env.DB) await deleteOldInquiries(env.DB);
+  },
 } satisfies ExportedHandler<Env>;

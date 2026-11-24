@@ -177,10 +177,9 @@ async function CatalogLayout({
   cards: ProductCardData[];
   enabled: EnabledFilter[];
 }) {
-  const [t, common, comingSoon, settings] = await Promise.all([
+  const [t, common, settings] = await Promise.all([
     getTranslations({ locale, namespace: "catalog" }),
     getTranslations({ locale, namespace: "common" }),
-    getTranslations({ locale, namespace: "comingSoon" }),
     getSiteSettings(),
   ]);
   const sorted = sortCards(cards, "newest", locale);
@@ -241,7 +240,7 @@ async function CatalogLayout({
                 rel="noopener noreferrer"
                 className={buttonClass("solid", "md", "mt-6")}
               >
-                {comingSoon("askWhatsapp")}
+                {t("askWhatsapp")}
                 <span className="sr-only"> {common("opensInNewTab")}</span>
               </a>
             )}

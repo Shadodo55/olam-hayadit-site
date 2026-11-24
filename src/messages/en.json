@@ -93,12 +93,6 @@
     "terms": "Terms of use",
     "cookies": "Cookie policy"
   },
-  "comingSoon": {
-    "body": "This page is still being built. In the meantime, visit our showroom, call us or ask us on WhatsApp.",
-    "categoryBody": "Products in this category are coming to the site soon. Until then you can see them in our showroom or ask about them on WhatsApp.",
-    "toHome": "Opening hours and address",
-    "askWhatsapp": "Ask on WhatsApp"
-  },
   "home": {
     "tagline": "Handles and hardware. Chosen by hand.",
     "intro": "A showroom for handles, hardware and bathroom accessories in Talpiot, Jerusalem. Browse models, finishes and prices here, then come and see them in the store.",
@@ -166,7 +160,8 @@
     "subcategories": "Subcategories",
     "productsHeading": "Products",
     "priceNote": "Prices include VAT. Prices and stock may change and can be confirmed with the store.",
-    "emptyCategory": "There are no products in this category on the site yet. You can see them in our showroom, or ask about them on WhatsApp."
+    "emptyCategory": "There are no products in this category on the site yet. You can see them in our showroom, or ask about them on WhatsApp.",
+    "askWhatsapp": "Ask on WhatsApp"
   },
   "product": {
     "sku": "SKU",
@@ -324,5 +319,101 @@
     "petrol": "Petrol (default)",
     "logo": "Sign colours",
     "classic": "Classic (first design)"
+  },
+  "forms": {
+    "requiredNote": "All fields are required unless marked \"optional\".",
+    "optional": "(optional)",
+    "name": "Full name",
+    "phone": "Phone",
+    "phoneHint": "We will call you back on this number.",
+    "email": "Email",
+    "profession": "Profession",
+    "professionChoose": "Choose one",
+    "professions": {
+      "designer": "Interior designer",
+      "architect": "Architect",
+      "carpenter": "Carpenter",
+      "kitchen": "Kitchen maker",
+      "contractor": "Contractor",
+      "other": "Other"
+    },
+    "business": "Business name",
+    "message": "How can we help?",
+    "messageHint": "For example: a product name or SKU, finish, size or quantity.",
+    "messagePro": "Tell us about the project",
+    "messageProHint": "Type of project, quantities, finishes or SKUs, and when you need them.",
+    "marketing": "I would like to get updates about new products (you can opt out at any time).",
+    "privacyNote": "We use your details only to get back to you about this inquiry. It is sent to us by email, and a copy is kept for up to 12 months. The form is protected from spam by Cloudflare Turnstile. More in our <link>privacy policy</link>.",
+    "submit": "Send inquiry",
+    "sending": "Sending…",
+    "errorSummary": "{count, plural, one {There is one field to fix} other {There are # fields to fix}}",
+    "errors": {
+      "name": {
+        "required": "Enter your name",
+        "tooShort": "The name is too short",
+        "tooLong": "The name is too long (up to 80 characters)",
+        "invalid": "The name contains characters we cannot accept"
+      },
+      "phone": {
+        "required": "Enter a phone number",
+        "tooShort": "The phone number is too short",
+        "tooLong": "The phone number is too long",
+        "invalid": "Enter an Israeli phone number, for example 052-1234567"
+      },
+      "email": {
+        "required": "Enter an email address",
+        "tooShort": "The email address is too short",
+        "tooLong": "The email address is too long",
+        "invalid": "Enter a valid email address, for example name@example.com"
+      },
+      "profession": {
+        "required": "Choose your profession",
+        "tooShort": "Choose a profession from the list",
+        "tooLong": "Choose a profession from the list",
+        "invalid": "Choose a profession from the list"
+      },
+      "business": {
+        "required": "Enter the business name",
+        "tooShort": "The business name is too short",
+        "tooLong": "The business name is too long (up to 80 characters)",
+        "invalid": "The business name contains characters we cannot accept"
+      },
+      "message": {
+        "required": "Tell us how we can help",
+        "tooShort": "Add a few more words",
+        "tooLong": "The message is too long (up to 2,000 characters)",
+        "invalid": "The message contains characters we cannot accept"
+      }
+    },
+    "failures": {
+      "notConfigured": "This form is not active yet. Meanwhile, please call us or message us on WhatsApp.",
+      "rateLimited": "Several inquiries were sent in a row. Try again in a minute, or call us.",
+      "captcha": "We could not confirm the inquiry was sent by a person. Try sending it again, or call us.",
+      "failed": "Sending failed. Try again in a moment, or call us."
+    },
+    "successTitle": "Thank you, your inquiry was sent",
+    "successBody": "We will get back to you soon, during store opening hours.",
+    "urgent": "Urgent question?",
+    "whatsapp": "WhatsApp",
+    "opensInNewTab": "(opens in a new tab)"
+  },
+  "contactPage": {
+    "intro": "A question about a product, stock or which handle fits? Write to us and we will get back to you, or call us directly.",
+    "formTitle": "Send an inquiry",
+    "detailsTitle": "Contact details",
+    "hoursLink": "Opening hours and directions"
+  },
+  "prosPage": {
+    "intro": "Interior designers, architects, carpenters, kitchen makers and contractors: tell us about the project, and we will get back to you about models, finishes, quantities and availability.",
+    "howTitle": "How to work with us",
+    "how1": "Send an inquiry with the type of project and the quantities.",
+    "how2": "Save products to <link>My list</link> and send it on WhatsApp in one tap.",
+    "how3": "Come and see the models in our showroom in Talpiot.",
+    "phoneTitle": "Mobile for professionals and stock checks",
+    "formTitle": "Inquiry for professionals"
+  },
+  "legal": {
+    "updated": "Last updated:",
+    "draft": "Draft for legal review: this text is not final and may change."
   }
 }
