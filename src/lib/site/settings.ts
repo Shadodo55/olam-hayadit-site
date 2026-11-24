@@ -17,6 +17,8 @@ export interface SiteSettings {
   slogan: Localized | null;
   /** What the store does, as on the sign (shown as a strip on the home page). */
   services: Localized[];
+  /** Years of experience, shown as "20+" on the home page. */
+  yearsExperience: number | null;
   address: {
     street: Localized | null;
     area: Localized | null;
@@ -41,6 +43,7 @@ interface RawSettings {
   businessName?: Localized | null;
   slogan?: Localized | null;
   services?: (Localized | null)[] | null;
+  yearsExperience?: number | null;
   street?: Localized | null;
   area?: Localized | null;
   city?: Localized | null;
@@ -82,6 +85,10 @@ export function mapSettings(raw: RawSettings): SiteSettings {
   return {
     name: filled(raw.businessName) ?? FALLBACK_NAME,
     slogan: filled(raw.slogan),
+    yearsExperience:
+      typeof raw.yearsExperience === "number" && raw.yearsExperience > 0
+        ? Math.floor(raw.yearsExperience)
+        : null,
     services: (raw.services ?? [])
       .map(filled)
       .filter((v): v is Localized => v !== null),
@@ -129,6 +136,8 @@ const FALLBACK_NAME: Localized = {
  */
 export const fallbackSettings: SiteSettings = mapSettings({
   businessName: FALLBACK_NAME,
+  // Confirmed by the store on 2026-11-24: "over 20 years of experience".
+  yearsExperience: 20,
   // Slogan and services as written on the store's sign.
   slogan: {
     he: "איכות ושירות זה אנחנו!",
@@ -158,7 +167,7 @@ export const fallbackSettings: SiteSettings = mapSettings({
 });
 
 const SETTINGS_QUERY = `*[_id == "siteSettings"][0]{
-  businessName, slogan, services, street, area, city, parking, geo, storePhone, mobilePhone, whatsapp,
+  businessName, slogan, services, yearsExperience, street, area, city, parking, geo, storePhone, mobilePhone, whatsapp,
   email, registrationNumber, instagram, facebook, accessibilityCoordinator,
   accessibilityContact, hours, specialDays[]{date, hours}, hoursNote
 }`;

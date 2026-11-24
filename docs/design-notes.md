@@ -31,6 +31,16 @@ handle, with the products' own metal (brass) as the only warm accent.
 - **Sample images:** studio-style renders (metal shading, soft shadows) so the
   site can be judged before real photos exist.
 
+## Conversion and motion (owner: "more motion, so people come and call")
+
+Patterns taken from premium product sites (not copied): a masked headline
+reveal, a slow services band, sections that rise in as they enter, a
+count-up for the one real number (20+ years), a self-drawing dimension line
+in the measuring guide, a sticky call/WhatsApp/directions bar on phones.
+Every action leads to a call, WhatsApp or the showroom. All motion is CSS
+(scroll-driven where possible), respects reduced motion, and never hides
+content when it doesn't run.
+
 ## Themes (demo while the store chooses)
 
 Three themes, switched with `<html data-theme>`; tokens in `src/app/globals.css`,

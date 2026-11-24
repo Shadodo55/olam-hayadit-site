@@ -28,7 +28,9 @@
     "whatsapp": "וואטסאפ",
     "navigate": "ניווט ב-Waze",
     "languageLabel": "English",
-    "languageName": "אנגלית"
+    "languageName": "אנגלית",
+    "callShort": "התקשרו",
+    "navigateShort": "ניווט"
   },
   "status": {
     "hours": "שעות פתיחה",
@@ -119,7 +121,28 @@
     "projectsTitle": "פרויקטים והשראה",
     "allProjects": "לכל הפרויקטים",
     "servicesTitle": "מה תמצאו אצלנו",
-    "proPhoneLabel": "נייד לבעלי מקצוע ולבדיקת מלאי"
+    "proPhoneLabel": "נייד לבעלי מקצוע ולבדיקת מלאי",
+    "whatsappCta": "בדיקת מלאי בוואטסאפ",
+    "trustTitle": "למה לקנות אצלנו",
+    "yearsLabel": "שנות ניסיון",
+    "familyTitle": "עסק משפחתי",
+    "familyBody": "בתלפיות, ירושלים",
+    "showroomTitle": "אולם תצוגה",
+    "showroomBody": "רואים ומשמשים לפני שקונים",
+    "stockTitle": "בדיקת מלאי",
+    "stockBody": "בוואטסאפ, לפני שמגיעים",
+    "howTitle": "איך זה עובד",
+    "how1Title": "בוחרים באתר",
+    "how1Body": "מסננים לפי גימור ומרחק בין חורים, ושומרים את מה שאהבתם ב״הרשימה שלי״.",
+    "how1Cta": "לקטלוג",
+    "how2Title": "שולחים לנו",
+    "how2Body": "שולחים את הרשימה בוואטסאפ או מתקשרים, ואנחנו בודקים מלאי, גימורים ומידות.",
+    "how2Cta": "שליחה בוואטסאפ",
+    "how3Title": "באים לראות ולמשש",
+    "how3Body": "באולם התצוגה בתלפיות, ירושלים. ידית בוחרים ביד.",
+    "how3Cta": "ניווט לחנות",
+    "marqueePause": "עצירת התנועה",
+    "marqueePlay": "הפעלת התנועה"
   },
   "catalog": {
     "filtersTitle": "סינון מוצרים",

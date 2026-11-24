@@ -25,7 +25,12 @@ async function necessaryCookiesOnly(page: Page) {
 }
 
 test.describe("home page", () => {
-  test("hero video plays muted and can be paused", async ({ page }) => {
+  test("hero video plays muted and can be paused", async ({ browser }) => {
+    // Autoplay needs motion allowed (other specs run with reduced motion).
+    const context = await browser.newContext({
+      reducedMotion: "no-preference",
+    });
+    const page = await context.newPage();
     await necessaryCookiesOnly(page);
     await page.goto("/");
     const video = page.getByTestId("hero-video");
@@ -38,6 +43,7 @@ test.describe("home page", () => {
     await expect(
       page.getByRole("button", { name: "הפעלת וידאו הרקע" }),
     ).toBeVisible();
+    await context.close();
   });
 
   test("hero video does not autoplay with reduced motion", async ({

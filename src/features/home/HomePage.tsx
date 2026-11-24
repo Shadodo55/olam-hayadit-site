@@ -1,9 +1,16 @@
 import Image from "next/image";
+import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { DimensionDrawing } from "@/components/brand/DimensionDrawing";
 import { buttonClass } from "@/components/ui/button";
-import { ChatIcon, CheckIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
+import {
+  ArrowIcon,
+  ChatIcon,
+  CheckIcon,
+  PhoneIcon,
+  PinIcon,
+} from "@/components/ui/icons";
 import { categoryPath, type Category } from "@/features/catalog/category-tree";
 import {
   getCategoryTree,
@@ -21,6 +28,7 @@ import {
   getProjects,
 } from "@/features/content/data";
 import { ProjectCard } from "@/features/content/ProjectCard";
+import { OpenStatus } from "@/features/store-info/OpenStatus";
 import { StoreVisit } from "@/features/store-info/StoreVisit";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import sanityImageLoader from "@/lib/sanity/image-loader";
@@ -28,9 +36,11 @@ import { pagePaths } from "@/lib/routes";
 import {
   formatAddress,
   getSiteSettings,
+  wazeUrl,
   whatsappUrl,
 } from "@/lib/site/settings";
 import { HeroVideo } from "./HeroVideo";
+import { ServicesMarquee } from "./ServicesMarquee";
 
 const container = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8";
 const moreLink =
@@ -128,10 +138,66 @@ export async function HomePage({ locale }: { locale: Locale }) {
         .filter((b) => b !== undefined)
     : brands;
 
+  const order = (i: number) => ({ "--i": i }) as CSSProperties;
+  const words = headline.value.split(" ");
+  const years = settings.yearsExperience;
+  const trust = [
+    { title: t("familyTitle"), body: t("familyBody") },
+    { title: t("showroomTitle"), body: t("showroomBody") },
+    { title: t("stockTitle"), body: t("stockBody") },
+  ];
+  const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+  const newTab = <span className="sr-only"> {common("opensInNewTab")}</span>;
+  const steps = [
+    {
+      title: t("how1Title"),
+      body: t("how1Body"),
+      action: (
+        <Link
+          href={localeHref(locale, pagePaths.catalog)}
+          className={buttonClass("outline", "sm", "mt-5 bg-paper")}
+        >
+          {t("how1Cta")}
+        </Link>
+      ),
+    },
+    {
+      title: t("how2Title"),
+      body: t("how2Body"),
+      action: whatsapp && (
+        <a
+          href={whatsapp}
+          {...external}
+          className={buttonClass("solid", "sm", "mt-5")}
+        >
+          <ChatIcon />
+          {t("how2Cta")}
+          {newTab}
+        </a>
+      ),
+    },
+    {
+      title: t("how3Title"),
+      body: t("how3Body"),
+      action: (
+        <a
+          href={wazeUrl(settings)}
+          {...external}
+          className={buttonClass("outline", "sm", "mt-5 bg-paper")}
+        >
+          <PinIcon />
+          {t("how3Cta")}
+          {newTab}
+        </a>
+      ),
+    },
+  ];
+
   return (
     <>
       {/* Hero: full-width media; the words sit on a solid panel that overlaps
-          its lower edge on desktop (never text over the video itself). */}
+          its lower edge on desktop (never text over the video itself). The
+          panel's content rises in on load; the picture drifts on scroll. */}
       <section aria-labelledby="hero-title">
         <div className="relative aspect-[4/3] overflow-hidden bg-surface sm:aspect-[16/9] lg:aspect-auto lg:h-[min(80vh,48rem)]">
           {home.video ? (
@@ -140,6 +206,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               type={home.video.type}
               mobileSrc={home.videoMobile?.src ?? null}
               mobileType={home.videoMobile?.type ?? null}
+              mediaClassName="parallax"
               poster={
                 home.poster
                   ? sanityImageLoader({ src: home.poster.src, width: 1920 })
@@ -147,15 +214,19 @@ export async function HomePage({ locale }: { locale: Locale }) {
               }
             />
           ) : home.poster ? (
-            <Image
-              src={home.poster.src}
-              alt={localized(home.poster.alt, locale).value}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: home.poster.objectPosition }}
-            />
+            <div className="parallax absolute inset-0">
+              <div className="ken-burns absolute inset-0">
+                <Image
+                  src={home.poster.src}
+                  alt={localized(home.poster.alt, locale).value}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
+                  style={{ objectPosition: home.poster.objectPosition }}
+                />
+              </div>
+            </div>
           ) : (
             <div className="flex size-full items-center justify-center p-8">
               <DimensionDrawing className="w-full max-w-3xl" />
@@ -167,14 +238,24 @@ export async function HomePage({ locale }: { locale: Locale }) {
           className={`${container} relative lg:grid lg:grid-cols-12 lg:gap-12`}
         >
           <div className="on-dark -mx-4 bg-band px-6 py-10 text-on-band sm:-mx-6 sm:px-10 sm:py-12 lg:relative lg:z-10 lg:col-span-7 lg:mx-0 lg:-mt-72 lg:px-12 lg:py-14 xl:col-span-6">
+            <p
+              className="rise inline-flex items-center gap-2 rounded-full border border-on-band/25 px-3 py-1.5 text-sm"
+              style={order(0)}
+            >
+              <OpenStatus
+                hours={settings.hours}
+                specialDays={settings.specialDays}
+              />
+            </p>
             {slogan && (
               <p
-                className="flex items-center gap-3 font-display text-lg font-medium text-accent-on-band"
+                className="rise mt-6 flex items-center gap-3 font-display text-lg font-medium text-accent-on-band"
+                style={order(1)}
                 lang={slogan.isFallback ? "he" : undefined}
               >
                 <span
                   aria-hidden="true"
-                  className="h-px w-10 shrink-0 bg-accent-on-band"
+                  className="grow-line h-px w-10 shrink-0 bg-accent-on-band"
                 />
                 {slogan.value}
               </p>
@@ -184,70 +265,127 @@ export async function HomePage({ locale }: { locale: Locale }) {
               className="mt-5 text-5xl leading-[1.05] sm:text-6xl xl:text-[4.25rem]"
               lang={headline.isFallback ? "he" : undefined}
             >
-              {headline.value}
+              {words.map((word, index) => (
+                <Fragment key={index}>
+                  <span className="mask-word">
+                    <span style={order(index + 2)}>{word}</span>
+                  </span>
+                  {index < words.length - 1 && " "}
+                </Fragment>
+              ))}
             </h1>
             <p
-              className="mt-6 max-w-xl text-lg text-on-band/85"
+              className="rise mt-6 max-w-xl text-lg text-on-band/85"
+              style={order(words.length + 2)}
               lang={intro.isFallback ? "he" : undefined}
             >
               {intro.value}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div
+              className="rise mt-8 flex flex-wrap gap-3"
+              style={order(words.length + 3)}
+            >
               <Link
                 href={localeHref(locale, pagePaths.catalog)}
                 className={buttonClass("highlight")}
               >
                 {t("toCatalog")}
               </Link>
-              <Link
-                href={localeHref(locale, pagePaths.visit)}
-                className={buttonClass("onDark")}
-              >
-                {t("visitCta")}
-              </Link>
+              {whatsapp && (
+                <a
+                  href={whatsapp}
+                  {...external}
+                  className={buttonClass("onDark")}
+                >
+                  <ChatIcon />
+                  {t("whatsappCta")}
+                  {newTab}
+                </a>
+              )}
             </div>
             {address && (
-              <p className="mt-8 flex items-start gap-2 border-t border-on-band/15 pt-6 text-on-band/85">
-                <PinIcon className="mt-0.5 shrink-0 text-accent-on-band" />
-                {address}
+              <p
+                className="rise mt-8 border-t border-on-band/15 pt-6"
+                style={order(words.length + 4)}
+              >
+                <Link
+                  href={localeHref(locale, pagePaths.visit)}
+                  className="inline-flex items-start gap-2 text-on-band/85 underline-offset-4 hover:text-on-band hover:underline"
+                >
+                  <PinIcon className="mt-0.5 shrink-0 text-accent-on-band" />
+                  {address}
+                </Link>
               </p>
             )}
           </div>
 
-          {/* What the store does, as on its sign */}
-          {services.length > 0 && (
-            <ul
-              aria-label={t("servicesTitle")}
-              className="mt-10 divide-y divide-line border-y border-line lg:col-span-5 lg:mt-12 lg:self-start xl:col-span-6"
-            >
-              {services.map((service) => (
-                <li
-                  key={service.value}
-                  className="flex items-center gap-4 py-5"
-                  lang={service.isFallback ? "he" : undefined}
+          {/* Why buy here: confirmed facts only (years come from the CMS). */}
+          <ul
+            aria-label={t("trustTitle")}
+            data-reveal="children"
+            className="mt-10 grid grid-cols-2 border-s border-t border-line lg:col-span-5 lg:mt-12 lg:self-start xl:col-span-6"
+          >
+            {years && (
+              <li className="border-e border-b border-line p-5 sm:p-7">
+                <p className="display-title text-5xl text-accent-ink sm:text-6xl">
+                  <span className="sr-only">{years}+</span>
+                  <span aria-hidden="true" dir="ltr">
+                    <span
+                      className="count-up tabular"
+                      style={{ "--to": years } as CSSProperties}
+                    />
+                    +
+                  </span>
+                </p>
+                <p className="mt-2 font-display text-lg font-medium">
+                  {t("yearsLabel")}
+                </p>
+              </li>
+            )}
+            {trust.map((item) => (
+              <li
+                key={item.title}
+                className="border-e border-b border-line p-5 sm:p-7"
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex size-9 items-center justify-center rounded-full border border-accent text-accent-ink"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full border border-accent text-accent-ink"
-                  >
-                    <CheckIcon width={18} height={18} />
-                  </span>
-                  <span className="font-display text-lg font-medium sm:text-xl">
-                    {service.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+                  <CheckIcon width={16} height={16} />
+                </span>
+                <p className="mt-3 font-display text-xl font-medium">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-ink-muted">{item.body}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
+
+      {/* The sign's services, as a slow band (static with reduced motion) */}
+      {services.length > 0 && (
+        <div className="mt-16 sm:mt-20">
+          <ServicesMarquee
+            items={services}
+            labels={{
+              list: t("servicesTitle"),
+              pause: t("marqueePause"),
+              play: t("marqueePlay"),
+            }}
+          />
+        </div>
+      )}
 
       {/* Categories */}
       <section
         aria-labelledby="home-categories"
         className={`${container} py-16 sm:py-24`}
       >
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <div
+          className="flex flex-wrap items-end justify-between gap-4"
+          data-reveal="self"
+        >
           <h2 id="home-categories" className="section-title">
             {t("categoriesTitle")}
           </h2>
@@ -259,6 +397,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           </Link>
         </div>
         <ul
+          data-reveal="children"
           className={`mt-10 grid grid-cols-2 gap-3 sm:gap-5 ${tileLayout(0, tree.length).grid}`}
         >
           {tree.map((category, index) => {
@@ -290,10 +429,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   </span>
                   <span className="flex flex-col gap-0.5 pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                     <span
-                      className="font-display text-xl font-medium underline-offset-4 group-hover:underline sm:text-2xl"
+                      className="inline-flex items-center gap-2 font-display text-xl font-medium sm:text-2xl"
                       lang={name.isFallback ? "he" : undefined}
                     >
                       {name.value}
+                      <ArrowIcon className="text-accent-ink opacity-0 transition duration-300 group-hover:opacity-100 ltr:group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" />
                     </span>
                     <span className="shrink-0 text-sm text-ink-muted tabular">
                       {t("productsCount", { count: inCategory.length })}
@@ -306,13 +446,49 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
+      {/* How it works: a real sequence, each step with its action */}
+      <section aria-labelledby="home-how" className="page-band py-16 sm:py-24">
+        <div className={container}>
+          <h2 id="home-how" className="section-title" data-reveal="self">
+            {t("howTitle")}
+          </h2>
+          <div className="relative mt-12">
+            <span
+              aria-hidden="true"
+              className="grow-on-view absolute inset-x-0 top-7 hidden h-px bg-accent md:block"
+            />
+            <ol
+              data-reveal="children"
+              className="relative grid gap-10 md:grid-cols-3 md:gap-8"
+            >
+              {steps.map((step, index) => (
+                <li key={step.title} className="flex flex-col items-start">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-14 items-center justify-center rounded-full border-2 border-accent bg-surface display-title text-2xl text-accent-ink"
+                  >
+                    {index + 1}
+                  </span>
+                  <h3 className="mt-5 text-2xl">{step.title}</h3>
+                  <p className="mt-2 max-w-sm text-ink-muted">{step.body}</p>
+                  {step.action}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
       {featuredCards.length > 0 && (
         <section
           aria-labelledby="home-new"
           className="border-t border-line py-16 sm:py-24"
         >
           <div className={container}>
-            <div className="flex flex-wrap items-end justify-between gap-4">
+            <div
+              className="flex flex-wrap items-end justify-between gap-4"
+              data-reveal="self"
+            >
               <h2 id="home-new" className="section-title">
                 {t("newTitle")}
               </h2>
@@ -324,7 +500,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               </Link>
             </div>
             <div className="mt-10">
-              <ProductGrid cards={featuredCards} />
+              <ProductGrid cards={featuredCards} scroller />
             </div>
           </div>
         </section>
@@ -335,7 +511,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div
           className={`${container} grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:items-center`}
         >
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7" data-reveal="self">
             <h2 id="home-pro" className="display-title text-4xl sm:text-5xl">
               {t("proTitle")}
             </h2>
@@ -386,7 +562,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div
           className={`${container} grid items-center gap-10 lg:grid-cols-12`}
         >
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5" data-reveal="self">
             <h2 id="home-measure" className="section-title">
               {t("measureTitle")}
             </h2>
@@ -423,6 +599,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </Link>
           </div>
           <ul
+            data-reveal="children"
             className={`mt-10 grid gap-8 ${projects.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}
           >
             {projects.slice(0, 3).map((project) => (
@@ -527,7 +704,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         className="border-t border-line pt-16 sm:pt-24"
       >
         <div className={container}>
-          <h2 id="home-visit" className="section-title">
+          <h2 id="home-visit" className="section-title" data-reveal="self">
             {t("visitTitle")}
           </h2>
           <div className="mt-10">

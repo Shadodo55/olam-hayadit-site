@@ -128,6 +128,14 @@ export const siteSettings = defineType({
       validation: requireHebrew,
     }),
     defineField({
+      name: "yearsExperience",
+      title: "שנות ניסיון",
+      description: "מוצג בדף הבית כ״20+ שנות ניסיון״. רק מספר.",
+      type: "number",
+      group: "business",
+      validation: (r) => r.integer().min(1).max(200),
+    }),
+    defineField({
       name: "slogan",
       title: "סלוגן",
       description:

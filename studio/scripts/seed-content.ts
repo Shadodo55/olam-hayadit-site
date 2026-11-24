@@ -271,6 +271,8 @@ async function main() {
   await client
     .patch("siteSettings")
     .setIfMissing({
+      // Confirmed by the store: over 20 years of experience.
+      yearsExperience: 20,
       slogan: {
         _type: "localeString",
         he: "איכות ושירות זה אנחנו!",
