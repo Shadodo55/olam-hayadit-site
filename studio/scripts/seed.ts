@@ -7,6 +7,7 @@
  * Document IDs never contain "." (dotted IDs are private in public datasets).
  */
 import { createReadStream, existsSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { getCliClient } from "sanity/cli";
 import { API_VERSION } from "../lib/constants";
@@ -20,7 +21,11 @@ import {
 } from "../seed/data";
 
 const client = getCliClient({ apiVersion: API_VERSION });
-const IMAGES = join(process.cwd(), "seed", "images");
+// Generated files live outside the repo (and outside OneDrive, which
+// struggles with thousands of synced files): ~/olam-hayadit-files.
+const FILES =
+  process.env.OLAM_FILES_DIR ?? join(homedir(), "olam-hayadit-files");
+const IMAGES = join(FILES, "sample-content", "images");
 
 const ref = (id: string) => ({ _type: "reference", _ref: id });
 const key = (s: string) => s.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20) || "k";

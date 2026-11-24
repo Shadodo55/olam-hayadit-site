@@ -210,6 +210,12 @@ Unit tests sit next to the code (`*.test.ts`).
 | `npm run test:e2e` | Playwright + axe against `out/` (build first)       |
 | `npm run deploy`   | deploy `out/` + Worker to Cloudflare                |
 
+Generated files (sample images/media, screenshots) never go inside the project:
+the project is in OneDrive, which struggles with many synced files. They live in
+`~/olam-hayadit-files/` (`sample-content/images`, `sample-content/media`,
+`screenshots/`; override with `OLAM_FILES_DIR`). Local Playwright output goes to
+the temp folder.
+
 Windows notes: in the owner's PowerShell, `.ps1` scripts are blocked; use
 `npm.cmd`/`npx.cmd` there. Windows PowerShell 5.1 `Get-Content`/`Set-Content` break
 Hebrew text: never use them to edit source files. Lighthouse can't launch Chrome

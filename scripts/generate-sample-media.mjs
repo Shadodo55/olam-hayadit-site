@@ -1,8 +1,8 @@
 /**
  * Generates neutral SAMPLE media for the seed data (clearly labelled):
- *   studio/seed/media/sample-hero.webm   short looping hero video (~6 s)
- *   studio/seed/media/sample-hero-poster.png  its still frame
- *   studio/seed/media/sample-catalog.pdf two-page sample catalog
+ *   ~/olam-hayadit-files/sample-content/media/sample-hero.webm   short looping hero video (~6 s)
+ *   ~/olam-hayadit-files/sample-content/media/sample-hero-poster.png  its still frame
+ *   ~/olam-hayadit-files/sample-content/media/sample-catalog.pdf two-page sample catalog
  *
  *   node scripts/generate-sample-media.mjs
  *
@@ -16,11 +16,16 @@ import {
   rmSync,
   readFileSync,
 } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { chromium } from "@playwright/test";
 
-const OUT = join(import.meta.dirname, "..", "studio", "seed", "media");
-const IMAGES = join(import.meta.dirname, "..", "studio", "seed", "images");
+// Generated files live outside the repo (and outside OneDrive, which
+// struggles with thousands of synced files): ~/olam-hayadit-files.
+const FILES =
+  process.env.OLAM_FILES_DIR ?? join(homedir(), "olam-hayadit-files");
+const OUT = join(FILES, "sample-content", "media");
+const IMAGES = join(FILES, "sample-content", "images");
 mkdirSync(OUT, { recursive: true });
 
 // Studio scene: three handles in different finishes, metal shading, soft

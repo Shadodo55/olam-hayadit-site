@@ -8,12 +8,17 @@
  *   npm run seed:content                                                                 (studio/)
  */
 import { createReadStream } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { getCliClient } from "sanity/cli";
 import { API_VERSION } from "../lib/constants";
 
 const client = getCliClient({ apiVersion: API_VERSION });
-const SEED = join(process.cwd(), "seed");
+// Generated files live outside the repo (and outside OneDrive, which
+// struggles with thousands of synced files): ~/olam-hayadit-files.
+const FILES =
+  process.env.OLAM_FILES_DIR ?? join(homedir(), "olam-hayadit-files");
+const SEED = join(FILES, "sample-content");
 const ref = (id: string) => ({ _type: "reference", _ref: id });
 let keyCounter = 0;
 const key = () => `k${(keyCounter++).toString(36)}`;

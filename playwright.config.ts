@@ -1,3 +1,5 @@
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 4173;
@@ -8,6 +10,11 @@ const PORT = 4173;
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  // Locally, traces and failure screenshots go to the temp folder (not into
+  // the project, which is synced by OneDrive). CI keeps the default.
+  outputDir: process.env.CI
+    ? "test-results"
+    : join(tmpdir(), "olam-hayadit-test-results"),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
