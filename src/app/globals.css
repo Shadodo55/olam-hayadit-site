@@ -474,3 +474,34 @@
     --count: 0;
   }
 }
+
+/* Page transition curtain (PageTransition.tsx). Rendered only when motion is
+   allowed; it rises from the bottom, shows the logo, then lifts away. */
+.curtain-in {
+  animation: curtain-in 0.38s cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+.curtain-out {
+  animation: curtain-out 0.55s cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+.curtain-in .curtain-logo {
+  animation: curtain-logo 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
+}
+.curtain-in .curtain-bar {
+  animation: grow-line 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+}
+@keyframes curtain-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes curtain-out {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes curtain-logo {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+}

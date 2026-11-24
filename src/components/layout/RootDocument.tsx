@@ -4,12 +4,18 @@ import { getCategoryTree } from "@/features/catalog/data";
 import { ConsentManager } from "@/features/consent/ConsentManager";
 import { fontVariables } from "@/lib/fonts";
 import { IntlProvider } from "@/lib/i18n/IntlProvider";
-import { localeDirection, localeHref, type Locale } from "@/lib/i18n/locales";
+import {
+  localeDirection,
+  localeHref,
+  localized,
+  type Locale,
+} from "@/lib/i18n/locales";
 import { clientMessagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
 import { getSiteSettings } from "@/lib/site/settings";
 import { themeInitScript, themePickerEnabled } from "@/lib/theme";
 import { MobileActionBar } from "./MobileActionBar";
+import { PageTransition } from "./PageTransition";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -70,6 +76,7 @@ export async function RootDocument({
           {/* Room for the phone action bar, so it never covers the footer. */}
           <div aria-hidden="true" className="h-16 lg:hidden print:hidden" />
           <MobileActionBar locale={locale} settings={settings} />
+          <PageTransition name={localized(settings.name, locale).value} />
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>

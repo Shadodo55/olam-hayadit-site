@@ -76,7 +76,8 @@ export function HeroVideo({
       <button
         type="button"
         onClick={toggle}
-        className="absolute end-4 bottom-4 z-10 inline-flex min-h-11 items-center gap-2 rounded-sm bg-ink/80 px-3 text-sm text-paper hover:bg-ink focus-visible:outline-paper"
+        // Icon only (a clean, quiet control); the name is for screen readers.
+        className="absolute end-4 bottom-4 z-10 flex size-11 items-center justify-center rounded-full bg-ink/55 text-paper transition-colors hover:bg-ink/80 focus-visible:outline-paper"
       >
         <span aria-hidden="true" className="inline-flex w-3 justify-center">
           {playing ? (
@@ -90,7 +91,7 @@ export function HeroVideo({
             </svg>
           )}
         </span>
-        {playing ? t("pause") : t("play")}
+        <span className="sr-only">{playing ? t("pause") : t("play")}</span>
       </button>
     </>
   );

@@ -9,13 +9,9 @@
  * Uses the Playwright Chromium already installed for tests. Real media
  * (an MP4 hero video, real PDF catalogs) is uploaded by the store in Sanity.
  */
-import {
-  mkdirSync,
-  readdirSync,
-  renameSync,
-  rmSync,
-  readFileSync,
-} from "node:fs";
+import { mkdirSync, readdirSync, readFileSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { chromium } from "@playwright/test";
@@ -74,29 +70,81 @@ const scene = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"
 
 const browser = await chromium.launch();
 
-// 1) Hero video: a slow, calm push-in on the scene (loops: in and back out).
-const tmp = join(OUT, "_rec");
-rmSync(tmp, { recursive: true, force: true });
-const context = await browser.newContext({
-  viewport: { width: 1280, height: 720 },
-  recordVideo: { dir: tmp, size: { width: 1280, height: 720 } },
-});
-const page = await context.newPage();
+// 1) Hero video: a slow push-in and back out, rendered frame by frame so the
+//    last frame flows straight into the first (a seamless loop: no blank or
+//    black frames, no jump). Encoded with the ffmpeg Playwright installs.
+const FPS = 24;
+const CYCLE = 12; // seconds: 6 s in + 6 s out
+const ffmpeg = (() => {
+  const base = join(
+    process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local"),
+    "ms-playwright",
+  );
+  const dir = readdirSync(base).find((d) => d.startsWith("ffmpeg"));
+  if (!dir)
+    throw new Error("Playwright ffmpeg not found (npx playwright install)");
+  return join(
+    base,
+    dir,
+    process.platform === "win32" ? "ffmpeg-win64.exe" : "ffmpeg-linux",
+  );
+})();
+
+const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 await page.setContent(`<html><body style="margin:0;background:#e6eae9;overflow:hidden">
   <style>
-    .s{position:absolute;inset:0;animation:push 6s ease-in-out infinite alternate;transform-origin:50% 40%}
-    @keyframes push{from{transform:scale(1)}to{transform:scale(1.06)}}
+    .s{position:absolute;inset:0;transform-origin:50% 40%}
     .l{position:absolute;top:20px;left:0;right:0;text-align:center;font:18px Arial;color:#6b7577;direction:rtl}
   </style>
   <div class="s">${scene}</div>
   <div class="l">וידאו לדוגמה</div></body></html>`);
-// Poster = a still of the same scene (shown before playback / with reduced motion).
 await page.screenshot({ path: join(OUT, "sample-hero-poster.png") });
-await page.waitForTimeout(6200);
-await context.close();
-const recorded = readdirSync(tmp).find((f) => f.endsWith(".webm"));
-renameSync(join(tmp, recorded), join(OUT, "sample-hero.webm"));
-rmSync(tmp, { recursive: true, force: true });
+
+const encoder = spawn(ffmpeg, [
+  "-y",
+  "-loglevel",
+  "error",
+  "-f",
+  "image2pipe",
+  "-c:v",
+  "mjpeg",
+  "-framerate",
+  String(FPS),
+  "-i",
+  "pipe:0", // this ffmpeg build has no "-" (stdin) alias,
+  "-c:v",
+  "libvpx-vp9",
+  "-b:v",
+  "1500k",
+  "-pix_fmt",
+  "yuv420p",
+  "-an",
+  join(OUT, "sample-hero.webm"),
+]);
+// Fail loudly instead of waiting forever if ffmpeg stops early.
+let ffmpegError = "";
+encoder.stderr.on("data", (chunk) => (ffmpegError += chunk));
+encoder.stdin.on("error", () => {});
+encoder.on("exit", (code) => {
+  if (code !== 0) {
+    console.error(ffmpegError);
+    process.exit(1);
+  }
+});
+const frames = FPS * CYCLE; // frame `frames` would equal frame 0: stop before it
+for (let i = 0; i < frames; i++) {
+  const phase = i / frames; // 0 → 1 over the cycle
+  const zoom = 1 + 0.06 * (0.5 - 0.5 * Math.cos(phase * 2 * Math.PI)); // 1 → 1.06 → 1, smooth
+  await page.evaluate((z) => {
+    document.querySelector(".s").style.transform = `scale(${z})`;
+  }, zoom);
+  const jpeg = await page.screenshot({ type: "jpeg", quality: 92 });
+  if (!encoder.stdin.write(jpeg)) await once(encoder.stdin, "drain");
+}
+encoder.stdin.end();
+const [code] = await once(encoder, "close");
+if (code !== 0) throw new Error(`ffmpeg failed (${code})`);
+await page.close();
 
 // 2) Sample PDF catalog.
 const img = (name) =>
