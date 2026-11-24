@@ -6,14 +6,16 @@ import { buttonClass } from "@/components/ui/button";
 import { ChatIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
-import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
+import { localeHref, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
 import {
+  formatAddress,
   getSiteSettings,
   wazeUrl,
   whatsappUrl,
   type SiteSettings,
 } from "@/lib/site/settings";
+import type { InquiryKind } from "./inquiry";
 import { InquiryForm } from "./InquiryForm";
 
 const container = "mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8";
@@ -141,7 +143,7 @@ function Form({
   locale,
   settings,
 }: {
-  kind: "contact" | "professional";
+  kind: InquiryKind;
   locale: Locale;
   settings: SiteSettings;
 }) {
@@ -171,10 +173,7 @@ async function ContactDetails({
     getTranslations({ locale, namespace: "header" }),
     getTranslations({ locale, namespace: "common" }),
   ]);
-  const { street, area, city } = settings.address;
-  const address = [street, area, city]
-    .flatMap((part) => (part ? [localized(part, locale).value] : []))
-    .join(", ");
+  const address = formatAddress(settings, locale);
   const whatsapp = whatsappUrl(settings.whatsapp);
   const phones = [
     { label: footer("storePhone"), phone: settings.phones.store },

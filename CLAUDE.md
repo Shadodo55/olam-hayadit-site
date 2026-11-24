@@ -129,7 +129,8 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   Turnstile, then a D1 copy, then the Resend email. Without `RESEND_API_KEY`,
   `INQUIRY_TO_EMAIL` and `TURNSTILE_SECRET_KEY` (Wrangler secrets) it answers 503
   `not_configured` and stores nothing; the form then offers phone/WhatsApp.
-- Turnstile loads only on the first focus inside a form, never on page view (the
+- Turnstile loads only when a form field (input/select/textarea) first gets
+  focus, never on page view (the
   consent test covers `/contact`). CSP allows `challenges.cloudflare.com` for
   script and frame. Site key: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (falls back to
   Cloudflare's always-pass test key).
@@ -137,8 +138,11 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   migration with `npx wrangler d1 migrations apply olam-hayadit-inquiries --remote`.
   A daily cron (`scheduled`) deletes copies older than 12 months.
 - Legal pages (`/accessibility`, `/privacy`, `/terms`, `/cookies`):
-  `features/legal/` (`content-he.tsx`, `content-en.tsx`). They are DRAFTS for a
-  lawyer, marked on the page. Business facts are injected from siteSettings
+  `features/legal/` (`content-he.tsx`, `content-en.tsx`). Privacy, terms and
+  cookies are DRAFTS for a lawyer, marked on the page; the accessibility
+  statement is published as is (it describes the site as built; keep it true).
+  Every service that receives visitor data (Cloudflare, Resend, Sanity CDN,
+  Google after consent) must be listed in the privacy text. Business facts are injected from siteSettings
   (missing → `<Placeholder>`); update `LEGAL_UPDATED` when the text changes.
   Shipping/returns drafts live in `docs/drafts/` and are not published.
 

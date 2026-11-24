@@ -66,7 +66,7 @@ export async function SiteHeader({
                 <li key={label}>
                   <a href={`tel:${phone.e164}`} className={utilityLink}>
                     <PhoneIcon width={16} height={16} />
-                    {label}
+                    {label}{" "}
                     <span
                       dir="ltr"
                       className="font-semibold text-on-band tabular"

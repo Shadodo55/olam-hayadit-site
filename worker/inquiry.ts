@@ -2,7 +2,7 @@
  * POST /api/inquiry: the contact and professionals forms.
  *
  * Order of checks: same-origin → size → honeypot → configured → rate limit →
- * field validation → Turnstile → save a copy in D1 → email the store (Resend).
+ * field validation → Turnstile → email the store (Resend) → save a copy in D1.
  * Personal data never goes to Sanity. D1 copies are deleted after 12 months
  * by the daily cron (see `deleteOldInquiries`).
  */
@@ -90,7 +90,11 @@ export async function handleInquiry(
   const inquiry = result.inquiry;
   const createdAt = new Date().toISOString();
 
-  // Copy first: if the email fails, the inquiry is still not lost.
+  // Email first: if it fails, the visitor is told so and nothing is kept
+  // (a retry won't create a duplicate). The D1 copy backs up sent inquiries.
+  const sent = await sendEmail(env, inquiry, createdAt);
+  if (!sent) return fail("send_failed", 502);
+
   if (env.DB) {
     try {
       await saveInquiry(env.DB, inquiry, createdAt);
@@ -98,9 +102,6 @@ export async function handleInquiry(
       console.error("[inquiry] D1 insert failed", error);
     }
   }
-
-  const sent = await sendEmail(env, inquiry, createdAt);
-  if (!sent) return fail("send_failed", 502);
   return reply({ ok: true });
 }
 

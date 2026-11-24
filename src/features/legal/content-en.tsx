@@ -69,9 +69,10 @@ export const legalEn: LegalContent = {
 
       <h2>How we check</h2>
       <p>
-        Every update runs automated accessibility tests (axe) on every type of
-        page, in Hebrew and English, on desktop and mobile, as well as keyboard
-        tests. A manual screen-reader review will be done before launch.
+        Every change to the site’s code runs automated accessibility tests (axe)
+        on every type of page, in Hebrew and English, on desktop and mobile, as
+        well as keyboard tests. A manual screen-reader review will be done
+        before launch.
       </p>
 
       <h2>Parts that may not be fully accessible</h2>
@@ -171,6 +172,12 @@ export const legalEn: LegalContent = {
         </li>
         <li>
           <strong>Resend</strong>: emailing each inquiry to us.
+        </li>
+        <li>
+          <strong>Sanity</strong>: hosting the site’s content (images, videos
+          and catalogs). When a page loads, your browser downloads them from
+          Sanity’s servers, which receive your IP address to do so. Form details
+          are never stored in Sanity.
         </li>
         <li>
           <strong>Google</strong>: the Google map on the “Visit the store” page

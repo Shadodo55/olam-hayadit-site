@@ -18,10 +18,12 @@ import {
 } from "@/lib/theme";
 
 /** Decorative preview colours per theme: paper, accent, band, highlight. */
+// A preview of OTHER themes, so it cannot use the active theme's tokens.
+// Keep in sync with globals.css (paper, accent, band, highlight).
 const swatches: Record<Theme, readonly string[]> = {
   petrol: ["#ffffff", "#0e5e66", "#0d2b2f", "#d4b98a"],
   logo: ["#ffffff", "#1aa39a", "#0e1716", "#c8102e"],
-  classic: ["#f5f1ea", "#d8c49c", "#1e1d1b", "#7a5a22"],
+  classic: ["#f5f1ea", "#d8c49c", "#1e1d1b", "#d8c49c"],
 };
 
 const CHANGE_EVENT = "olam-hayadit:theme";
@@ -81,15 +83,34 @@ export function ThemePicker() {
     };
   }, [open]);
 
+  // Lives in the footer (not floating, so it never covers content). The panel
+  // comes after the button in the DOM, so Tab goes from the button into it;
+  // it opens upwards.
   return (
-    <div
-      ref={rootRef}
-      className="fixed start-4 bottom-4 z-30 flex flex-col items-start gap-2 print:hidden"
-    >
+    <div ref={rootRef} className="relative print:hidden">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-expanded={open}
+        aria-controls={open ? panelId : undefined}
+        onClick={() => setOpen((value) => !value)}
+        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-on-band/80 underline-offset-4 hover:text-on-band hover:underline sm:min-h-9"
+      >
+        <span aria-hidden="true" className="flex">
+          {swatches[theme].slice(1, 4).map((color) => (
+            <span
+              key={color}
+              className="-ms-1.5 size-4 rounded-full border border-on-band/40 first:ms-0"
+              style={{ backgroundColor: color }}
+            />
+          ))}
+        </span>
+        {t("button")}
+      </button>
       {open && (
         <div
           id={panelId}
-          className="w-80 max-w-[calc(100vw-2rem)] rounded-sm border border-line-strong bg-paper p-4 text-ink"
+          className="on-light absolute start-0 bottom-full z-30 mb-2 w-80 max-w-[calc(100vw-2rem)] rounded-sm border border-line-strong bg-paper p-4 text-ink"
         >
           <fieldset>
             <legend className="font-display text-lg">{t("legend")}</legend>
@@ -106,7 +127,7 @@ export function ThemePicker() {
                     value={option}
                     checked={theme === option}
                     onChange={() => saveTheme(option)}
-                    className="size-4 accent-[var(--color-button)]"
+                    className="size-4 accent-button"
                   />
                   <span className="flex-1">{t(option)}</span>
                   <span aria-hidden="true" className="flex">
@@ -124,25 +145,6 @@ export function ThemePicker() {
           </fieldset>
         </div>
       )}
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-expanded={open}
-        aria-controls={open ? panelId : undefined}
-        onClick={() => setOpen((value) => !value)}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-paper px-4 text-sm font-semibold text-ink hover:bg-surface"
-      >
-        <span aria-hidden="true" className="flex">
-          {swatches[theme].slice(1, 4).map((color) => (
-            <span
-              key={color}
-              className="-ms-1.5 size-4 rounded-full border border-paper first:ms-0"
-              style={{ backgroundColor: color }}
-            />
-          ))}
-        </span>
-        {t("button")}
-      </button>
     </div>
   );
 }

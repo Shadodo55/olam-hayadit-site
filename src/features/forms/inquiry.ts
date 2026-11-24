@@ -37,6 +37,7 @@ export type InquiryErrors = Partial<Record<InquiryField, FieldError>>;
 export const LIMITS = {
   nameMin: 2,
   nameMax: 80,
+  phoneMax: 20,
   emailMax: 120,
   businessMax: 80,
   messageMin: 5,
@@ -86,7 +87,8 @@ export function validateInquiry(raw: unknown): ValidationResult {
   const phoneText = text(input.phone);
   const phone = parseIsraeliPhone(phoneText);
   if (!phoneText) errors.phone = "required";
-  else if (!phone || phoneText.length > 20) errors.phone = "invalid";
+  else if (!phone || phoneText.length > LIMITS.phoneMax)
+    errors.phone = "invalid";
 
   const email = text(input.email);
   if (email.length > LIMITS.emailMax) errors.email = "tooLong";
