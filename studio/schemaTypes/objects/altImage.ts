@@ -19,6 +19,16 @@ export const altImage = defineType({
       type: "localeString",
       validation: requireHebrew,
     }),
+    defineField({
+      name: "finish",
+      title: "הגימור שבתמונה",
+      description:
+        "כשהלקוח בוחר את הגימור הזה בעמוד המוצר, התמונה הזו תוצג. אפשר להשאיר ריק.",
+      type: "reference",
+      to: [{ type: "finish" }],
+      // Only product photos have a finish.
+      hidden: ({ document }) => document?._type !== "product",
+    }),
   ],
 });
 

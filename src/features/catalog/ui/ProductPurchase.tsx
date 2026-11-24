@@ -2,7 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { finishStore } from "./finish-store";
 import { formatPrice } from "@/commerce/money";
 import { buttonClass } from "@/components/ui/button";
 import { ChatIcon, PhoneIcon } from "@/components/ui/icons";
@@ -42,6 +43,10 @@ export function ProductPurchase(props: Props) {
       selectionForSku(props.variants, searchParams.get("sku")) ??
       defaultSelection(props.variants),
   );
+  // Tell the gallery which finish to show.
+  useEffect(() => {
+    finishStore.set(selection.finish);
+  }, [selection.finish]);
   const onSelect = (next: Selection) => {
     setSelection(next);
     const sku = findVariant(props.variants, next)?.sku;

@@ -187,3 +187,31 @@ test.describe("product page", () => {
     await expect(page.getByRole("note")).toContainText("מוצר לדוגמה");
   });
 });
+
+test("choosing a finish shows the photo in that finish", async ({ page }) => {
+  await page.goto("/catalog/handles/kitchen-furniture");
+  await page
+    .locator("main article")
+    .filter({ has: page.locator("span.sr-only", { hasText: /גימורים/ }) })
+    .first()
+    .locator("h3 a")
+    .click();
+  // The large photo's alt text names its finish (from the CMS).
+  const photo = page.getByTestId("gallery-main").locator("img");
+  const finishes = page
+    .getByRole("group", { name: /גימור/ })
+    .getByRole("radio");
+  await page.waitForURL(/\/product\//);
+  await expect(finishes.first()).toBeAttached();
+  const count = await finishes.count();
+  expect(count).toBeGreaterThan(1);
+  for (let i = 0; i < count; i++) {
+    const option = finishes.nth(i);
+    await option.check({ force: true });
+    const name = (
+      (await option.getAttribute("aria-label")) ??
+      (await option.locator("xpath=..").innerText())
+    ).trim();
+    await expect(photo).toHaveAttribute("alt", new RegExp(name));
+  }
+});
