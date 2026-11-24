@@ -1,12 +1,17 @@
 import Link from "next/link";
-import { HandleMark } from "@/components/ui/icons";
+import { LogoMark } from "./LogoMark";
+
+/** The name on two lines like the logo: the last word is the second line. */
+export function splitName(name: string): [string, string | null] {
+  const words = name.trim().split(/\s+/);
+  if (words.length < 2) return [name, null];
+  return [words.slice(0, -1).join(" "), words.at(-1)!];
+}
 
 /**
- * Typographic wordmark, styled per theme like the store's sign (heavy
- * turquoise letters with a black shadow in the "logo" theme). The name comes
- * from the CMS and can be any length: on small screens it wraps onto two
- * lines instead of overflowing. Replace with the real logo file when there is
- * one; every page follows.
+ * The logo as a lockup: the mark, then the store name on two lines (navy,
+ * then teal), as in the logo file. The mark stays on the physical left in
+ * both languages, like the logo. The name comes from the CMS.
  */
 export function Wordmark({
   name,
@@ -19,19 +24,30 @@ export function Wordmark({
   label: string;
   tone?: "light" | "dark";
 }) {
+  const [first, second] = splitName(name);
   return (
     <Link
       href={href}
       aria-label={label}
-      className="inline-flex min-h-11 min-w-0 items-center gap-3"
+      className="inline-flex min-h-11 min-w-0 items-center gap-2.5 rtl:flex-row-reverse"
     >
-      <HandleMark
-        className={`hidden shrink-0 min-[420px]:block ${tone === "dark" ? "text-wordmark-on-band" : "text-accent"}`}
+      <LogoMark
+        tone={tone}
+        className="hidden h-11 w-auto shrink-0 min-[380px]:block"
       />
-      <span
-        className={`min-w-0 wordmark text-[1.375rem] leading-[1.05] text-balance sm:text-2xl sm:whitespace-nowrap xl:text-[1.75rem] ${tone === "dark" ? "text-wordmark-on-band" : "text-wordmark"}`}
-      >
-        {name}
+      <span className="min-w-0 wordmark text-xl leading-none whitespace-nowrap sm:text-[1.375rem]">
+        <span
+          className={`block ${tone === "dark" ? "text-wordmark-on-band" : "text-wordmark"}`}
+        >
+          {first}
+        </span>{" "}
+        {second && (
+          <span
+            className={`block ${tone === "dark" ? "text-accent-on-band" : "text-wordmark-accent"}`}
+          >
+            {second}
+          </span>
+        )}
       </span>
     </Link>
   );

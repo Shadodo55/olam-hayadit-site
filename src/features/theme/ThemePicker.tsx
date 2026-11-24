@@ -22,7 +22,7 @@ import {
 // Keep in sync with globals.css (paper, accent, band, highlight).
 const swatches: Record<Theme, readonly string[]> = {
   petrol: ["#ffffff", "#0e5e66", "#0d2b2f", "#d4b98a"],
-  logo: ["#ffffff", "#1aa39a", "#0e1716", "#c8102e"],
+  logo: ["#ffffff", "#02a6ac", "#042040", "#f0b03f"],
   classic: ["#f5f1ea", "#d8c49c", "#1e1d1b", "#d8c49c"],
 };
 

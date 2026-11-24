@@ -10,24 +10,26 @@ import {
 // default theme's fonts are preloaded.
 
 /**
- * Display face of the default ("petrol") theme: precise and technical, like
- * a dimensioned drawing of a handle. Light (300) for large titles, medium
- * (500) for headings and the wordmark.
+ * Display face of the "petrol" theme: precise and technical, like a
+ * dimensioned drawing of a handle. Light (300) and medium (500) only.
  */
 export const plex = IBM_Plex_Sans_Hebrew({
   subsets: ["hebrew", "latin"],
   weight: ["300", "500"],
   variable: "--font-plex",
   display: "swap",
+  preload: false,
 });
 
-/** Heavy display face for the "logo" theme (close to the sign's lettering). */
+/**
+ * Display face of the default ("logo") theme: rounded and heavy like the
+ * logo's lettering. Variable, so titles can pair a light line with a heavy one.
+ */
 export const rubik = Rubik({
   subsets: ["hebrew", "latin"],
   weight: "variable",
   variable: "--font-rubik",
   display: "swap",
-  preload: false,
 });
 
 /** Serif display face for the "classic" theme. */

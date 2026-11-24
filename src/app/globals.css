@@ -3,8 +3,8 @@
 /*
  * Design tokens, semantic (what a colour is FOR, not what it looks like).
  * Three themes, switchable with <html data-theme="…"> (see lib/theme.ts):
- *   petrol  (default) deep petrol + brass, chosen by the store
- *   logo    the sign's turquoise + black + red
+ *   logo    (default) the store's logo: navy + teal, brass for actions
+ *   petrol  deep petrol + brass (chosen before the new logo)
  *   classic the original cream / brass / serif look
  *
  * Contrast is checked by axe in every theme (tests/e2e/themes.spec.ts):
@@ -15,7 +15,52 @@
  *   accent is for colour BLOCKS (with on-accent text) and large text only.
  */
 @theme {
-  /* theme "petrol" (default) */
+  /* theme "logo" (default): the store's logo, navy + teal, brass for actions */
+  --color-paper: #ffffff;
+  --color-surface: #eef4f5;
+  --color-ink: #0c1d33;
+  --color-ink-muted: #4a5b6d;
+  --color-accent: #02a6ac;
+  --color-on-accent: #042040;
+  --color-accent-ink: #007279;
+  --color-button: #042040;
+  --color-on-button: #ffffff;
+  /* Brass: the metal of the products. The main action (catalog) and the
+     colour blocks that should catch the eye; always with navy text. */
+  --color-highlight: #f0b03f;
+  --color-on-highlight: #042040;
+  --color-band: #042040;
+  --color-on-band: #ffffff;
+  --color-patina: #2e8b57;
+  /* Form errors, the same in every theme (>= 5.6:1 on every paper colour). */
+  --color-danger: #b42318;
+  --color-line: #dbe5e8;
+  --color-line-strong: #7b8a99;
+  --color-wordmark: #042040;
+  --color-wordmark-on-band: #ffffff;
+  /* The second line of the name (teal, >= 3:1 as large heavy text). */
+  --color-wordmark-accent: #029ca2;
+  --color-accent-on-band: #02a6ac;
+
+  --font-display: var(--font-rubik), "Arial", sans-serif;
+  --font-sans: var(--font-assistant), "Arial", sans-serif;
+
+  --radius-sm: 4px;
+}
+
+:root {
+  /* Two-weight titles, like the logo's two lines: a light line, then a
+     heavy one (.title-strong). h2/h3 are semibold; the name is heavy. */
+  --display-weight: 300;
+  --display-strong-weight: 700;
+  --heading-weight: 600;
+  --heading-tracking: -0.01em;
+  --wordmark-shadow: none;
+  --wordmark-weight: 800;
+}
+
+/* Deep petrol + brass (the store's choice before the new logo). */
+[data-theme="petrol"] {
   --color-paper: #ffffff;
   --color-surface: #f0f2f1;
   --color-ink: #172426;
@@ -25,61 +70,22 @@
   --color-accent-ink: #0e5e66;
   --color-button: #0e5e66;
   --color-on-button: #ffffff;
-  /* Brass: the metal of the products. Ribbon, primary button on dark bands. */
   --color-highlight: #d4b98a;
   --color-on-highlight: #0d2b2f;
   --color-band: #0d2b2f;
   --color-on-band: #ffffff;
-  --color-patina: #2e8b57;
-  /* Form errors, the same in every theme (>= 5.6:1 on every paper colour). */
-  --color-danger: #b42318;
   --color-line: #dde2e0;
   --color-line-strong: #7d8b8c;
   --color-wordmark: #0e5e66;
   --color-wordmark-on-band: #ffffff;
+  --color-wordmark-accent: #0e5e66;
   --color-accent-on-band: #d4b98a;
-
   --font-display: var(--font-plex), "Arial", sans-serif;
-  --font-sans: var(--font-assistant), "Arial", sans-serif;
-
-  --radius-sm: 4px;
-}
-
-:root {
-  /* Large display text (h1) is light and precise; h2/h3 are medium. */
   --display-weight: 300;
+  --display-strong-weight: 500;
   --heading-weight: 500;
   --heading-tracking: -0.015em;
-  --wordmark-shadow: none;
   --wordmark-weight: 500;
-}
-
-/* The store's sign: turquoise, black and red, heavy lettering. */
-[data-theme="logo"] {
-  --color-paper: #ffffff;
-  --color-surface: #eaf5f4;
-  --color-ink: #121212;
-  --color-ink-muted: #4a5553;
-  --color-accent: #1aa39a;
-  --color-on-accent: #121212;
-  --color-accent-ink: #0a6b64;
-  --color-button: #0a6b64;
-  --color-on-button: #ffffff;
-  --color-highlight: #c8102e;
-  --color-on-highlight: #ffffff;
-  --color-band: #0e1716;
-  --color-on-band: #ffffff;
-  --color-line: #d5e3e1;
-  --color-line-strong: #7e9693;
-  --color-wordmark: #1aa39a;
-  --color-wordmark-on-band: #1aa39a;
-  --color-accent-on-band: #1aa39a;
-  --font-display: var(--font-rubik), "Arial", sans-serif;
-  --display-weight: 800;
-  --heading-weight: 700;
-  --heading-tracking: -0.01em;
-  --wordmark-shadow: none;
-  --wordmark-weight: 800;
 }
 
 /* The original design (cream, brass, serif), kept for comparison. */
@@ -102,10 +108,12 @@
   --color-line-strong: #8c857a;
   --color-wordmark: #1e1d1b;
   --color-wordmark-on-band: #f5f1ea;
+  --color-wordmark-accent: #7a5a22;
   --color-accent-on-band: #d8c49c;
   --font-display: var(--font-frank-ruhl), "Times New Roman", serif;
   --radius-sm: 2px;
   --display-weight: 400;
+  --display-strong-weight: 600;
   --heading-weight: 500;
   --heading-tracking: 0;
 }
@@ -209,6 +217,11 @@
   font-weight: var(--display-weight);
   letter-spacing: var(--heading-tracking);
   line-height: 1.1;
+}
+
+/* The heavy second line of a two-weight title (hero, bands). */
+@utility title-strong {
+  font-weight: var(--display-strong-weight);
 }
 
 /* A full-width light band, even when the element sits in a centred container. */

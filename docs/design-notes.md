@@ -22,8 +22,14 @@ handle, with the products' own metal (brass) as the only warm accent.
   light headline, brass primary button, address) overlaps its lower edge on
   desktop. The sign's services sit beside the panel. Text never sits on the
   video itself.
-- **Categories:** picture tiles; with 5, 9, 13… categories the first is a
-  large 2×2 tile ("bento"), otherwise equal tiles that fill whole rows.
+- **Categories:** one full-width row per top category, the picture on
+  alternating sides, with its subcategories as chips and a "כל ה…" button
+  (inspired by a friend's draft; no numbering, since categories aren't a
+  sequence).
+- **New logo (default theme "logo"):** navy #042040 and teal #02A6AC from the
+  logo file; brass-gold #F0B03F is the one eye-catching action colour (always
+  with navy text). Titles pair a light line with a heavy line, like the logo's
+  two lines.
 - **Bands:** professionals on the brand colour (with the mobile number and
   WhatsApp), the measuring guide on a light band, inner page headers on a
   light band (`page-band`). The footer opens with an invitation to the

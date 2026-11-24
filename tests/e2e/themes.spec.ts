@@ -2,12 +2,12 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Colour themes (design demo, see src/lib/theme.ts). The default "petrol"
+ * Colour themes (design demo, see src/lib/theme.ts). The default "logo"
  * theme is covered by a11y.spec.ts; here every other theme must also pass
  * axe (contrast!) on the main page types, and the picker must work by keyboard.
  */
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
-const THEME_KEY = "olam-hayadit.theme";
+const THEME_KEY = "olam-hayadit.theme.v2";
 
 async function useTheme(page: Page, theme: string) {
   await page.addInitScript(
@@ -37,7 +37,7 @@ async function expectNoAxeViolations(page: Page) {
   ).toEqual([]);
 }
 
-for (const theme of ["logo", "classic"]) {
+for (const theme of ["petrol", "classic"]) {
   test.describe(`theme ${theme}`, () => {
     test.beforeEach(async ({ page }) => {
       await useTheme(page, theme);
@@ -69,7 +69,7 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   isMobile,
 }) => {
   test.skip(isMobile, "keyboard use is checked on desktop");
-  await useTheme(page, "petrol");
+  await useTheme(page, "logo");
   await page.goto("/");
   const html = page.locator("html");
   await expect(html).not.toHaveAttribute("data-theme", /.+/);
@@ -83,19 +83,19 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   await expect(button).toHaveAttribute("aria-expanded", "true");
 
   const group = page.getByRole("group", { name: "בחירת ערכת צבעים (דמו)" });
-  const petrol = group.getByRole("radio", { name: "פטרול (ברירת מחדל)" });
-  await expect(petrol).toBeChecked();
+  const logo = group.getByRole("radio", { name: "הלוגו החדש (ברירת מחדל)" });
+  await expect(logo).toBeChecked();
   // Tab goes from the button straight into the options (no lost focus).
   await page.keyboard.press("Tab");
-  await expect(petrol).toBeFocused();
+  await expect(logo).toBeFocused();
   await page.keyboard.press("ArrowDown");
-  await expect(group.getByRole("radio", { name: "צבעי השלט" })).toBeChecked();
-  await expect(html).toHaveAttribute("data-theme", "logo");
+  await expect(group.getByRole("radio", { name: "פטרול" })).toBeChecked();
+  await expect(html).toHaveAttribute("data-theme", "petrol");
 
   await page.keyboard.press("Escape");
   await expect(button).toBeFocused();
   await expect(button).toHaveAttribute("aria-expanded", "false");
 
   await page.reload();
-  await expect(html).toHaveAttribute("data-theme", "logo");
+  await expect(html).toHaveAttribute("data-theme", "petrol");
 });

@@ -57,10 +57,16 @@ Full approved plan (Hebrew): `docs/plan.md`.
 - i18n: Hebrew (RTL) at `/`, English (LTR) at `/en`. Two root layouts:
   `src/app/(he)/` and `src/app/(en)/en/`. Route files there stay thin and render
   shared components from `src/features/`. 404: `src/app/global-not-found.tsx`.
-- Fonts via `next/font` (self-hosted): IBM Plex Sans Hebrew (display, default
-  theme; weights 300/500 only, so no bold on headings), Rubik ("logo" theme) and
-  Frank Ruhl Libre ("classic"), both not preloaded, Assistant (text).
-- Colour themes (design demo): `petrol` (default, chosen by the store), `logo`,
+- Fonts via `next/font` (self-hosted): Rubik (display, default "logo" theme,
+  variable: light line + heavy line titles via `title-strong`), IBM Plex Sans
+  Hebrew ("petrol", 300/500 only) and Frank Ruhl Libre ("classic"), both not
+  preloaded, Assistant (text).
+- Logo: `components/brand/LogoMark.tsx` is the store's logo mark redrawn as
+  SVG (navy frame/plate, teal lever); `Wordmark` puts the name on two lines
+  like the logo file. Favicon/og: `public/icon.svg` +
+  `node scripts/generate-brand-images.mjs`.
+- Colour themes (design demo): `logo` (default: the new logo's navy #042040 +
+  teal #02A6AC, brass-gold `highlight` for the main actions), `petrol`,
   `classic`, set with
   `<html data-theme>`; tokens in `globals.css`, list in `src/lib/theme.ts`. Use the
   semantic colour classes (`accent`, `on-accent`, `accent-ink`, `button`, `band`,
@@ -110,8 +116,9 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   no autoplay with reduced motion) → poster image → `DimensionDrawing` fallback.
 - Home conversion & motion (owner asked for "more motion, like premium sites";
   the store has 20+ years, `siteSettings.yearsExperience`): live open-status pill,
-  WhatsApp CTA, trust grid (years count-up, family business, showroom, stock
-  check), services marquee (pausable button + hover/focus; static list with
+  WhatsApp CTA, two-weight hero title (two sentences in the headline → the
+  second is the heavy teal line), facts mosaic (years count-up, open days,
+  opening time, showroom; all from siteSettings), services marquee (pausable button + hover/focus; static list with
   reduced motion), "how it works" steps, phone action bar (`MobileActionBar`,
   call/WhatsApp/Waze; a spacer keeps it off the footer), WhatsApp button in the
   desktop header.
