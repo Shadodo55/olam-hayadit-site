@@ -31,6 +31,8 @@
   --color-band: #0d2b2f;
   --color-on-band: #ffffff;
   --color-patina: #2e8b57;
+  /* Form errors, the same in every theme (>= 5.6:1 on every paper colour). */
+  --color-danger: #b42318;
   --color-line: #dde2e0;
   --color-line-strong: #7d8b8c;
   --color-wordmark: #0e5e66;
@@ -218,5 +220,41 @@
   }
   @media (width >= 40rem) {
     font-size: var(--text-4xl);
+  }
+}
+
+/* Long legal texts (accessibility statement, privacy, terms, cookies). */
+@utility legal-prose {
+  & h2 {
+    margin-top: 2.5rem;
+    font-size: var(--text-2xl);
+  }
+  & p {
+    margin-top: 1rem;
+  }
+  & ul {
+    margin-top: 1rem;
+    list-style: disc;
+    padding-inline-start: 1.5rem;
+  }
+  & li {
+    margin-top: 0.5rem;
+  }
+  & strong {
+    font-weight: 600;
+  }
+  & table {
+    border-collapse: collapse;
+    font-size: var(--text-base);
+  }
+  & th,
+  & td {
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.75rem;
+    text-align: start;
+    vertical-align: top;
+  }
+  & th {
+    font-weight: 600;
   }
 }

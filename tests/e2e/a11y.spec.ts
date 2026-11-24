@@ -77,7 +77,8 @@ test("no third-party requests are made before consent", async ({ page }) => {
     const url = new URL(request.url());
     if (!allowed.has(url.hostname)) external.push(url.href);
   });
-  for (const path of ["/", "/visit", "/catalog/handles"]) {
+  // Forms load spam protection (Turnstile) only once someone starts typing.
+  for (const path of ["/", "/visit", "/catalog/handles", "/contact"]) {
     await page.goto(path);
     await page.waitForLoadState("networkidle");
   }
