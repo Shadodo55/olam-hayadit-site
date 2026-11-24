@@ -6,24 +6,28 @@ import { CookieSettingsButton } from "@/features/consent/CookieSettingsButton";
 import { staticPageMetadata } from "@/features/content/pages";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
-import { getSiteSettings } from "@/lib/site/settings";
+import { formatAddress, getSiteSettings } from "@/lib/site/settings";
 import { legalEn } from "./content-en";
 import { legalHe } from "./content-he";
-import { LEGAL_UPDATED, type LegalFacts, type LegalPage as Key } from "./types";
+import {
+  LEGAL_UPDATED,
+  type LegalFacts,
+  type LegalPage as LegalPageKey,
+} from "./types";
 
 const content = { he: legalHe, en: legalEn };
 
-export function legalMetadata(locale: Locale, page: Key): Metadata {
+export function legalMetadata(locale: Locale, page: LegalPageKey): Metadata {
   return staticPageMetadata(locale, page);
 }
 
-/** Accessibility statement, privacy, terms and cookies: drafts, clearly marked. */
+/** Accessibility statement, plus privacy, terms and cookies (drafts, clearly marked). */
 export async function LegalPage({
   locale,
   page,
 }: {
   locale: Locale;
-  page: Key;
+  page: LegalPageKey;
 }) {
   const [pages, t, common, settings] = await Promise.all([
     getTranslations({ locale, namespace: "pages" }),
@@ -32,12 +36,9 @@ export async function LegalPage({
     getSiteSettings(),
   ]);
   const missing = <Placeholder label={common("placeholder")} />;
-  const or = (value: string | null, ltr = false) =>
+  const orMissing = (value: string | null, ltr = false) =>
     value ? ltr ? <span dir="ltr">{value}</span> : value : missing;
-  const { street, area, city } = settings.address;
-  const address = [street, area, city]
-    .flatMap((part) => (part ? [localized(part, locale).value] : []))
-    .join(", ");
+  const address = formatAddress(settings, locale);
   const store = settings.phones.store;
 
   const facts: LegalFacts = {
@@ -60,9 +61,9 @@ export async function LegalPage({
     ) : (
       missing
     ),
-    registrationNumber: or(settings.registrationNumber, true),
-    coordinator: or(settings.accessibility.coordinator),
-    coordinatorContact: or(settings.accessibility.contact, true),
+    registrationNumber: orMissing(settings.registrationNumber, true),
+    coordinator: orMissing(settings.accessibility.coordinator),
+    coordinatorContact: orMissing(settings.accessibility.contact, true),
     missing,
     links: {
       privacy: localeHref(locale, pagePaths.privacy),
@@ -87,9 +88,13 @@ export async function LegalPage({
           {t("updated")} <time dateTime={LEGAL_UPDATED}>{updated}</time>
         </p>
       </PageHeader>
-      <p className="mt-10 max-w-prose rounded-sm border-2 border-highlight bg-paper p-4 font-semibold">
-        {t("draft")}
-      </p>
+      {/* The accessibility statement is required by law and describes the
+          site as built, so it is published as is; the others await a lawyer. */}
+      {page !== "accessibility" && (
+        <p className="mt-10 max-w-prose rounded-sm border-2 border-highlight bg-paper p-4 font-semibold">
+          {t("draft")}
+        </p>
+      )}
       <div className="legal-prose mt-8 max-w-prose text-lg leading-relaxed">
         {content[locale][page](facts)}
       </div>

@@ -152,6 +152,20 @@
     outline-color: var(--color-on-band);
   }
 
+  /* A light panel inside a dark band (e.g. the colour picker in the footer). */
+  .on-dark .on-light :focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  /* Tailwind 4 no longer gives buttons a pointer cursor; clickable things do. */
+  button:not(:disabled):not([aria-disabled="true"]),
+  summary,
+  select,
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
   /* Lock page scroll while a modal dialog (mobile menu, cookie settings) is open. */
   html:has(dialog[open]) {
     overflow: hidden;

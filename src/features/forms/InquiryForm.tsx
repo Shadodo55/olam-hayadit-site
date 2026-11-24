@@ -29,6 +29,16 @@ const SERVER_ERRORS: Record<string, Failure> = {
   captcha: "captcha",
 };
 
+/** Length limits shown in "too long" messages. */
+const MAX_LENGTH: Record<InquiryField, number> = {
+  name: LIMITS.nameMax,
+  phone: LIMITS.phoneMax,
+  email: LIMITS.emailMax,
+  profession: 0,
+  business: LIMITS.businessMax,
+  message: LIMITS.messageMax,
+};
+
 const input =
   "mt-2 block min-h-12 w-full rounded-sm border bg-paper px-3 py-2 text-base text-ink";
 
@@ -50,6 +60,8 @@ export function InquiryForm({
   whatsappHref: string | null;
 }) {
   const t = useTranslations("forms");
+  const tHeader = useTranslations("header");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const id = useId();
   const fieldId = (field: InquiryField) => `${id}-${field}`;
@@ -62,6 +74,7 @@ export function InquiryForm({
 
   // Turnstile: one widget, one single-use token at a time.
   const widgetRef = useRef<HTMLDivElement>(null);
+  const turnstileStarted = useRef(false);
   const turnstile = useRef<{ api: TurnstileApi; id?: string } | null>(null);
   const token = useRef<string | null>(null);
   const waiters = useRef<((token: string | null) => void)[]>([]);
@@ -72,9 +85,9 @@ export function InquiryForm({
   };
 
   const startTurnstile = () => {
-    if (turnstile.current || !widgetRef.current) return;
+    if (turnstileStarted.current || !widgetRef.current) return;
+    turnstileStarted.current = true;
     const element = widgetRef.current;
-    turnstile.current = { api: undefined as unknown as TurnstileApi };
     loadTurnstile()
       .then((api) => {
         const widgetId = api.render(element, {
@@ -89,7 +102,7 @@ export function InquiryForm({
         turnstile.current = { api, id: widgetId };
       })
       .catch(() => {
-        turnstile.current = null;
+        turnstileStarted.current = false;
         settle(null);
       });
   };
@@ -147,7 +160,7 @@ export function InquiryForm({
     }
     // Tokens are single-use: get a fresh one for any later attempt.
     token.current = null;
-    turnstile.current?.api?.reset(turnstile.current.id);
+    turnstile.current?.api.reset(turnstile.current.id);
 
     const response = await fetch("/api/inquiry", {
       method: "POST",
@@ -171,7 +184,12 @@ export function InquiryForm({
   }
 
   const clearError = (field: InquiryField) => {
-    if (errors[field]) setErrors(({ [field]: _, ...rest }) => rest);
+    if (!errors[field]) return;
+    setErrors((current) => {
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
   };
 
   if (status === "sent") {
@@ -202,7 +220,9 @@ export function InquiryForm({
 
   const errorList = inquiryFields.filter((field) => errors[field]);
   const errorText = (field: InquiryField) =>
-    errors[field] ? t(`errors.${field}.${errors[field]}`) : null;
+    errors[field]
+      ? t(`errors.${field}.${errors[field]}`, { max: MAX_LENGTH[field] })
+      : null;
   const describedBy = (field: InquiryField, hint = false) =>
     [
       hint && `${fieldId(field)}-hint`,
@@ -234,7 +254,10 @@ export function InquiryForm({
     <form
       noValidate
       onSubmit={onSubmit}
-      onFocusCapture={startTurnstile}
+      onFocusCapture={(event) => {
+        // Only when someone starts filling in a field (not on a link).
+        if (event.target.matches("input, select, textarea")) startTurnstile();
+      }}
       className="relative space-y-6"
     >
       {errorList.length > 0 && (
@@ -269,7 +292,7 @@ export function InquiryForm({
           id={fieldId("name")}
           name="name"
           autoComplete="name"
-          maxLength={LIMITS.nameMax + 20}
+          maxLength={LIMITS.nameMax}
           aria-required="true"
           aria-invalid={errors.name ? true : undefined}
           aria-describedby={describedBy("name")}
@@ -294,7 +317,7 @@ export function InquiryForm({
           dir="ltr"
           autoComplete="tel"
           inputMode="tel"
-          maxLength={20}
+          maxLength={LIMITS.phoneMax}
           aria-required="true"
           aria-invalid={errors.phone ? true : undefined}
           aria-describedby={describedBy("phone", true)}
@@ -392,7 +415,7 @@ export function InquiryForm({
           id={`${id}-marketing`}
           name="marketing"
           type="checkbox"
-          className="mt-1 size-5 shrink-0 accent-[var(--color-button)]"
+          className="mt-1 size-5 shrink-0 accent-button"
         />
         <label htmlFor={`${id}-marketing`}>{t("marketing")}</label>
       </div>
@@ -445,8 +468,8 @@ export function InquiryForm({
                   className={buttonClass("outline", "sm")}
                 >
                   <ChatIcon />
-                  {t("whatsapp")}
-                  <span className="sr-only"> {t("opensInNewTab")}</span>
+                  {tHeader("whatsapp")}
+                  <span className="sr-only"> {tCommon("opensInNewTab")}</span>
                 </a>
               )}
             </div>

@@ -138,7 +138,7 @@ export const siteSettings = defineType({
     defineField({
       name: "services",
       title: "מה עושים אצלנו (כמו בשלט)",
-      description: "רשימה קצרה שמוצגת כפס בדף הבית. 3 עד 5 פריטים קצרים.",
+      description: "רשימה קצרה שמוצגת בדף הבית, עד 6 פריטים קצרים.",
       type: "array",
       group: "business",
       of: [defineArrayMember({ type: "localeString" })],

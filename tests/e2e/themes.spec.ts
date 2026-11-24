@@ -74,7 +74,10 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   const html = page.locator("html");
   await expect(html).not.toHaveAttribute("data-theme", /.+/);
 
-  const button = page.getByRole("button", { name: "ערכת צבעים" });
+  // In the footer, not floating over the content.
+  const button = page
+    .getByRole("contentinfo")
+    .getByRole("button", { name: "ערכת צבעים" });
   await button.focus();
   await page.keyboard.press("Enter");
   await expect(button).toHaveAttribute("aria-expanded", "true");
@@ -82,7 +85,9 @@ test("the theme picker works by keyboard and remembers the choice", async ({
   const group = page.getByRole("group", { name: "בחירת ערכת צבעים (דמו)" });
   const petrol = group.getByRole("radio", { name: "פטרול (ברירת מחדל)" });
   await expect(petrol).toBeChecked();
-  await petrol.focus();
+  // Tab goes from the button straight into the options (no lost focus).
+  await page.keyboard.press("Tab");
+  await expect(petrol).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(group.getByRole("radio", { name: "צבעי השלט" })).toBeChecked();
   await expect(html).toHaveAttribute("data-theme", "logo");

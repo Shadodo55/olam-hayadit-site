@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fontVariables } from "@/lib/fonts";
+import { icons } from "@/lib/seo/metadata";
 import { themeInitScript, themePickerEnabled } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "הדף לא נמצא | Page not found",
   robots: { index: false },
+  icons,
 };
 
 /** Bilingual 404: there is no locale to read from an unmatched URL. */

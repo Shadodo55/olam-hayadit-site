@@ -16,12 +16,18 @@ export const pages = [
   { path: "/catalogs", lang: "he", dir: "rtl" },
   // forms
   { path: "/contact", lang: "he", dir: "rtl" },
+  { path: "/en/contact", lang: "en", dir: "ltr" },
+  { path: "/professionals", lang: "he", dir: "rtl" },
   { path: "/en/professionals", lang: "en", dir: "ltr" },
-  // legal drafts
+  // legal pages
   { path: "/accessibility", lang: "he", dir: "rtl" },
+  { path: "/en/accessibility", lang: "en", dir: "ltr" },
+  { path: "/privacy", lang: "he", dir: "rtl" },
   { path: "/en/privacy", lang: "en", dir: "ltr" },
   { path: "/terms", lang: "he", dir: "rtl" },
+  { path: "/en/terms", lang: "en", dir: "ltr" },
   { path: "/cookies", lang: "he", dir: "rtl" },
+  { path: "/en/cookies", lang: "en", dir: "ltr" },
   // catalog
   { path: "/catalog", lang: "he", dir: "rtl" },
   { path: "/catalog/handles/door", lang: "he", dir: "rtl" },

@@ -25,7 +25,11 @@ import { StoreVisit } from "@/features/store-info/StoreVisit";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import sanityImageLoader from "@/lib/sanity/image-loader";
 import { pagePaths } from "@/lib/routes";
-import { getSiteSettings, whatsappUrl } from "@/lib/site/settings";
+import {
+  formatAddress,
+  getSiteSettings,
+  whatsappUrl,
+} from "@/lib/site/settings";
 import { HeroVideo } from "./HeroVideo";
 
 const container = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8";
@@ -104,10 +108,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     : { value: t("intro"), isFallback: false };
   const slogan = settings.slogan ? localized(settings.slogan, locale) : null;
   const services = settings.services.map((s) => localized(s, locale));
-  const { street, area, city } = settings.address;
-  const address = [street, area, city]
-    .flatMap((part) => (part ? [localized(part, locale).value] : []))
-    .join(", ");
+  const address = formatAddress(settings, locale);
   const proPhone = settings.phones.mobile ?? settings.phones.store;
   const whatsapp = whatsappUrl(settings.whatsapp);
 

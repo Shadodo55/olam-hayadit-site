@@ -119,9 +119,6 @@
     "projectsTitle": "Projects & inspiration",
     "allProjects": "All projects",
     "servicesTitle": "What you'll find here",
-    "phoneStore": "Store",
-    "phoneMobile": "Mobile",
-    "callTitle": "Phone numbers",
     "proPhoneLabel": "Mobile for professionals and stock checks"
   },
   "catalog": {
@@ -351,19 +348,19 @@
       "name": {
         "required": "Enter your name",
         "tooShort": "The name is too short",
-        "tooLong": "The name is too long (up to 80 characters)",
+        "tooLong": "The name is too long (up to {max} characters)",
         "invalid": "The name contains characters we cannot accept"
       },
       "phone": {
         "required": "Enter a phone number",
         "tooShort": "The phone number is too short",
-        "tooLong": "The phone number is too long",
+        "tooLong": "The phone number is too long (up to {max} characters)",
         "invalid": "Enter an Israeli phone number, for example 052-1234567"
       },
       "email": {
         "required": "Enter an email address",
         "tooShort": "The email address is too short",
-        "tooLong": "The email address is too long",
+        "tooLong": "The email address is too long (up to {max} characters)",
         "invalid": "Enter a valid email address, for example name@example.com"
       },
       "profession": {
@@ -375,13 +372,13 @@
       "business": {
         "required": "Enter the business name",
         "tooShort": "The business name is too short",
-        "tooLong": "The business name is too long (up to 80 characters)",
+        "tooLong": "The business name is too long (up to {max} characters)",
         "invalid": "The business name contains characters we cannot accept"
       },
       "message": {
         "required": "Tell us how we can help",
         "tooShort": "Add a few more words",
-        "tooLong": "The message is too long (up to 2,000 characters)",
+        "tooLong": "The message is too long (up to {max, number} characters)",
         "invalid": "The message contains characters we cannot accept"
       }
     },
@@ -393,9 +390,7 @@
     },
     "successTitle": "Thank you, your inquiry was sent",
     "successBody": "We will get back to you soon, during store opening hours.",
-    "urgent": "Urgent question?",
-    "whatsapp": "WhatsApp",
-    "opensInNewTab": "(opens in a new tab)"
+    "urgent": "Urgent question?"
   },
   "contactPage": {
     "intro": "A question about a product, stock or which handle fits? Write to us and we will get back to you, or call us directly.",

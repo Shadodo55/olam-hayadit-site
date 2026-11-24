@@ -164,7 +164,7 @@ describe("POST /api/inquiry", () => {
     expect((await handleRequest(post(big), env)).status).toBe(413);
   });
 
-  it("reports a failed email but keeps the copy", async () => {
+  it("reports a failed email and keeps no copy", async () => {
     const { env, bind } = makeEnv();
     fetchMock.mockImplementation(async (url: string) =>
       url.includes("turnstile")
@@ -173,7 +173,7 @@ describe("POST /api/inquiry", () => {
     );
     const response = await handleRequest(post(valid), env);
     expect(response.status).toBe(502);
-    expect(bind).toHaveBeenCalledOnce();
+    expect(bind).not.toHaveBeenCalled();
   });
 });
 

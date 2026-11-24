@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { getCategoryTree } from "@/features/catalog/data";
 import { ConsentManager } from "@/features/consent/ConsentManager";
-import { ThemePicker } from "@/features/theme/ThemePicker";
 import { fontVariables } from "@/lib/fonts";
 import { IntlProvider } from "@/lib/i18n/IntlProvider";
 import { localeDirection, localeHref, type Locale } from "@/lib/i18n/locales";
@@ -67,7 +66,6 @@ export async function RootDocument({
             settings={settings}
             categories={categories}
           />
-          {themePickerEnabled && <ThemePicker />}
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>

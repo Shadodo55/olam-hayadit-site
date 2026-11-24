@@ -8,8 +8,10 @@ import type { Category } from "@/features/catalog/category-tree";
 import { CookieSettingsButton } from "@/features/consent/CookieSettingsButton";
 import { groupHours } from "@/features/store-info/hours";
 import { UpcomingSpecialDays } from "@/features/store-info/UpcomingSpecialDays";
+import { ThemePicker } from "@/features/theme/ThemePicker";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { wazeUrl, whatsappUrl, type SiteSettings } from "@/lib/site/settings";
+import { themePickerEnabled } from "@/lib/theme";
 import {
   categoryNav,
   footerInfoPages,
@@ -229,6 +231,11 @@ export async function SiteFooter({
                   {t("cookieSettings")}
                 </CookieSettingsButton>
               </li>
+              {themePickerEnabled && (
+                <li>
+                  <ThemePicker />
+                </li>
+              )}
             </ul>
           </nav>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-on-band/70">

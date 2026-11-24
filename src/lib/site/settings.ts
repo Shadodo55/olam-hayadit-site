@@ -3,7 +3,7 @@ import type {
   SpecialDay,
   WeeklyHours,
 } from "@/features/store-info/hours";
-import type { Localized } from "@/lib/i18n/locales";
+import { localized, type Locale, type Localized } from "@/lib/i18n/locales";
 import { sanityFetch } from "@/lib/sanity/client";
 import { parseIsraeliPhone, type Phone } from "./phone";
 
@@ -187,4 +187,12 @@ export function whatsappUrl(
   if (!phone) return null;
   const base = `https://wa.me/${phone.waId}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+/** "Street, area, city" in the page's language; "" when nothing is set. */
+export function formatAddress(settings: SiteSettings, locale: Locale): string {
+  const { street, area, city } = settings.address;
+  return [street, area, city]
+    .flatMap((part) => (part ? [localized(part, locale).value] : []))
+    .join(", ");
 }
