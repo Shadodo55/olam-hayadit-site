@@ -2,7 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { HandleMark } from "@/components/ui/icons";
+import { LogoMark } from "@/components/brand/LogoMark";
+import { splitName } from "@/components/brand/Wordmark";
 
 type Phase = "idle" | "cover" | "reveal";
 
@@ -13,7 +14,7 @@ const REVEAL_MS = 550;
 const SAFETY_MS = 2500;
 
 /**
- * A short branded curtain (the handle mark and the store's name on petrol)
+ * A short branded curtain (the logo and the store's name on the brand band)
  * between pages, instead of an instant jump. It starts when an internal link
  * is clicked and lifts once the new page is in place. Decorative: hidden from
  * screen readers, never takes focus, never blocks clicks; off with reduced
@@ -86,14 +87,16 @@ export function PageTransition({ name }: { name: string }) {
   }, [pathname, phase]);
 
   if (phase === "idle") return null;
+  const [first, second] = splitName(name);
   return (
     <div
       aria-hidden="true"
       className={`page-curtain on-dark pointer-events-none fixed inset-0 z-[60] flex flex-col items-center justify-center gap-5 bg-band text-on-band print:hidden ${phase === "cover" ? "curtain-in" : "curtain-out"}`}
     >
-      <HandleMark className="curtain-logo h-auto w-24 text-wordmark-on-band" />
-      <p className="curtain-logo wordmark text-3xl text-wordmark-on-band sm:text-4xl">
-        {name}
+      <LogoMark tone="dark" className="curtain-logo h-auto w-32" />
+      <p className="curtain-logo text-center wordmark text-3xl leading-tight text-wordmark-on-band sm:text-4xl">
+        {first}
+        {second && <span className="block text-accent-on-band">{second}</span>}
       </p>
       <span className="curtain-bar h-0.5 w-40 bg-accent-on-band" />
     </div>

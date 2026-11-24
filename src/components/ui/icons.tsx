@@ -89,22 +89,3 @@ export const ChevronDownIcon = (p: IconProps) => (
     <path d="M6 9l6 6 6-6" />
   </Svg>
 );
-
-/**
- * The brand mark: a bar pull handle seen from the side. It doubles as a
- * hole-to-hole dimension line (the two posts are the screw centres).
- */
-export const HandleMark = (p: IconProps) => (
-  <svg
-    viewBox="0 0 40 14"
-    width="40"
-    height="14"
-    aria-hidden="true"
-    focusable="false"
-    {...p}
-  >
-    <rect x="0" y="0" width="40" height="3.2" rx="1.6" fill="currentColor" />
-    <rect x="6" y="3" width="3.2" height="11" fill="currentColor" />
-    <rect x="30.8" y="3" width="3.2" height="11" fill="currentColor" />
-  </svg>
-);

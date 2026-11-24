@@ -15,10 +15,17 @@ import { chromium } from "@playwright/test";
 
 const PUBLIC = join(import.meta.dirname, "..", "public");
 const icon = readFileSync(join(PUBLIC, "icon.svg"), "utf8");
-const handle = `<svg viewBox="0 0 40 14" width="200" height="70" aria-hidden="true">
-  <rect x="0" y="0" width="40" height="3.2" rx="1.6" fill="#ffffff"/>
-  <rect x="6" y="3" width="3.2" height="11" fill="#ffffff"/>
-  <rect x="30.8" y="3" width="3.2" height="11" fill="#ffffff"/></svg>`;
+// The logo's mark (same paths as src/components/brand/LogoMark.tsx), on navy.
+const mark = `<svg viewBox="0 0 150 100" width="300" height="200" aria-hidden="true">
+  <g fill="#ffffff">
+    <path d="M70 0H24A24 24 0 0 0 0 24V76A24 24 0 0 0 24 100H36L29 87A15 15 0 0 1 14 72V28A15 15 0 0 1 29 13H59Z"/>
+    <path fill-rule="evenodd" d="M18 44A15 15 0 0 1 47.87 42H42.94A12 12 0 1 0 42.94 58H48V83H29A11 11 0 0 1 18 72ZM31.3 72.62A4 4 0 1 1 34.7 72.62L35.6 79H30.4Z"/>
+  </g>
+  <g fill="#02a6ac">
+    <circle cx="34" cy="50" r="9.5"/>
+    <path d="M34 44H95A6 6 0 0 1 95 56H34Z"/>
+    <path d="M34.5 93H146.5A3.5 3.5 0 0 1 146.5 100H38.3Z"/>
+  </g></svg>`;
 
 const browser = await chromium.launch();
 
@@ -35,23 +42,21 @@ await iconPage.screenshot({
 
 const og = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 await og.setContent(`<html dir="rtl" lang="he"><head>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;500&family=Assistant:wght@400&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;800&family=Assistant:wght@400&display=block">
 <style>
-  body{margin:0;width:1200px;height:630px;background:#0d2b2f;color:#fff;font-family:"IBM Plex Sans Hebrew";position:relative;overflow:hidden}
+  body{margin:0;width:1200px;height:630px;background:#042040;color:#fff;font-family:Rubik;position:relative;overflow:hidden}
   .wrap{position:absolute;inset:0;padding:84px 96px;display:flex;flex-direction:column;justify-content:center}
-  .slogan{display:flex;align-items:center;gap:20px;color:#d4b98a;font-weight:500;font-size:34px}
-  .slogan i{display:block;width:64px;height:2px;background:#d4b98a}
-  h1{margin:28px 0 0;font-weight:300;font-size:104px;line-height:1.02;letter-spacing:-0.015em}
-  p{margin:28px 0 0;font-family:Assistant;font-size:34px;color:rgba(255,255,255,.85)}
-  .mark{position:absolute;left:96px;bottom:84px;opacity:.9}
-  .bar{position:absolute;left:0;right:0;bottom:0;height:12px;background:#0e5e66}
+  h1{margin:0;font-weight:800;font-size:112px;line-height:1}
+  h1 span{display:block;color:#02a6ac}
+  p{margin:36px 0 0;font-family:Assistant;font-size:36px;color:rgba(255,255,255,.85)}
+  .mark{position:absolute;left:96px;top:50%;transform:translateY(-50%)}
+  .bar{position:absolute;left:0;right:0;bottom:0;height:14px;background:#f0b03f}
 </style></head><body>
   <div class="wrap">
-    <div class="slogan"><i></i>איכות ושירות זה אנחנו!</div>
-    <h1>עולם הידית והפרזול</h1>
+    <h1>עולם הידית <span>והפרזול</span></h1>
     <p>ידיות, פרזול ואביזרי אמבטיה. תלפיות, ירושלים</p>
   </div>
-  <div class="mark">${handle}</div>
+  <div class="mark">${mark}</div>
   <div class="bar"></div>
 </body></html>`);
 await og.evaluate(() => document.fonts.ready);

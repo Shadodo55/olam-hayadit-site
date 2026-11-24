@@ -4,13 +4,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { DimensionDrawing } from "@/components/brand/DimensionDrawing";
 import { buttonClass } from "@/components/ui/button";
-import {
-  ArrowIcon,
-  ChatIcon,
-  CheckIcon,
-  PhoneIcon,
-  PinIcon,
-} from "@/components/ui/icons";
+import { ArrowIcon, ChatIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
 import { categoryPath, type Category } from "@/features/catalog/category-tree";
 import {
   getCategoryTree,
@@ -47,30 +41,12 @@ const moreLink =
   "inline-flex min-h-11 items-center font-semibold underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-ink";
 
 /**
- * Category tiles. With 5, 9, 13… categories the first one is a large tile
- * (2×2) beside the others ("bento"); otherwise all tiles are equal. Either way
- * the rows are always full, on phones (2 columns) and desktop.
+ * Titles are set like the logo's two lines: when the headline has two
+ * sentences ("ידיות ופרזול. בוחרים ביד."), the second is the heavy line.
  */
-function tileLayout(index: number, count: number) {
-  const bento = count >= 5 && (count - 5) % 4 === 0;
-  const fullOnPhone = count % 2 === 1 && index === 0;
-  const phoneImage = fullOnPhone ? "aspect-[16/9]" : "aspect-[4/3]";
-  if (bento) {
-    const big = index === 0;
-    return {
-      grid: "lg:grid-cols-4",
-      item: `${fullOnPhone ? "col-span-2" : ""} ${big ? "lg:col-span-2 lg:row-span-2" : "lg:col-span-1"}`,
-      image: `${phoneImage} ${big ? "lg:aspect-auto lg:min-h-80 lg:flex-1" : "lg:aspect-[4/3]"}`,
-    };
-  }
-  const rest = count % 3;
-  const half = rest === 2 && index < 2;
-  const full = rest === 1 && index === 0;
-  return {
-    grid: "lg:grid-cols-6",
-    item: `${fullOnPhone ? "col-span-2" : ""} ${full ? "lg:col-span-6" : half ? "lg:col-span-3" : "lg:col-span-2"}`,
-    image: `${phoneImage} ${full ? "lg:aspect-[3/1]" : half ? "lg:aspect-[16/9]" : "lg:aspect-[4/3]"}`,
-  };
+function splitHeadline(text: string): [string, string | null] {
+  const match = /^(.+?[.!?])\s+(.+)$/su.exec(text.trim());
+  return match ? [match[1]!, match[2]!] : [text, null];
 }
 
 function tileImage(category: Category, inCategory: readonly Product[]) {
@@ -94,6 +70,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     brands,
     projects,
     catalogFiles,
+    dayNames,
   ] = await Promise.all([
     getTranslations({ locale, namespace: "home" }),
     getTranslations({ locale, namespace: "catalog" }),
@@ -108,6 +85,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     getBrands(),
     getProjects(),
     getCatalogFiles(),
+    getTranslations({ locale, namespace: "days" }),
   ]);
 
   const headline = home.headline
@@ -139,13 +117,32 @@ export async function HomePage({ locale }: { locale: Locale }) {
     : brands;
 
   const order = (i: number) => ({ "--i": i }) as CSSProperties;
-  const words = headline.value.split(" ");
+  const [leadLine, strongLine] = splitHeadline(headline.value);
+  const leadWords = leadLine.split(" ");
+  const strongWords = strongLine ? strongLine.split(" ") : [];
+  const words = [...leadWords, ...strongWords];
+  const animatedWords = (list: string[], from: number) =>
+    list.map((word, index) => (
+      <Fragment key={index}>
+        <span className="mask-word">
+          <span style={order(from + index)}>{word}</span>
+        </span>
+        {index < list.length - 1 && " "}
+      </Fragment>
+    ));
+
+  // Facts for the mosaic, all from the CMS (years, weekly hours).
   const years = settings.yearsExperience;
-  const trust = [
-    { title: t("familyTitle"), body: t("familyBody") },
-    { title: t("showroomTitle"), body: t("showroomBody") },
-    { title: t("stockTitle"), body: t("stockBody") },
-  ];
+  const days = dayNames("long").split(",");
+  const openDays = settings.hours.filter((day) => day !== null).length;
+  const closedDays = settings.hours.flatMap((day, index) =>
+    day === null ? [days[index]!] : [],
+  );
+  const firstOpening =
+    settings.hours
+      .flatMap((day) => (day ? [day.opens] : []))
+      .sort()
+      .at(0) ?? null;
   const external = { target: "_blank", rel: "noopener noreferrer" } as const;
   const newTab = <span className="sr-only"> {common("opensInNewTab")}</span>;
   const steps = [
@@ -265,14 +262,15 @@ export async function HomePage({ locale }: { locale: Locale }) {
               className="mt-5 text-5xl leading-[1.05] sm:text-6xl xl:text-[4.25rem]"
               lang={headline.isFallback ? "he" : undefined}
             >
-              {words.map((word, index) => (
-                <Fragment key={index}>
-                  <span className="mask-word">
-                    <span style={order(index + 2)}>{word}</span>
+              <span className="block">{animatedWords(leadWords, 2)}</span>
+              {strongLine && (
+                <>
+                  {" "}
+                  <span className="block title-strong text-accent-on-band">
+                    {animatedWords(strongWords, 2 + leadWords.length)}
                   </span>
-                  {index < words.length - 1 && " "}
-                </Fragment>
-              ))}
+                </>
+              )}
             </h1>
             <p
               className="rise mt-6 max-w-xl text-lg text-on-band/85"
@@ -319,15 +317,15 @@ export async function HomePage({ locale }: { locale: Locale }) {
             )}
           </div>
 
-          {/* Why buy here: confirmed facts only (years come from the CMS). */}
+          {/* Why buy here: a mosaic of confirmed facts (all from the CMS). */}
           <ul
             aria-label={t("trustTitle")}
             data-reveal="children"
-            className="mt-10 grid grid-cols-2 border-s border-t border-line lg:col-span-5 lg:mt-12 lg:self-start xl:col-span-6"
+            className="mt-10 grid grid-cols-2 gap-2 lg:col-span-5 lg:mt-12 lg:self-start xl:col-span-6"
           >
             {years && (
-              <li className="border-e border-b border-line p-5 sm:p-7">
-                <p className="display-title text-5xl text-accent-ink sm:text-6xl">
+              <li className="flex min-h-44 flex-col justify-end bg-accent p-5 text-on-accent sm:min-h-52 sm:p-7">
+                <p className="display-title text-5xl title-strong sm:text-6xl">
                   <span className="sr-only">{years}+</span>
                   <span aria-hidden="true" dir="ltr">
                     <span
@@ -337,28 +335,53 @@ export async function HomePage({ locale }: { locale: Locale }) {
                     +
                   </span>
                 </p>
-                <p className="mt-2 font-display text-lg font-medium">
+                <p className="mt-2 font-display text-lg font-semibold">
                   {t("yearsLabel")}
                 </p>
+                <p className="text-sm">{t("yearsBody")}</p>
               </li>
             )}
-            {trust.map((item) => (
-              <li
-                key={item.title}
-                className="border-e border-b border-line p-5 sm:p-7"
-              >
-                <span
-                  aria-hidden="true"
-                  className="flex size-9 items-center justify-center rounded-full border border-accent text-accent-ink"
-                >
-                  <CheckIcon width={16} height={16} />
-                </span>
-                <p className="mt-3 font-display text-xl font-medium">
-                  {item.title}
+            {openDays > 0 && (
+              <li className="flex min-h-44 flex-col justify-end bg-surface p-5 sm:min-h-52 sm:p-7">
+                <p className="display-title text-5xl title-strong text-ink sm:text-6xl">
+                  {openDays}
                 </p>
-                <p className="mt-1 text-ink-muted">{item.body}</p>
+                <p className="mt-2 font-display text-lg font-semibold">
+                  {t("daysLabel")}
+                </p>
+                {closedDays.length > 0 && (
+                  <p className="text-sm text-ink-muted">
+                    {t("closedOn", { days: closedDays.join(", ") })}
+                  </p>
+                )}
               </li>
-            ))}
+            )}
+            {firstOpening && (
+              <li className="flex min-h-44 flex-col justify-end bg-surface p-5 sm:min-h-52 sm:p-7">
+                <p
+                  className="display-title text-5xl title-strong text-ink tabular sm:text-6xl"
+                  dir="ltr"
+                >
+                  {firstOpening}
+                </p>
+                <p className="mt-2 font-display text-lg font-semibold">
+                  {t("opensLabel")}
+                </p>
+                <Link
+                  href={localeHref(locale, pagePaths.visit)}
+                  className="text-sm text-ink-muted underline underline-offset-4 hover:text-ink"
+                >
+                  {t("allHours")}
+                </Link>
+              </li>
+            )}
+            <li className="flex min-h-44 flex-col justify-end bg-highlight p-5 text-on-highlight sm:min-h-52 sm:p-7">
+              <PinIcon width={36} height={36} aria-hidden="true" />
+              <p className="mt-3 font-display text-lg font-semibold">
+                {t("showroomTitle")}
+              </p>
+              <p className="text-sm">{t("showroomBody")}</p>
+            </li>
           </ul>
         </div>
       </section>
@@ -378,68 +401,111 @@ export async function HomePage({ locale }: { locale: Locale }) {
       )}
 
       {/* Categories */}
-      <section
-        aria-labelledby="home-categories"
-        className={`${container} py-16 sm:py-24`}
-      >
-        <div
-          className="flex flex-wrap items-end justify-between gap-4"
-          data-reveal="self"
-        >
-          <h2 id="home-categories" className="section-title">
-            {t("categoriesTitle")}
-          </h2>
-          <Link
-            href={localeHref(locale, pagePaths.catalog)}
-            className={moreLink}
+      <section aria-labelledby="home-categories" className="py-16 sm:py-24">
+        <div className={container}>
+          <div
+            className="flex flex-wrap items-end justify-between gap-4"
+            data-reveal="self"
           >
-            {t("allProducts")}
-          </Link>
+            <h2 id="home-categories" className="section-title">
+              {t("categoriesTitle")}
+            </h2>
+            <Link
+              href={localeHref(locale, pagePaths.catalog)}
+              className={moreLink}
+            >
+              {t("allProducts")}
+            </Link>
+          </div>
         </div>
-        <ul
-          data-reveal="children"
-          className={`mt-10 grid grid-cols-2 gap-3 sm:gap-5 ${tileLayout(0, tree.length).grid}`}
-        >
+        {/* One row per category, the picture on alternating sides: what's
+            in it (subcategories) and a way in, at a glance. */}
+        <ul className="mt-10 sm:mt-14">
           {tree.map((category, index) => {
             const inCategory = productsInCategory(products, category);
             const image = tileImage(category, inCategory);
             const name = localized(category.name, locale);
-            const layout = tileLayout(index, tree.length);
+            const description = category.description
+              ? localized(category.description, locale)
+              : null;
+            const allLabel = localized(category.allLabel, locale);
+            const flip = index % 2 === 1;
             return (
-              <li key={category.id} className={`flex ${layout.item}`}>
-                <Link
-                  href={localeHref(locale, categoryPath(category.slug))}
-                  className="group flex w-full flex-col"
+              <li
+                key={category.id}
+                className={`grid lg:grid-cols-2 ${flip ? "bg-surface" : ""}`}
+              >
+                <div
+                  className={`relative aspect-[16/10] overflow-hidden bg-surface lg:aspect-auto lg:min-h-[24rem] ${flip ? "lg:order-2" : ""}`}
                 >
-                  <span
-                    className={`relative block overflow-hidden rounded-sm bg-surface ${layout.image}`}
+                  {image ? (
+                    <Image
+                      src={image.src}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover"
+                      style={{ objectPosition: image.objectPosition }}
+                    />
+                  ) : (
+                    <DimensionDrawing className="absolute inset-0 m-auto w-3/4" />
+                  )}
+                </div>
+                <div
+                  data-reveal="self"
+                  className="flex flex-col justify-center px-4 py-10 sm:px-10 lg:px-16 lg:py-14"
+                >
+                  <p className="text-sm text-ink-muted tabular">
+                    {t("productsCount", { count: inCategory.length })}
+                  </p>
+                  <h3
+                    className="mt-1 text-4xl sm:text-5xl"
+                    lang={name.isFallback ? "he" : undefined}
                   >
-                    {image ? (
-                      <Image
-                        src={image.src}
-                        alt=""
-                        fill
-                        sizes="(min-width: 1024px) 40vw, 50vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        style={{ objectPosition: image.objectPosition }}
-                      />
-                    ) : (
-                      <DimensionDrawing className="absolute inset-0 m-auto w-3/4" />
-                    )}
-                  </span>
-                  <span className="flex flex-col gap-0.5 pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
-                    <span
-                      className="inline-flex items-center gap-2 font-display text-xl font-medium sm:text-2xl"
-                      lang={name.isFallback ? "he" : undefined}
+                    {name.value}
+                  </h3>
+                  {description && (
+                    <p
+                      className="mt-3 max-w-md text-lg text-ink-muted"
+                      lang={description.isFallback ? "he" : undefined}
                     >
-                      {name.value}
-                      <ArrowIcon className="text-accent-ink opacity-0 transition duration-300 group-hover:opacity-100 ltr:group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" />
+                      {description.value}
+                    </p>
+                  )}
+                  {category.children && category.children.length > 0 && (
+                    <ul
+                      aria-label={t("subcategories", { name: name.value })}
+                      className="mt-6 flex flex-wrap gap-2"
+                    >
+                      {category.children.map((child) => {
+                        const childName = localized(child.name, locale);
+                        return (
+                          <li key={child.id}>
+                            <Link
+                              href={localeHref(
+                                locale,
+                                categoryPath(child.slug),
+                              )}
+                              className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-paper px-4 hover:border-ink"
+                              lang={childName.isFallback ? "he" : undefined}
+                            >
+                              {childName.value}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  <Link
+                    href={localeHref(locale, categoryPath(category.slug))}
+                    className={buttonClass("solid", "md", "mt-8 self-start")}
+                  >
+                    <span lang={allLabel.isFallback ? "he" : undefined}>
+                      {allLabel.value}
                     </span>
-                    <span className="shrink-0 text-sm text-ink-muted tabular">
-                      {t("productsCount", { count: inCategory.length })}
-                    </span>
-                  </span>
-                </Link>
+                    <ArrowIcon className="rtl:-scale-x-100" />
+                  </Link>
+                </div>
               </li>
             );
           })}
