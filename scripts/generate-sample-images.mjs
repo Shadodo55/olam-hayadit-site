@@ -6,14 +6,20 @@
  *
  *   node scripts/generate-sample-images.mjs
  *
- * Output: studio/seed/images/sample-<shape>-<finish>.png (1200×1500, 4:5).
+ * Output: ~/olam-hayadit-files/sample-content/images/sample-<shape>-<finish>.png
+ * (1200×1500, 4:5).
  * Renders SVG with the Playwright Chromium already used for tests.
  */
 import { mkdirSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { chromium } from "@playwright/test";
 
-const OUT = join(import.meta.dirname, "..", "studio", "seed", "images");
+// Generated files live outside the repo (and outside OneDrive, which
+// struggles with thousands of synced files): ~/olam-hayadit-files.
+const FILES =
+  process.env.OLAM_FILES_DIR ?? join(homedir(), "olam-hayadit-files");
+const OUT = join(FILES, "sample-content", "images");
 mkdirSync(OUT, { recursive: true });
 
 /** Metal finishes: gradient stops across a cylinder (dark edge → highlight → body → edge). */
