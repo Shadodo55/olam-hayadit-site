@@ -127,6 +127,7 @@ async function main() {
         _type: "altImage",
         _key: key(file),
         asset: ref(await uploadImage(file)),
+        finish: ref(`finish-${p.finishes[i]}`),
         alt: {
           he: `תמונה לדוגמה: ${p.title.he} בגימור ${finishName.he}`,
           en: `Sample image: ${p.title.en}, ${finishName.en.toLowerCase()} finish`,

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
+import { finishStore } from "./finish-store";
 import { CloseIcon } from "@/components/ui/icons";
 import { localized, type Locale } from "@/lib/i18n/locales";
 import type { SiteImage } from "@/lib/sanity/image";
@@ -22,7 +23,27 @@ export function ProductGallery({
   const t = useTranslations("product");
   const common = useTranslations("common");
   const locale = useLocale() as Locale;
-  const [index, setIndex] = useState(0);
+  // The photo follows the finish chosen in the variant picker, until the
+  // visitor picks a photo themselves (for that finish).
+  const finish = useSyncExternalStore(
+    finishStore.subscribe,
+    finishStore.get,
+    () => null,
+  );
+  const [picked, setPicked] = useState<{
+    index: number;
+    finish: string | null;
+  }>({ index: 0, finish: null });
+  const finishIndex = finish
+    ? images.findIndex((image) => image.finish === finish)
+    : -1;
+  const index =
+    picked.finish === finish || finishIndex < 0 ? picked.index : finishIndex;
+  const setIndex = (next: number | ((current: number) => number)) =>
+    setPicked({
+      index: typeof next === "function" ? next(index) : next,
+      finish,
+    });
   const [zoomOpen, setZoomOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -48,6 +69,7 @@ export function ProductGallery({
           dialogRef.current?.showModal();
         }}
         className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-surface"
+        data-testid="gallery-main"
       >
         <Image
           src={current.src}

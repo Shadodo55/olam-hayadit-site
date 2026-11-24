@@ -78,7 +78,7 @@
   --display-weight: 800;
   --heading-weight: 700;
   --heading-tracking: -0.01em;
-  --wordmark-shadow: 2px 2px 0 #121212;
+  --wordmark-shadow: none;
   --wordmark-weight: 800;
 }
 

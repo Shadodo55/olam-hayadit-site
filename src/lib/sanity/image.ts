@@ -15,10 +15,12 @@ export const IMAGE_PROJECTION = `{
   "lqip": asset->metadata.lqip,
   crop,
   hotspot,
-  alt
+  alt,
+  "finish": finish->slug.current
 }`;
 
 export interface RawImage {
+  finish?: string | null;
   assetId?: string | null;
   width?: number | null;
   height?: number | null;
@@ -30,6 +32,8 @@ export interface RawImage {
 
 /** A ready-to-render image. `src` is a Sanity CDN URL; next/image adds size and format. */
 export interface SiteImage {
+  /** Product photos: the finish shown (slug), to follow the chosen variant. */
+  finish?: string;
   src: string;
   width: number;
   height: number;
@@ -56,6 +60,7 @@ export function toSiteImage(
     height: raw.height,
     alt: raw.alt?.he ? raw.alt : { he: "" },
     ...(raw.lqip ? { blurDataURL: raw.lqip } : {}),
+    ...(raw.finish ? { finish: raw.finish } : {}),
     objectPosition: `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`,
   };
 }

@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import { buttonClass } from "@/components/ui/button";
-import { CloseIcon } from "@/components/ui/icons";
+import { ChevronDownIcon, CloseIcon } from "@/components/ui/icons";
 import { localized, type Locale, type Localized } from "@/lib/i18n/locales";
 import {
   activeFilterCount,
@@ -122,7 +122,7 @@ export function CatalogBrowser({
                   setDialogOpen(true);
                   dialogRef.current?.showModal();
                 }}
-                className={buttonClass("outline", "sm", "lg:hidden")}
+                className={buttonClass("outline", "sm", "h-11 lg:hidden")}
               >
                 {t("openFilters")} {t("activeCount", { count: active })}
               </button>
@@ -131,20 +131,23 @@ export function CatalogBrowser({
               <label htmlFor="sort" className="block text-sm text-ink-muted">
                 {t("sort")}
               </label>
-              <select
-                id="sort"
-                value={state.sort}
-                onChange={(e) =>
-                  update({ ...state, sort: e.target.value as SortKey })
-                }
-                className="mt-1 min-h-11 rounded-sm border border-line-strong bg-paper px-2"
-              >
-                {SORT_KEYS.map((key) => (
-                  <option key={key} value={key}>
-                    {t(sortLabelKey[key])}
-                  </option>
-                ))}
-              </select>
+              <div className="relative mt-1">
+                <select
+                  id="sort"
+                  value={state.sort}
+                  onChange={(e) =>
+                    update({ ...state, sort: e.target.value as SortKey })
+                  }
+                  className="h-11 appearance-none rounded-sm border border-line-strong bg-paper ps-3 pe-9"
+                >
+                  {SORT_KEYS.map((key) => (
+                    <option key={key} value={key}>
+                      {t(sortLabelKey[key])}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute end-2 top-1/2 -translate-y-1/2 text-ink-muted" />
+              </div>
             </div>
           </div>
         </div>
