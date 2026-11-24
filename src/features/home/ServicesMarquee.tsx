@@ -44,9 +44,26 @@ export function ServicesMarquee({
       <button
         type="button"
         onClick={() => setPaused((value) => !value)}
-        className="absolute end-3 top-1/2 inline-flex min-h-11 -translate-y-1/2 items-center rounded-full border border-on-band/30 bg-band px-3 text-sm text-on-band/90 hover:bg-on-band/10 motion-reduce:hidden"
+        // Icon only; the name is for screen readers.
+        className="absolute end-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-on-band/25 bg-band text-on-band/80 transition-colors hover:bg-on-band/10 hover:text-on-band motion-reduce:hidden"
       >
-        {paused ? labels.play : labels.pause}
+        <svg
+          viewBox="0 0 12 12"
+          width="12"
+          height="12"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          {paused ? (
+            <path d="M2 1 L11 6 L2 11 Z" />
+          ) : (
+            <>
+              <rect x="1" y="1" width="3.5" height="10" />
+              <rect x="7.5" y="1" width="3.5" height="10" />
+            </>
+          )}
+        </svg>
+        <span className="sr-only">{paused ? labels.play : labels.pause}</span>
       </button>
     </div>
   );

@@ -91,3 +91,20 @@ test("the years counter reaches its number", async ({ page }) => {
     )
     .toBe(value);
 });
+
+test("a branded curtain covers page changes and then lifts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .locator("#hero-title")
+    .locator("xpath=..")
+    .getByRole("link", { name: "לקטלוג המוצרים" })
+    .click();
+  const curtain = page.locator(".page-curtain");
+  await expect(curtain).toBeVisible();
+  await expect(curtain).toHaveAttribute("aria-hidden", "true");
+  await expect(page).toHaveURL(/\/catalog$/);
+  await expect(curtain).toHaveCount(0, { timeout: 4000 });
+  await expect(page.locator("h1")).toBeVisible();
+});
