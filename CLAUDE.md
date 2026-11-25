@@ -124,7 +124,10 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   desktop header.
 - Motion lives in `globals.css` (end of file): `.rise`/`.mask-word` (hero
   entrance), `data-reveal="self|children"` (CSS scroll-driven, no JS),
-  `.parallax`, `.draw`, `.count-up`. Everything sits inside
+  `.parallax`, `.draw`, `.count-up`, and the page transition: the store's
+  door (`PageTransition.tsx` + `.door-*`: closes, brass handle turns, opens,
+  walk-through zoom; a slow load keeps it closed with a threshold progress
+  line + note; opens anyway after 10 s). Everything sits inside
   `prefers-reduced-motion: no-preference`, and nothing hides content without
   it. Never move the hero video's pause button (`mediaClassName` targets only
   the `<video>`). Playwright runs with reduced motion so axe judges the final
