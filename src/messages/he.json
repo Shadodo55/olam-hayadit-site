@@ -187,6 +187,20 @@
     "askWhatsapp": "שאלה בוואטסאפ"
   },
   "product": {
+    "viewsLabel": "אופן התצוגה",
+    "viewPhotos": "תמונות",
+    "viewScene": "הדמיה במקום",
+    "sceneCaption": "הדמיה בגודל אמיתי: {context}. הצבע לפי הגימור שבחרתם.",
+    "sceneContext": {
+      "kitchenBar": "חזית ארון מטבח ברוחב 60 ס״מ",
+      "kitchenKnob": "שידת מגירות ברוחב 60 ס״מ",
+      "doorLever": "דלת פנים ברוחב 80 ס״מ, ידית בגובה 105 ס״מ",
+      "fridgeBar": "דלת מקרר ברוחב 60 ס״מ",
+      "towelBar": "קיר אריחים 30×60 ס״מ",
+      "wallHook": "קיר אריחים 30×60 ס״מ",
+      "furnitureLeg": "שידה ברוחב 90 ס״מ"
+    },
+    "mmValue": "{value} מ״מ",
     "sku": "מק״ט",
     "brand": "מותג",
     "material": "חומר",

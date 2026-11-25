@@ -684,3 +684,37 @@
     inset-inline-start: 100%;
   }
 }
+
+/*
+ * In-place preview on product pages (ProductScene.tsx): size and colour
+ * changes glide; the product settles into place when the preview opens.
+ * (The global reduced-motion rule makes these instant.)
+ */
+.scene-move {
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.scene-metal {
+  transition:
+    fill 0.5s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.scene-surface {
+  transition:
+    fill 0.5s ease,
+    stroke 0.5s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-scene .scene-install {
+    animation: scene-install 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+  }
+  .product-scene .scene-dimension text {
+    animation: fade 0.5s ease 0.6s both;
+  }
+}
+@keyframes scene-install {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}

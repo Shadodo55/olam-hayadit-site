@@ -6,6 +6,8 @@ import { toSiteImage, type RawImage, type SiteImage } from "@/lib/sanity/image";
  * (see ./data.ts → getCategoryTree). Slugs are English, so URLs are the same
  * in both languages.
  */
+import { toSceneSetting, type SceneSetting } from "./scene";
+
 export interface Category {
   id: string;
   slug: string;
@@ -14,6 +16,8 @@ export interface Category {
   allLabel: Localized;
   description: Localized | null;
   filters: string[];
+  /** In-place preview for its products (inherited by subcategories). */
+  scene: SceneSetting | null;
   /** Tile image on the home page (falls back to a product image there). */
   image?: SiteImage;
   children?: readonly Category[];
@@ -26,6 +30,7 @@ export interface RawCategory {
   allLabel?: Localized | null;
   description?: Localized | null;
   filters?: string[] | null;
+  scene?: string | null;
   image?: RawImage | null;
   parent?: string | null;
   order?: number | null;
@@ -56,6 +61,7 @@ export function buildCategoryTree(raw: readonly RawCategory[]): Category[] {
           allLabel: c.allLabel?.he ? c.allLabel : c.title!,
           description: c.description?.he ? c.description : null,
           filters: c.filters ?? [],
+          scene: toSceneSetting(c.scene),
           ...(image ? { image } : {}),
           ...(children.length ? { children } : {}),
         };

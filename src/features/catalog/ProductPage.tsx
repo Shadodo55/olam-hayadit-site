@@ -7,23 +7,15 @@ import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths, productPath } from "@/lib/routes";
 import { pageMetadata, siteUrl } from "@/lib/seo/metadata";
 import { getSiteSettings } from "@/lib/site/settings";
-import { categoryPath, type Category } from "./category-tree";
+import { categoryPath } from "./category-tree";
 import { getCategoryTree, getProducts } from "./data";
+import { chainForId, resolveScene } from "./scene";
 import { toCardData } from "./listing";
 import type { Product } from "./product";
 import { ProductGallery } from "./ui/ProductGallery";
 import { ProductGrid } from "./ui/ProductCard";
 import { ProductPurchase, ProductPurchaseFallback } from "./ui/ProductPurchase";
-
-/** Path of categories (root → leaf) for a category id, or null. */
-function chainForId(tree: readonly Category[], id: string): Category[] | null {
-  for (const node of tree) {
-    if (node.id === id) return [node];
-    const sub = node.children ? chainForId(node.children, id) : null;
-    if (sub) return [node, ...sub];
-  }
-  return null;
-}
+import { ProductScene } from "./ui/ProductScene";
 
 function relatedProducts(product: Product, all: readonly Product[]): Product[] {
   const explicit = product.relatedIds
@@ -88,6 +80,7 @@ export async function ProductPage({
   const title = localized(product.title, locale);
   const chain =
     product.categoryIds.map((id) => chainForId(tree, id)).find(Boolean) ?? [];
+  const scene = resolveScene(product, tree);
   const crumbs: Crumb[] = [
     { label: common("home"), href: localeHref(locale) },
     { label: pages("catalog"), href: localeHref(locale, pagePaths.catalog) },
@@ -176,7 +169,15 @@ export async function ProductPage({
 
       <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">
-          <ProductGallery images={product.images} name={title.value} />
+          <ProductGallery
+            images={product.images}
+            name={title.value}
+            scene={
+              scene ? (
+                <ProductScene kind={scene} variants={product.variants} />
+              ) : undefined
+            }
+          />
         </div>
 
         <div className="lg:col-span-5">

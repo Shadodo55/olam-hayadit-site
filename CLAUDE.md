@@ -105,6 +105,13 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   `history.replaceState` (instant UI; reading the URL only on load). Components
   using `useSearchParams` sit in `<Suspense>` with a full static fallback (SEO).
 - Which filters a category shows is set per category in the CMS (`filters`).
+- In-place preview ("הדמיה במקום"): the CMS `scene` on a category (inherited
+  by subcategories, overridable per product; list in `studio/lib/constants.ts`
+  and `features/catalog/scene.ts`) picks a true-to-scale SVG scene in
+  `ui/ProductScene.tsx` (kitchen, drawers, door, fridge, towel bar, hook,
+  legs). It draws the chosen variant: finish swatch colour, hole spacing /
+  length in mm. The gallery shows it as a second view; picking a size opens
+  it. Animated shapes are large and scaled DOWN (scaling up blurs them).
 - Sample products are labelled on cards and pages; e2e tests must not depend on
   specific sample slugs (they pick the first product from a category).
 

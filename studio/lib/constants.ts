@@ -21,6 +21,21 @@ export const CATEGORY_FILTERS = [
   { title: "במלאי בלבד", value: "inStock" },
 ] as const;
 
+/**
+ * "In-place preview" scenes on product pages (site: src/features/catalog/scene.ts).
+ * Set on a category (subcategories inherit it) or per product.
+ */
+export const SCENES = [
+  { title: "ידית על ארון מטבח", value: "kitchenBar" },
+  { title: "כפתור על מגירות", value: "kitchenKnob" },
+  { title: "ידית על דלת", value: "doorLever" },
+  { title: "ידית על מקרר", value: "fridgeBar" },
+  { title: "מתלה מגבת באמבטיה", value: "towelBar" },
+  { title: "וו על הקיר", value: "wallHook" },
+  { title: "רגליים לרהיט", value: "furnitureLeg" },
+  { title: "בלי הדמיה", value: "none" },
+] as const;
+
 /** URL-safe slug from English text or SKU (Hebrew titles don't make good URLs). */
 export function slugify(input: string): string {
   return input
