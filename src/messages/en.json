@@ -9,8 +9,7 @@
     "placeholder": "[to be added]",
     "close": "Close",
     "breadcrumbs": "Breadcrumb",
-    "home": "Home",
-    "pageLoading": "One moment, the page is on its way"
+    "home": "Home"
   },
   "days": {
     "long": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"

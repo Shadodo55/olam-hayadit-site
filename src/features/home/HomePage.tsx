@@ -484,7 +484,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                             <Link
                               href={localeHref(
                                 locale,
-                                categoryPath(child.slug),
+                                categoryPath(category.slug, child.slug),
                               )}
                               className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-paper px-4 hover:border-ink"
                               lang={childName.isFallback ? "he" : undefined}
