@@ -92,39 +92,19 @@ test("the years counter reaches its number", async ({ page }) => {
     .toBe(value);
 });
 
-test("page changes go through the store's door", async ({ page }) => {
-  await page.goto("/");
-  await page
-    .locator("#hero-title")
-    .locator("xpath=..")
-    .getByRole("link", { name: "לקטלוג המוצרים" })
-    .click();
-  const door = page.locator(".door-scene");
-  await expect(door).toBeVisible();
-  await expect(door).toHaveAttribute("aria-hidden", "true");
-  await expect(page).toHaveURL(/\/catalog$/);
-  await expect(door).toHaveCount(0, { timeout: 4000 });
-  await expect(page.locator("h1")).toBeVisible();
-});
-
-test("a slow page keeps the door closed with a progress line, then opens", async ({
+test("a branded curtain covers page changes and then lifts", async ({
   page,
 }) => {
   await page.goto("/");
-  // The next page's data arrives late (slow connection).
-  await page.route("**/*.txt*", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    await route.continue();
-  });
   await page
     .locator("#hero-title")
     .locator("xpath=..")
     .getByRole("link", { name: "לקטלוג המוצרים" })
     .click();
-  const door = page.locator(".door-scene");
-  await expect(door).toHaveAttribute("data-phase", "waiting");
-  await expect(door).toHaveAttribute("data-slow", "true");
-  await expect(door.locator(".door-progress")).toBeVisible();
-  await expect(page).toHaveURL(/\/catalog$/, { timeout: 8000 });
-  await expect(door).toHaveCount(0, { timeout: 4000 });
+  const curtain = page.locator(".page-curtain");
+  await expect(curtain).toBeVisible();
+  await expect(curtain).toHaveAttribute("aria-hidden", "true");
+  await expect(page).toHaveURL(/\/catalog$/);
+  await expect(curtain).toHaveCount(0, { timeout: 4000 });
+  await expect(page.locator("h1")).toBeVisible();
 });

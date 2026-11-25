@@ -488,200 +488,34 @@
   }
 }
 
-/*
- * Page transition: the store's door (PageTransition.tsx). Rendered only when
- * motion is allowed. A light wall with a doorway (a hole cut with clip-path),
- * a framed navy door with a brass handle. The door swings shut over the old
- * page, the handle turns, the door swings open and the whole scene grows
- * past the viewer ("walking through"), revealing the new page.
- * Timings must match CLOSE_MS / OPEN_MS in PageTransition.tsx.
- */
-.door-scene {
-  --door-w: min(86vw, 40svh);
-  --door-h: calc(var(--door-w) * 2.05);
-  --swing: -1; /* LTR: hinge on the right, opens away from the viewer */
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  transform-origin: 50% 50%;
+/* Page transition curtain (PageTransition.tsx). Rendered only when motion is
+   allowed; it rises from the bottom, shows the logo, then lifts away. */
+.curtain-in {
+  animation: curtain-in 0.38s cubic-bezier(0.7, 0, 0.3, 1) both;
 }
-[dir="rtl"] .door-scene {
-  --swing: 1; /* RTL: hinge on the left */
+.curtain-out {
+  animation: curtain-out 0.55s cubic-bezier(0.7, 0, 0.3, 1) both;
 }
-.door-wall {
-  position: absolute;
-  inset: 0;
-  background: var(--color-surface);
-  clip-path: polygon(
-    evenodd,
-    0 0,
-    100% 0,
-    100% 100%,
-    0 100%,
-    0 0,
-    calc(50% - var(--door-w) / 2) calc(50% - var(--door-h) / 2),
-    calc(50% + var(--door-w) / 2) calc(50% - var(--door-h) / 2),
-    calc(50% + var(--door-w) / 2) calc(50% + var(--door-h) / 2),
-    calc(50% - var(--door-w) / 2) calc(50% + var(--door-h) / 2),
-    calc(50% - var(--door-w) / 2) calc(50% - var(--door-h) / 2)
-  );
+.curtain-in .curtain-logo {
+  animation: curtain-logo 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
 }
-/* The floor line, across the whole wall at the foot of the door. */
-.door-wall::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  top: calc(50% + var(--door-h) / 2);
-  border-top: 1px solid var(--color-line-strong);
+.curtain-in .curtain-bar {
+  animation: grow-line 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
 }
-/* Architrave: a white frame with a fine outer line. */
-.door-frame {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(var(--door-w) + 1.75rem);
-  height: calc(var(--door-h) + 0.875rem);
-  translate: -50% calc(-50% - 0.4375rem);
-  border: 0.875rem solid var(--color-paper);
-  border-bottom: 0;
-  outline: 1px solid var(--color-line);
-}
-.door-way {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--door-w);
-  height: var(--door-h);
-  translate: -50% -50%;
-  perspective: 1600px;
-}
-.door-leaf {
-  position: absolute;
-  inset: -1px;
-  transform-origin: right center;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-[dir="rtl"] .door-leaf {
-  transform-origin: left center;
-}
-.door-panel {
-  position: absolute;
-  inset-inline: 11%;
-  border-width: 1px;
-  border-radius: 2px;
-}
-.door-panel-top {
-  top: 6%;
-  height: 40%;
-}
-.door-panel-bottom {
-  top: 54%;
-  bottom: 6%;
-}
-.door-sign {
-  position: absolute;
-  inset-inline: 11%;
-  top: 6%;
-  height: 40%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.door-note {
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-[data-slow] .door-note {
-  opacity: 1;
-}
-/* The handle sits at the opening edge (start side), at hand height. */
-.door-handle {
-  position: absolute;
-  inset-inline-start: 6%;
-  top: 48%;
-  width: 34%;
-  height: auto;
-}
-[dir="rtl"] .door-handle {
-  transform: scaleX(-1);
-}
-.door-lever {
-  transform-origin: 12px 14px;
-}
-/* Slow load: a brass line runs along the threshold. */
-.door-progress {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + var(--door-h) / 2 - 1px);
-  width: var(--door-w);
-  height: 3px;
-  translate: -50% 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-[data-slow] .door-progress {
-  opacity: 1;
-}
-.door-progress span {
-  position: absolute;
-  inset-block: 0;
-  width: 35%;
-  animation: door-progress 1.4s cubic-bezier(0.6, 0, 0.4, 1) infinite;
-}
-
-[data-phase="closing"] .door-wall,
-[data-phase="closing"] .door-frame {
-  animation: fade 0.18s ease-out both;
-}
-[data-phase="closing"] .door-leaf {
-  animation: door-close 0.38s cubic-bezier(0.2, 0.75, 0.25, 1) 0.04s both;
-}
-[data-phase="opening"] .door-lever {
-  animation: door-press 0.26s cubic-bezier(0.3, 0, 0.2, 1) both;
-}
-[data-phase="opening"] .door-leaf {
-  animation: door-open 0.62s cubic-bezier(0.55, 0, 0.35, 1) 0.14s both;
-}
-[data-phase="opening"] {
-  animation: door-through 0.52s cubic-bezier(0.5, 0, 0.75, 0) 0.43s both;
-}
-[data-phase="opening"] .door-progress {
-  opacity: 0;
-}
-
-@keyframes door-close {
+@keyframes curtain-in {
   from {
-    transform: rotateY(calc(var(--swing) * 80deg));
+    transform: translateY(100%);
   }
 }
-@keyframes door-open {
+@keyframes curtain-out {
   to {
-    transform: rotateY(calc(var(--swing) * 96deg));
+    transform: translateY(-100%);
   }
 }
-@keyframes door-press {
-  45%,
-  to {
-    transform: rotate(24deg);
-  }
-}
-@keyframes door-through {
-  to {
-    transform: scale(4.5);
+@keyframes curtain-logo {
+  from {
     opacity: 0;
-  }
-}
-@keyframes door-progress {
-  from {
-    inset-inline-start: -35%;
-  }
-  to {
-    inset-inline-start: 100%;
+    transform: translateY(14px) scale(0.96);
   }
 }
 
