@@ -4,8 +4,11 @@ import {
   applyFilters,
   emptyFilters,
   facetOptions,
+  holeSpacingSizes,
   parseFilters,
   serializeFilters,
+  sizeMillimetres,
+  sizesAreHoleSpacing,
   sortCards,
   type ProductCardData,
 } from "./listing";
@@ -203,5 +206,44 @@ describe("facetOptions", () => {
       ["128", 1],
       ["160", 1],
     ]);
+  });
+});
+
+describe("sizes vs hole spacing", () => {
+  it("reads the millimetres from a size label", () => {
+    expect(sizeMillimetres("128 mm")).toBe(128);
+    expect(sizeMillimetres("Large")).toBeNull();
+    expect(sizeMillimetres(null)).toBeNull();
+  });
+
+  it("knows when sizes only repeat the hole spacing", () => {
+    const v = (size: string | null, cc: number | null) => ({ size, cc });
+    expect(sizesAreHoleSpacing([v("128 mm", 128), v(null, 96)])).toBe(true);
+    expect(sizesAreHoleSpacing([v("128 mm", 128), v("600 mm", null)])).toBe(
+      false,
+    );
+    expect(sizesAreHoleSpacing([v("Large", 128)])).toBe(false);
+    expect(sizesAreHoleSpacing([v(null, 128)])).toBe(false);
+  });
+});
+
+describe("hole-spacing sizes in the catalog", () => {
+  it("lists the sizes that only repeat a hole spacing", () => {
+    const variant = (size: string | null, cc: number | null) => ({
+      finish: null,
+      size,
+      cc,
+      price: 1000,
+      stock: "inStore" as const,
+    });
+    const cards = [
+      card({
+        id: "bar",
+        variants: [variant("128 mm", 128), variant("160 mm", 160)],
+      }),
+      card({ id: "knob", variants: [variant("Ø25 mm", null)] }),
+      card({ id: "odd", variants: [variant("160 mm", 96)] }),
+    ];
+    expect([...holeSpacingSizes(cards)]).toEqual(["128 mm"]);
   });
 });

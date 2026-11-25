@@ -1,6 +1,6 @@
 import { localized, type Locale, type Localized } from "@/lib/i18n/locales";
 import type { Variant } from "./product";
-import { sizeKey } from "./listing";
+import { sizeKey, sizeMillimetres, sizesAreHoleSpacing } from "./listing";
 
 /** Selection by finish slug and size key; `null` means "no such dimension". */
 export interface Selection {
@@ -61,6 +61,24 @@ export function selectSize(
   if (findVariant(variants, next)) return next;
   const fallback = variants.find((v) => sizeOf(v) === size);
   return fallback ? { finish: finishOf(fallback), size } : current;
+}
+
+/** This product's sizes are hole-to-hole distances (see listing.ts). */
+export const sizesAreHoleSpacingFor = (variants: readonly Variant[]) =>
+  sizesAreHoleSpacing(
+    variants.map((v) => ({ size: sizeOf(v), cc: v.holeToHoleMm })),
+  );
+
+/** Overall length (mm) for a size, when the CMS gives one that differs. */
+export function lengthForSize(
+  variants: readonly Variant[],
+  size: string,
+): number | null {
+  const own = sizeMillimetres(size);
+  const match = variants.find(
+    (v) => sizeOf(v) === size && v.lengthMm !== null && v.lengthMm !== own,
+  );
+  return match?.lengthMm ?? null;
 }
 
 /** Distinct finishes and sizes, in the order they appear in the CMS. */

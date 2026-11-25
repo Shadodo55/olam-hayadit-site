@@ -44,7 +44,9 @@ export async function StoreVisit({
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
 
   return (
-    <div className="grid gap-10 lg:grid-cols-12">
+    // data-store-visit: the footer's own "come visit" band hides on pages
+    // that already show this (globals.css), so it isn't said twice.
+    <div className="grid gap-10 lg:grid-cols-12" data-store-visit>
       <div className="lg:col-span-5">
         <H className="text-xl">{t("addressTitle")}</H>
         <address className="mt-2 text-lg not-italic">

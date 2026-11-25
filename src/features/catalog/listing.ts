@@ -41,6 +41,27 @@ export interface ProductCardData {
 export const sizeKey = (label: Localized | null): string | null =>
   label ? label.en?.trim() || label.he.trim() : null;
 
+/** The first whole number in a size ("128 mm" → 128), or null. */
+export function sizeMillimetres(size: string | null): number | null {
+  const match = size?.match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
+/**
+ * True when every size given is just the hole-to-hole distance, as with most
+ * handles ("128 mm" = 128 mm between the screws). Then the product page calls
+ * the choice what it is: hole spacing.
+ */
+export function sizesAreHoleSpacing(
+  variants: readonly { size: string | null; cc: number | null }[],
+): boolean {
+  const sized = variants.filter((v) => v.size !== null);
+  return (
+    sized.length > 0 &&
+    sized.every((v) => v.cc !== null && sizeMillimetres(v.size) === v.cc)
+  );
+}
+
 export function toCardData(product: Product): ProductCardData {
   const finishes = new Map<string, ProductCardData["finishes"][number]>();
   const sizes = new Map<string, ProductCardData["sizes"][number]>();
@@ -342,4 +363,24 @@ export function priceBounds(
     min: Math.floor(Math.min(...cards.map((c) => c.priceMin)) / 100),
     max: Math.ceil(Math.max(...cards.map((c) => c.priceMax)) / 100),
   };
+}
+
+/**
+ * Size options that only repeat a hole-to-hole distance (every variant with
+ * that size has its screws exactly that far apart). Next to the hole-spacing
+ * filter they'd be the same numbers twice, so the catalog leaves them out of
+ * "size" and keeps the real sizes (a knob's diameter, a leg's length).
+ */
+export function holeSpacingSizes(
+  cards: readonly ProductCardData[],
+): Set<string> {
+  const same = new Map<string, boolean>();
+  for (const v of cards.flatMap((card) => card.variants)) {
+    if (v.size === null) continue;
+    const repeats = v.cc !== null && sizeMillimetres(v.size) === v.cc;
+    same.set(v.size, (same.get(v.size) ?? true) && repeats);
+  }
+  return new Set(
+    [...same].filter(([, repeats]) => repeats).map(([size]) => size),
+  );
 }

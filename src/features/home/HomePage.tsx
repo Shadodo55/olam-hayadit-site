@@ -282,6 +282,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
             <div
               className="rise mt-8 flex flex-wrap gap-3"
               style={order(words.length + 3)}
+              // The phone action bar waits until these have scrolled away.
+              data-hero-actions
             >
               <Link
                 href={localeHref(locale, pagePaths.catalog)}
@@ -375,12 +377,20 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 </Link>
               </li>
             )}
-            <li className="flex min-h-44 flex-col justify-end bg-highlight p-5 text-on-highlight sm:min-h-52 sm:p-7">
-              <PinIcon width={36} height={36} aria-hidden="true" />
-              <p className="mt-3 font-display text-lg font-semibold">
-                {t("showroomTitle")}
-              </p>
-              <p className="text-sm">{t("showroomBody")}</p>
+            {/* Gold is the action colour, so this tile is a way in (to the
+                visit page), not just a fact. */}
+            <li className="flex">
+              <Link
+                href={localeHref(locale, pagePaths.visit)}
+                className="flex min-h-44 w-full flex-col justify-end bg-highlight p-5 text-on-highlight transition-colors hover:bg-highlight/85 sm:min-h-52 sm:p-7"
+              >
+                <PinIcon width={36} height={36} aria-hidden="true" />
+                <span className="mt-3 flex items-center gap-2 font-display text-lg font-semibold">
+                  {t("showroomTitle")}
+                  <ArrowIcon className="rtl:-scale-x-100" />
+                </span>
+                <span className="text-sm">{t("showroomBody")}</span>
+              </Link>
             </li>
           </ul>
         </div>
@@ -418,9 +428,56 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </Link>
           </div>
         </div>
-        {/* One row per category, the picture on alternating sides: what's
-            in it (subcategories) and a way in, at a glance. */}
-        <ul className="mt-10 sm:mt-14">
+        {/* Phones and tablets: compact tiles (picture, name, count), so all
+            the categories fit in a screen or two. Subcategories are on each
+            category's page. */}
+        <ul
+          className={`${container} mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-10 sm:grid-cols-3 sm:gap-x-6 lg:hidden`}
+        >
+          {tree.map((category) => {
+            const inCategory = productsInCategory(products, category);
+            const image = tileImage(category, inCategory);
+            const name = localized(category.name, locale);
+            return (
+              <li
+                key={category.id}
+                className="group relative has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-surface">
+                  {image ? (
+                    <Image
+                      src={image.src}
+                      alt=""
+                      fill
+                      sizes="(min-width: 640px) 33vw, 50vw"
+                      className="object-cover"
+                      style={{ objectPosition: image.objectPosition }}
+                    />
+                  ) : (
+                    <DimensionDrawing className="absolute inset-0 m-auto w-3/4" />
+                  )}
+                </div>
+                <h3
+                  className="mt-3 text-xl leading-tight font-semibold group-hover:text-accent-ink"
+                  lang={name.isFallback ? "he" : undefined}
+                >
+                  <Link
+                    href={localeHref(locale, categoryPath(category.slug))}
+                    className="after:absolute after:inset-0 focus-visible:outline-none"
+                  >
+                    {name.value}
+                  </Link>
+                </h3>
+                <p className="mt-0.5 text-sm text-ink-muted tabular">
+                  {t("productsCount", { count: inCategory.length })}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+        {/* Wide screens: one row per category, the picture on alternating
+            sides: what's in it (subcategories) and a way in, at a glance. */}
+        <ul className="mt-14 hidden lg:block">
           {tree.map((category, index) => {
             const inCategory = productsInCategory(products, category);
             const image = tileImage(category, inCategory);
@@ -566,7 +623,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               </Link>
             </div>
             <div className="mt-10">
-              <ProductGrid cards={featuredCards} scroller />
+              <ProductGrid cards={featuredCards} scroller showNew={false} />
             </div>
           </div>
         </section>

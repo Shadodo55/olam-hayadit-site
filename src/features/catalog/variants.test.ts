@@ -3,9 +3,11 @@ import type { Variant } from "./product";
 import {
   defaultSelection,
   findVariant,
+  lengthForSize,
   selectFinish,
   selectionForSku,
   selectSize,
+  sizesAreHoleSpacingFor,
   variantOptions,
   variantSummary,
   whatsappText,
@@ -112,5 +114,23 @@ describe("whatsappText", () => {
       },
     );
     expect(text).toBe("ידית|B128\nגימור: שחור|https://x/p");
+  });
+});
+
+describe("hole-spacing sizes", () => {
+  it("recognises sizes that are hole-to-hole distances", () => {
+    expect(sizesAreHoleSpacingFor(variants)).toBe(true);
+    const lengths = [{ ...v("L1", gold, "128"), holeToHoleMm: 96 }];
+    expect(sizesAreHoleSpacingFor(lengths)).toBe(false);
+  });
+
+  it("gives the overall length for a size, when it differs", () => {
+    const withLength = [
+      { ...v("G128", gold, "128"), lengthMm: 152 },
+      { ...v("G160", gold, "160"), lengthMm: 160 },
+    ];
+    expect(lengthForSize(withLength, "128 mm")).toBe(152);
+    expect(lengthForSize(withLength, "160 mm")).toBeNull();
+    expect(lengthForSize(variants, "128 mm")).toBeNull();
   });
 });

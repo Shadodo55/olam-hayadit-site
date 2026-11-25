@@ -36,7 +36,7 @@ test("a kitchen handle can be seen in place, and follows the chosen size", async
 
   // Another size: the preview stays up and redraws at the new size.
   const otherSize = page
-    .getByRole("group", { name: /מידה/ })
+    .getByRole("group", { name: /מידה|מרחק בין חורים/ })
     .locator("input[type=radio]:not(:checked):not(:disabled)")
     .first();
   if (await otherSize.count()) {

@@ -7,9 +7,12 @@ import { splitName } from "@/components/brand/Wordmark";
 
 type Phase = "idle" | "cover" | "reveal";
 
-/** The curtain stays at least this long, so the logo reads as a moment. */
-const MIN_COVER_MS = 450;
-const REVEAL_MS = 550;
+/**
+ * The curtain stays at least this long, so the logo reads as a moment; the
+ * whole change takes about 0.6 s, so clicks still feel immediate.
+ */
+const MIN_COVER_MS = 250;
+const REVEAL_MS = 350;
 /** Never leave the curtain up if a navigation doesn't happen. */
 const SAFETY_MS = 2500;
 

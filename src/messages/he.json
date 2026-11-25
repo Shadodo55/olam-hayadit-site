@@ -205,6 +205,8 @@
     "material": "חומר",
     "finish": "גימור",
     "size": "מידה",
+    "holeSpacing": "מרחק בין חורים",
+    "overallLength": "אורך {value} מ״מ",
     "chooseFinish": "בחרו גימור",
     "chooseSize": "בחרו מידה",
     "notInThisFinish": "לא קיים בגימור הזה",
@@ -213,6 +215,7 @@
     "whatsappMessage": "שלום, אשמח לבדוק זמינות של:\n{name}\nמק״ט: {sku}{details}\n{url}",
     "whatsappFinish": "\nגימור: {finish}",
     "whatsappSize": "\nמידה: {size}",
+    "whatsappHoleSpacing": "\nמרחק בין חורים: {size}",
     "callCta": "התקשרו לחנות",
     "specs": "מפרט טכני",
     "description": "תיאור",
@@ -421,6 +424,7 @@
         "invalid": "ההודעה מכילה תווים לא תקינים"
       }
     },
+    "inactive": "שליחת פנייה דרך האתר עוד לא פעילה. בינתיים הכי מהיר להתקשר אלינו או לכתוב לנו בוואטסאפ.",
     "failures": {
       "notConfigured": "הטופס עוד לא פעיל. בינתיים אפשר להתקשר או לכתוב לנו בוואטסאפ.",
       "rateLimited": "נשלחו כמה פניות ברצף. נסו שוב בעוד דקה, או התקשרו אלינו.",

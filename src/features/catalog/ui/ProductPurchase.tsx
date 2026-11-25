@@ -15,8 +15,10 @@ import {
   finishOf,
   selectFinish,
   selectionForSku,
+  lengthForSize,
   selectSize,
   sizeOf,
+  sizesAreHoleSpacingFor,
   variantOptions,
   whatsappText,
   type Selection,
@@ -94,6 +96,9 @@ function PurchaseView({
   const sizeName = variant.sizeLabel
     ? localized(variant.sizeLabel, locale).value
     : null;
+  // For most handles the "size" is the hole-to-hole distance: say so, and
+  // show the overall length under each choice.
+  const holeSpacing = sizesAreHoleSpacingFor(variants);
 
   const message = whatsappText((values) => t("whatsappMessage", values), {
     name,
@@ -102,7 +107,13 @@ function PurchaseView({
     ...(finishName
       ? { finishLine: t("whatsappFinish", { finish: finishName }) }
       : {}),
-    ...(sizeName ? { sizeLine: t("whatsappSize", { size: sizeName }) } : {}),
+    ...(sizeName
+      ? {
+          sizeLine: t(holeSpacing ? "whatsappHoleSpacing" : "whatsappSize", {
+            size: sizeName,
+          }),
+        }
+      : {}),
   });
   const whatsappHref = whatsappId
     ? `https://wa.me/${whatsappId}?text=${encodeURIComponent(message)}`
@@ -171,7 +182,7 @@ function PurchaseView({
       {sizes.length > 1 && (
         <fieldset className="mt-6">
           <legend className="mb-3 font-semibold">
-            {t("size")}
+            {holeSpacing ? t("holeSpacing") : t("size")}
             {sizeName && (
               <span className="font-normal text-ink-muted">: {sizeName}</span>
             )}
@@ -181,6 +192,9 @@ function PurchaseView({
               const inFinish = variants.some(
                 (v) => sizeOf(v) === s.key && finishOf(v) === selection.finish,
               );
+              const length = holeSpacing
+                ? lengthForSize(variants, s.key)
+                : null;
               return (
                 <label
                   key={s.key}
@@ -197,7 +211,14 @@ function PurchaseView({
                     }
                     className="sr-only"
                   />
-                  <span dir="auto">{localized(s.label, locale).value}</span>
+                  <span className="flex flex-col py-1 leading-tight">
+                    <span dir="auto">{localized(s.label, locale).value}</span>
+                    {length && (
+                      <span className="text-xs text-ink-muted">
+                        {t("overallLength", { value: length })}
+                      </span>
+                    )}
+                  </span>
                   {!inFinish && (
                     <span className="sr-only">({t("notInThisFinish")})</span>
                   )}

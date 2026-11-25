@@ -16,10 +16,13 @@ export function ProductCard({
   card,
   headingLevel = 3,
   priority = false,
+  showNew = true,
 }: {
   card: ProductCardData;
   headingLevel?: 2 | 3;
   priority?: boolean;
+  /** Off where the whole list is new products ("New in store"). */
+  showNew?: boolean;
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("catalog");
@@ -61,8 +64,9 @@ export function ProductCard({
           </>
         ) : null}
         <div className="absolute start-2 top-2 flex flex-wrap gap-1">
-          {card.isNew && (
-            <span className="rounded-sm bg-highlight px-2 py-0.5 text-xs font-bold text-on-highlight">
+          {/* Teal, not the gold: gold is kept for the main buttons. */}
+          {showNew && card.isNew && (
+            <span className="rounded-sm bg-accent px-2 py-0.5 text-xs font-bold text-on-accent">
               {t("new")}
             </span>
           )}
@@ -116,11 +120,14 @@ export function ProductGrid({
   cards,
   headingLevel = 3,
   scroller = false,
+  showNew = true,
 }: {
   cards: readonly ProductCardData[];
   headingLevel?: 2 | 3;
   /** On phones: one swipeable row (scroll-snap) instead of a grid. */
   scroller?: boolean;
+  /** Off where the whole list is new products. */
+  showNew?: boolean;
 }) {
   const layout = scroller
     ? "-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4 [&>li]:w-[72%] [&>li]:shrink-0 [&>li]:snap-start sm:[&>li]:w-auto"
@@ -133,6 +140,7 @@ export function ProductGrid({
             card={card}
             headingLevel={headingLevel}
             priority={index < 4}
+            showNew={showNew}
           />
         </li>
       ))}

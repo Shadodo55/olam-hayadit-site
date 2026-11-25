@@ -47,7 +47,9 @@ export async function SiteFooter({
   return (
     <footer className="on-dark mt-24 bg-band text-on-band print:hidden">
       {/* Invitation to the showroom, with the three ways to get in touch */}
-      <div className="border-b border-on-band/15">
+      {/* "Come visit" band; hidden where the page already shows the visit
+          details (globals.css, data-store-visit). */}
+      <div className="footer-invite border-b border-on-band/15">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-12 lg:items-center lg:px-8 lg:py-14">
           <div className="lg:col-span-7">
             <h2 className="display-title text-3xl sm:text-4xl">
