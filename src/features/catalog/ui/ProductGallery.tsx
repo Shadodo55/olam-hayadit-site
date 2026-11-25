@@ -82,7 +82,12 @@ export function ProductGallery({
   const go = (delta: number) => setIndex((i) => (i + delta + total) % total);
 
   return (
-    <section aria-label={t("gallery")}>
+    // On desktop the whole gallery is as wide as a 4:5 picture that fits the
+    // screen, so photo, price and actions share the first view.
+    <section
+      aria-label={t("gallery")}
+      className="lg:me-auto lg:max-w-[calc(min(66svh,42rem)*0.8)]"
+    >
       {scene && (
         <div
           role="group"
@@ -114,7 +119,7 @@ export function ProductGallery({
           {scene}
         </div>
       ) : !current || !alt ? (
-        <div className="flex aspect-[4/5] items-center justify-center bg-surface p-6 text-center text-ink-muted">
+        <div className="flex aspect-[4/5] w-full items-center justify-center bg-surface p-6 text-center text-ink-muted">
           {t("noImage")}
         </div>
       ) : (
@@ -133,7 +138,7 @@ export function ProductGallery({
             lang={alt.isFallback ? "he" : undefined}
             fill
             priority
-            sizes="(min-width: 1024px) 55vw, 100vw"
+            sizes="(min-width: 1024px) 34rem, 100vw"
             className="object-contain"
             style={{ objectPosition: current.objectPosition }}
             {...(current.blurDataURL
