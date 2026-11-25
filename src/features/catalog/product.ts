@@ -11,6 +11,7 @@ import {
 } from "@/commerce/stock";
 import type { Localized } from "@/lib/i18n/locales";
 import { toSiteImage, type RawImage, type SiteImage } from "@/lib/sanity/image";
+import { toSceneSetting, type SceneSetting } from "./scene";
 
 /** Catalog domain types: what UI components receive (never raw CMS data). */
 export interface Finish {
@@ -56,6 +57,8 @@ export interface Product {
   isSample: boolean;
   createdAt: string;
   seoDescription: Localized | null;
+  /** Own in-place preview setting (null = follow the category). */
+  scene: SceneSetting | null;
 }
 
 type Maybe<T> = T | null | undefined;
@@ -100,6 +103,7 @@ export interface RawProduct {
   variants?: Maybe<RawVariant[]>;
   relatedIds?: Maybe<string[]>;
   seoDescription?: Maybe<Localized>;
+  scene?: Maybe<string>;
 }
 
 const hasHe = (v: Maybe<Localized>): v is Localized => Boolean(v?.he?.trim());
@@ -181,5 +185,6 @@ export function mapProduct(raw: RawProduct): Product | null {
     isSample: Boolean(raw.isSample),
     createdAt: raw._createdAt ?? "",
     seoDescription: hasHe(raw.seoDescription) ? raw.seoDescription : null,
+    scene: toSceneSetting(raw.scene),
   };
 }

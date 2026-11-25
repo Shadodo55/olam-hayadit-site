@@ -75,6 +75,17 @@ async function main() {
       slug: { _type: "slug", current: m.id },
     });
   }
+  // In-place preview per category (subcategories inherit; see SCENES).
+  const sceneFor: Record<string, string> = {
+    handles: "kitchenBar",
+    "handles-kitchen-furniture": "kitchenBar",
+    "handles-door": "doorLever",
+    "handles-knobs": "kitchenKnob",
+    "handles-fridge": "fridgeBar",
+    "technical-legs": "furnitureLeg",
+    bathroom: "towelBar",
+    "home-decor": "wallHook",
+  };
   for (const c of categories) {
     tx.createOrReplace({
       _id: `category-${c.id}`,
@@ -84,6 +95,7 @@ async function main() {
       allLabel: c.allLabel,
       order: c.order,
       filters: c.filters,
+      ...(sceneFor[c.id] ? { scene: sceneFor[c.id] } : {}),
       ...(c.parent ? { parent: ref(`category-${c.parent}`) } : {}),
     });
   }
@@ -169,6 +181,10 @@ async function main() {
           ),
       },
       categories: [{ ...ref(`category-${p.category}`), _key: key(p.category) }],
+      // A hook among the bathroom's towel bars: shown on the wall instead.
+      ...(p.shape === "hook" && p.category === "bathroom"
+        ? { scene: "wallHook" }
+        : {}),
       brand: ref(p.brand),
       material: ref(`material-${p.material}`),
       shortDescription: {

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { CATEGORY_FILTERS, slugify } from "../../lib/constants";
+import { CATEGORY_FILTERS, SCENES, slugify } from "../../lib/constants";
 import { requireHebrew } from "../objects/localized";
 
 const slugField = (source: string, description?: string) =>
@@ -67,6 +67,14 @@ export const category = defineType({
       type: "array",
       of: [defineArrayMember({ type: "string" })],
       options: { list: [...CATEGORY_FILTERS], layout: "grid" },
+    }),
+    defineField({
+      name: "scene",
+      title: "הדמיה במקום",
+      description:
+        "בעמוד המוצר: איך המוצרים בקטגוריה הזו ייראו במקום (על ארון, דלת, קיר אמבטיה…), בגודל אמיתי ובגימור שהלקוח בוחר. תת-קטגוריה בלי בחירה מקבלת את הבחירה של הקטגוריה שמעליה.",
+      type: "string",
+      options: { list: [...SCENES] },
     }),
   ],
   orderings: [

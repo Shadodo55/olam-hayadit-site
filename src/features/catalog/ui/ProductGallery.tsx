@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useRef, useState, useSyncExternalStore } from "react";
-import { finishStore } from "./finish-store";
+import { useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { finishStore, sizePickStore } from "./finish-store";
 import { CloseIcon } from "@/components/ui/icons";
 import { localized, type Locale } from "@/lib/i18n/locales";
 import type { SiteImage } from "@/lib/sanity/image";
@@ -16,9 +16,12 @@ import type { SiteImage } from "@/lib/sanity/image";
 export function ProductGallery({
   images,
   name,
+  scene,
 }: {
   images: readonly SiteImage[];
   name: string;
+  /** In-place preview (ProductScene), shown as a second view. */
+  scene?: ReactNode;
 }) {
   const t = useTranslations("product");
   const common = useTranslations("common");
@@ -44,10 +47,28 @@ export function ProductGallery({
       index: typeof next === "function" ? next(index) : next,
       finish,
     });
+  // Photos or the in-place preview. Picking a size brings the preview up
+  // (sizes are easiest to judge in place), until the visitor switches back.
+  const sizePicks = useSyncExternalStore(
+    sizePickStore.subscribe,
+    sizePickStore.get,
+    () => 0,
+  );
+  const [viewChoice, setViewChoice] = useState<{
+    view: "photos" | "scene";
+    at: number;
+  }>({ view: "photos", at: 0 });
+  const view = !scene
+    ? "photos"
+    : sizePicks > viewChoice.at
+      ? "scene"
+      : viewChoice.view;
+  const showView = (next: "photos" | "scene") =>
+    setViewChoice({ view: next, at: sizePicks });
   const [zoomOpen, setZoomOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  if (images.length === 0) {
+  if (images.length === 0 && !scene) {
     return (
       <div className="flex aspect-[4/5] items-center justify-center bg-surface p-6 text-center text-ink-muted">
         {t("noImage")}
@@ -56,36 +77,75 @@ export function ProductGallery({
   }
 
   const total = images.length;
-  const current = images[index] ?? images[0]!;
-  const alt = localized(current.alt, locale);
+  const current = images[index] ?? images[0];
+  const alt = current ? localized(current.alt, locale) : null;
   const go = (delta: number) => setIndex((i) => (i + delta + total) % total);
 
   return (
     <section aria-label={t("gallery")}>
-      <button
-        type="button"
-        onClick={() => {
-          setZoomOpen(true);
-          dialogRef.current?.showModal();
-        }}
-        className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-surface"
-        data-testid="gallery-main"
-      >
-        <Image
-          src={current.src}
-          alt={alt.value}
-          lang={alt.isFallback ? "he" : undefined}
-          fill
-          priority
-          sizes="(min-width: 1024px) 55vw, 100vw"
-          className="object-contain"
-          style={{ objectPosition: current.objectPosition }}
-          {...(current.blurDataURL
-            ? { placeholder: "blur" as const, blurDataURL: current.blurDataURL }
-            : {})}
-        />
-        <span className="sr-only">{t("zoom")}</span>
-      </button>
+      {scene && (
+        <div
+          role="group"
+          aria-label={t("viewsLabel")}
+          className="mb-3 inline-flex rounded-full border border-line-strong p-1"
+        >
+          {(["photos", "scene"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={view === option}
+              onClick={() => showView(option)}
+              className={`min-h-10 rounded-full px-4 text-sm font-semibold transition-colors ${
+                view === option
+                  ? "bg-button text-on-button"
+                  : "text-ink hover:bg-surface"
+              }`}
+            >
+              {option === "photos" ? t("viewPhotos") : t("viewScene")}
+            </button>
+          ))}
+        </div>
+      )}
+      {view === "scene" ? (
+        <div
+          className="aspect-[4/5] w-full overflow-hidden border border-line bg-surface"
+          data-testid="gallery-scene"
+        >
+          {scene}
+        </div>
+      ) : !current || !alt ? (
+        <div className="flex aspect-[4/5] items-center justify-center bg-surface p-6 text-center text-ink-muted">
+          {t("noImage")}
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => {
+            setZoomOpen(true);
+            dialogRef.current?.showModal();
+          }}
+          className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-surface"
+          data-testid="gallery-main"
+        >
+          <Image
+            src={current.src}
+            alt={alt.value}
+            lang={alt.isFallback ? "he" : undefined}
+            fill
+            priority
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            className="object-contain"
+            style={{ objectPosition: current.objectPosition }}
+            {...(current.blurDataURL
+              ? {
+                  placeholder: "blur" as const,
+                  blurDataURL: current.blurDataURL,
+                }
+              : {})}
+          />
+          <span className="sr-only">{t("zoom")}</span>
+        </button>
+      )}
 
       {total > 1 && (
         <ul className="mt-3 grid grid-cols-4 gap-3">
@@ -93,10 +153,15 @@ export function ProductGallery({
             <li key={image.src}>
               <button
                 type="button"
-                onClick={() => setIndex(i)}
-                aria-current={i === index ? "true" : undefined}
+                onClick={() => {
+                  setIndex(i);
+                  showView("photos");
+                }}
+                aria-current={
+                  i === index && view === "photos" ? "true" : undefined
+                }
                 className={`relative block aspect-[4/5] w-full overflow-hidden bg-surface ${
-                  i === index
+                  i === index && view === "photos"
                     ? "outline-2 outline-offset-2 outline-ink"
                     : "opacity-80 hover:opacity-100"
                 }`}
@@ -129,7 +194,7 @@ export function ProductGallery({
         }}
         className="m-0 h-dvh max-h-none w-full max-w-none bg-paper p-0 text-ink"
       >
-        {zoomOpen && (
+        {zoomOpen && current && alt && (
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between gap-4 border-b border-line px-4 py-2">
               <h2 id="zoom-title" className="truncate">

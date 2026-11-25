@@ -8,7 +8,7 @@ import {
 import { mapProduct, type Product, type RawProduct } from "./product";
 
 const CATEGORIES_QUERY = `*[_type == "category"]{
-  _id, "slug": slug.current, title, allLabel, description, filters,
+  _id, "slug": slug.current, title, allLabel, description, filters, scene,
   "image": image ${IMAGE_PROJECTION}, "parent": parent._ref, order
 }`;
 
@@ -38,7 +38,8 @@ export const PRODUCT_PROJECTION = `{
     "finish": finish->{ _id, name, "slug": slug.current, swatch }
   },
   "relatedIds": related[]._ref,
-  seoDescription
+  seoDescription,
+  scene
 }`;
 
 /** All products (used for listings, search index and product pages). */

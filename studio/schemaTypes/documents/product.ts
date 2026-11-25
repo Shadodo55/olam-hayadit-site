@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { API_VERSION, slugify } from "../../lib/constants";
+import { API_VERSION, SCENES, slugify } from "../../lib/constants";
 import { requireHebrew } from "../objects/localized";
 
 const MAX_IMAGES = 4;
@@ -90,6 +90,15 @@ export const product = defineType({
       title: "חדש בחנות",
       type: "boolean",
       initialValue: false,
+      group: "main",
+    }),
+    defineField({
+      name: "scene",
+      title: "הדמיה במקום (לא חובה)",
+      description:
+        'ריק = לפי הקטגוריה. אפשר לשנות למוצר מסוים, למשל וו באמבטיה: "וו על הקיר".',
+      type: "string",
+      options: { list: [...SCENES] },
       group: "main",
     }),
     defineField({

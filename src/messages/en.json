@@ -187,6 +187,20 @@
     "askWhatsapp": "Ask on WhatsApp"
   },
   "product": {
+    "viewsLabel": "View",
+    "viewPhotos": "Photos",
+    "viewScene": "In place",
+    "sceneCaption": "True-to-scale preview: {context}. Colour follows the finish you chose.",
+    "sceneContext": {
+      "kitchenBar": "a 60 cm kitchen cabinet front",
+      "kitchenKnob": "a 60 cm chest of drawers",
+      "doorLever": "an 80 cm interior door, handle at 105 cm",
+      "fridgeBar": "a 60 cm fridge door",
+      "towelBar": "a wall of 30×60 cm tiles",
+      "wallHook": "a wall of 30×60 cm tiles",
+      "furnitureLeg": "a 90 cm sideboard"
+    },
+    "mmValue": "{value} mm",
     "sku": "SKU",
     "brand": "Brand",
     "material": "Material",
