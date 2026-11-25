@@ -76,7 +76,10 @@ export async function RootDocument({
           {/* Room for the phone action bar, so it never covers the footer. */}
           <div aria-hidden="true" className="h-16 lg:hidden print:hidden" />
           <MobileActionBar locale={locale} settings={settings} />
-          <PageTransition name={localized(settings.name, locale).value} />
+          <PageTransition
+            name={localized(settings.name, locale).value}
+            loadingLabel={t("pageLoading")}
+          />
           <ConsentManager policyHref={localeHref(locale, pagePaths.cookies)} />
         </IntlProvider>
       </body>
