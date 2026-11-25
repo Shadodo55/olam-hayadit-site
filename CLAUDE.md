@@ -61,6 +61,9 @@ Full approved plan (Hebrew): `docs/plan.md`.
   variable: light line + heavy line titles via `title-strong`), IBM Plex Sans
   Hebrew ("petrol", 300/500 only) and Frank Ruhl Libre ("classic"), both not
   preloaded, Assistant (text).
+- Titles: inner pages' h1 use the heading weight (never lighter than their
+  sections); the home hero pairs a light line (`title-light`) with a heavy
+  one (`title-strong`). Subcategory links share `chipClass` (button.ts).
 - Logo: `components/brand/LogoMark.tsx` is the store's logo mark redrawn as
   SVG (navy frame/plate, teal lever); `Wordmark` puts the name on two lines
   like the logo file. Favicon/og: `public/icon.svg` +

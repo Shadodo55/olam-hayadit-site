@@ -17,6 +17,9 @@ export type EnabledFilter =
 
 type ListFacet = "brand" | "finish" | "material" | "size" | "cc";
 
+/** Long option lists show this many until "show more" (if 3+ are hidden). */
+const SHORT_LIST = 6;
+
 /**
  * Filter controls (native fieldsets + checkboxes). Rendered in the desktop
  * sidebar and inside the mobile dialog, so every id is prefixed.
@@ -39,6 +42,7 @@ export function FiltersPanel({
   const t = useTranslations("catalog");
   const locale = useLocale() as Locale;
   const has = (f: EnabledFilter) => enabled.includes(f);
+  const [expanded, setExpanded] = useState<ListFacet[]>([]);
   // Sizes that only repeat a hole spacing would list the same numbers twice:
   // "size" keeps the real sizes (diameters, lengths) only.
   const ccSizes = has("holeToHole")
@@ -77,6 +81,13 @@ export function FiltersPanel({
     if (options.length === 0) return null;
     const selected: string[] =
       facet === "cc" ? state.cc.map(String) : state[facet];
+    // Long lists start short; a chosen option further down keeps it open.
+    const long = options.length >= SHORT_LIST + 3;
+    const chosenBelow = options
+      .slice(SHORT_LIST)
+      .some((option) => selected.includes(option.value));
+    const open = !long || chosenBelow || expanded.includes(facet);
+    const listId = `${idPrefix}-${facet}-options`;
     return (
       <fieldset key={facet} className="border-t border-line py-5">
         <legend className="float-start mb-3 w-full font-semibold">
@@ -85,8 +96,8 @@ export function FiltersPanel({
             {extra}
           </span>
         </legend>
-        <ul className="clear-both space-y-1">
-          {options.map((option) => {
+        <ul id={listId} className="clear-both space-y-1">
+          {(open ? options : options.slice(0, SHORT_LIST)).map((option) => {
             const id = `${idPrefix}-${facet}-${option.value}`.replace(
               /[^a-zA-Z0-9_-]/g,
               "_",
@@ -130,6 +141,25 @@ export function FiltersPanel({
             );
           })}
         </ul>
+        {long && !chosenBelow && (
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={listId}
+            onClick={() =>
+              setExpanded((current) =>
+                current.includes(facet)
+                  ? current.filter((f) => f !== facet)
+                  : [...current, facet],
+              )
+            }
+            className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-accent-ink underline underline-offset-4 sm:min-h-9"
+          >
+            {open
+              ? t("showFewer")
+              : t("showMore", { count: options.length - SHORT_LIST })}
+          </button>
+        )}
       </fieldset>
     );
   };

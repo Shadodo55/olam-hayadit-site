@@ -152,10 +152,6 @@
     opacity: 1;
   }
 
-  h1 {
-    font-weight: var(--display-weight);
-  }
-
   /* The main header bar is sticky: keep anchored targets below it. */
   html {
     scroll-padding-top: 6rem;
@@ -236,6 +232,12 @@
   font-weight: var(--display-weight);
   letter-spacing: var(--heading-tracking);
   line-height: 1.1;
+}
+
+/* The light first line of a two-weight title (home hero). Inner pages' titles
+   use the heading weight, so they never look weaker than their sections. */
+@utility title-light {
+  font-weight: var(--display-weight);
 }
 
 /* The heavy second line of a two-weight title (hero, bands). */

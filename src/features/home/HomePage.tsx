@@ -3,7 +3,7 @@ import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { DimensionDrawing } from "@/components/brand/DimensionDrawing";
-import { buttonClass } from "@/components/ui/button";
+import { buttonClass, chipClass } from "@/components/ui/button";
 import { ArrowIcon, ChatIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
 import { categoryPath, type Category } from "@/features/catalog/category-tree";
 import {
@@ -155,6 +155,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           className={buttonClass("outline", "sm", "mt-5 bg-paper")}
         >
           {t("how1Cta")}
+          <ArrowIcon className="rtl:-scale-x-100" />
         </Link>
       ),
     },
@@ -165,7 +166,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <a
           href={whatsapp}
           {...external}
-          className={buttonClass("solid", "sm", "mt-5")}
+          className={buttonClass("outline", "sm", "mt-5 bg-paper")}
         >
           <ChatIcon />
           {t("how2Cta")}
@@ -234,7 +235,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div
           className={`${container} relative lg:grid lg:grid-cols-12 lg:gap-12`}
         >
-          <div className="on-dark -mx-4 bg-band px-6 py-10 text-on-band sm:-mx-6 sm:px-10 sm:py-12 lg:relative lg:z-10 lg:col-span-7 lg:mx-0 lg:-mt-72 lg:px-12 lg:py-14 xl:col-span-6">
+          <div className="on-dark -mx-4 bg-band px-6 py-10 text-on-band sm:-mx-6 sm:px-10 sm:py-12 lg:relative lg:z-10 lg:col-span-7 lg:mx-0 lg:-mt-72 lg:self-start lg:px-12 lg:py-14 xl:col-span-6">
             <p
               className="rise inline-flex items-center gap-2 rounded-full border border-on-band/25 px-3 py-1.5 text-sm"
               style={order(0)}
@@ -259,7 +260,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             )}
             <h1
               id="hero-title"
-              className="mt-5 text-5xl leading-[1.05] sm:text-6xl xl:text-[4.25rem]"
+              className="mt-5 text-5xl leading-[1.05] title-light sm:text-6xl xl:text-[4.25rem]"
               lang={headline.isFallback ? "he" : undefined}
             >
               <span className="block">{animatedWords(leadWords, 2)}</span>
@@ -543,7 +544,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                                 locale,
                                 categoryPath(category.slug, child.slug),
                               )}
-                              className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-paper px-4 hover:border-ink"
+                              className={chipClass}
                               lang={childName.isFallback ? "he" : undefined}
                             >
                               {childName.value}

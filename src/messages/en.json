@@ -165,6 +165,8 @@
     "priceRange": "₪{min}–{max}",
     "inStock": "In the store now",
     "howToMeasure": "How to measure?",
+    "showMore": "Show {count} more",
+    "showFewer": "Show fewer",
     "sort": "Sort by",
     "sortNewest": "Newest first",
     "sortPriceAsc": "Price: low to high",

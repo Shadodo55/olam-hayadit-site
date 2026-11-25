@@ -74,6 +74,25 @@ test.describe("category filters (desktop)", () => {
     await expect(status).toHaveText(before ?? "");
   });
 
+  test("long option lists start short and open with 'show more'", async ({
+    page,
+  }) => {
+    await page.goto("/catalog/handles");
+    const group = page
+      .getByRole("complementary")
+      .getByRole("group", { name: /מרחק בין חורים/ });
+    const more = group.getByRole("button", { name: /הצגת עוד/ });
+    // Sample data may change: only check when the list is long.
+    if (!(await more.count())) return;
+    await expect(group.getByRole("checkbox")).toHaveCount(6);
+    await expect(more).toHaveAttribute("aria-expanded", "false");
+    await more.click();
+    expect(await group.getByRole("checkbox").count()).toBeGreaterThan(6);
+    await expect(
+      group.getByRole("button", { name: "הצגת פחות" }),
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
   test("sorting by price orders the cards", async ({ page }) => {
     await page.goto("/catalog/handles");
     await page.getByLabel("מיון").selectOption("price-asc");
@@ -109,7 +128,9 @@ test.describe("category filters (mobile dialog)", () => {
     await expectNoAxeViolations(page);
     await dialog.getByRole("checkbox", { name: /במלאי בחנות/ }).check();
     await expect(page).toHaveURL(/stock=1/);
-    await dialog.getByRole("button", { name: /הצגת|אין תוצאות/ }).click();
+    await dialog
+      .getByRole("button", { name: /^הצגת (מוצר|\d)|^אין תוצאות/ })
+      .click();
     await expect(dialog).toBeHidden();
   });
 });
