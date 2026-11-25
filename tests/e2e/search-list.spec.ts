@@ -33,6 +33,9 @@ test.describe("search", () => {
     await expect(
       page.getByRole("navigation", { name: /לפי קטגוריה/ }),
     ).toBeVisible();
+    // Type only once the page is interactive (hydrated), or the input event
+    // can be lost.
+    await page.waitForLoadState("networkidle");
     await input.fill("ידית");
     await expect(page.locator("main").getByRole("status")).toHaveText(/נמצא/);
     await expect(page.getByRole("heading", { name: "מוצרים" })).toBeVisible();

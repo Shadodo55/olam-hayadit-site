@@ -141,6 +141,17 @@
     text-wrap: balance;
   }
 
+  /* No single word stranded on the last line of a paragraph. */
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Placeholders (e.g. the price filter's min/max) readable at 4.5:1. */
+  ::placeholder {
+    color: var(--color-ink-muted);
+    opacity: 1;
+  }
+
   h1 {
     font-weight: var(--display-weight);
   }
