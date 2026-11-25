@@ -9,6 +9,13 @@ import { expect, test, type Page } from "@playwright/test";
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 const THEME_KEY = "olam-hayadit.theme.v2";
 
+// The picker is off unless the site was built with it (src/lib/theme.ts);
+// without it visitors can't reach the other themes, so there's nothing to test.
+test.skip(
+  process.env.NEXT_PUBLIC_THEME_PICKER !== "on",
+  "theme picker is off in this build (NEXT_PUBLIC_THEME_PICKER=on)",
+);
+
 async function useTheme(page: Page, theme: string) {
   await page.addInitScript(
     ({ key, value }) => {

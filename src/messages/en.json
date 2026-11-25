@@ -205,6 +205,8 @@
     "material": "Material",
     "finish": "Finish",
     "size": "Size",
+    "holeSpacing": "Hole spacing",
+    "overallLength": "Length {value} mm",
     "chooseFinish": "Choose a finish",
     "chooseSize": "Choose a size",
     "notInThisFinish": "Not available in this finish",
@@ -213,6 +215,7 @@
     "whatsappMessage": "Hello, I'd like to check availability of:\n{name}\nSKU: {sku}{details}\n{url}",
     "whatsappFinish": "\nFinish: {finish}",
     "whatsappSize": "\nSize: {size}",
+    "whatsappHoleSpacing": "\nHole spacing: {size}",
     "callCta": "Call the store",
     "specs": "Specifications",
     "description": "Description",
@@ -421,6 +424,7 @@
         "invalid": "The message contains characters we cannot accept"
       }
     },
+    "inactive": "Sending inquiries through the website isn't switched on yet. Until then, the quickest way is to call us or message us on WhatsApp.",
     "failures": {
       "notConfigured": "This form is not active yet. Meanwhile, please call us or message us on WhatsApp.",
       "rateLimited": "Several inquiries were sent in a row. Try again in a minute, or call us.",

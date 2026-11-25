@@ -161,6 +161,14 @@
     scroll-padding-top: 6rem;
   }
 
+  /* Phones: the action bar is fixed at the bottom; keep focused and
+     anchored things above it. */
+  @media (width < 64rem) {
+    html {
+      scroll-padding-bottom: 5rem;
+    }
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 3px;
@@ -320,6 +328,20 @@
   content: counter(n);
 }
 
+/* The phone action bar waits until the page's own main actions (the home
+   hero, marked data-hero-actions) have scrolled away, so it never covers
+   them (MobileActionBar.tsx). Hidden also means out of the tab order. */
+body:has([data-hero-actions]) .action-bar:not([data-past-hero]) {
+  transform: translateY(100%);
+  visibility: hidden;
+}
+
+/* The footer's "come visit" band repeats the visit details: skip it on pages
+   that show them already (home, visit). */
+body:has([data-store-visit]) .footer-invite {
+  display: none;
+}
+
 /* The services band: a static, wrapped list unless motion is allowed. */
 .marquee-track {
   display: flex;
@@ -361,8 +383,10 @@
   .ken-burns {
     animation: ken-burns 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
-  .slide-up {
-    animation: slide-up 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both;
+  .action-bar {
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+      visibility 0.3s;
   }
 
   /* Services band: an endless, slow row (pausable: hover, focus or button). */
@@ -451,11 +475,6 @@
     transform: scale(1.08);
   }
 }
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-}
 @keyframes marquee {
   to {
     transform: translateX(-50%);
@@ -502,16 +521,16 @@
 /* Page transition curtain (PageTransition.tsx). Rendered only when motion is
    allowed; it rises from the bottom, shows the logo, then lifts away. */
 .curtain-in {
-  animation: curtain-in 0.38s cubic-bezier(0.7, 0, 0.3, 1) both;
+  animation: curtain-in 0.25s cubic-bezier(0.7, 0, 0.3, 1) both;
 }
 .curtain-out {
-  animation: curtain-out 0.55s cubic-bezier(0.7, 0, 0.3, 1) both;
+  animation: curtain-out 0.35s cubic-bezier(0.4, 0, 0.6, 1) both;
 }
 .curtain-in .curtain-logo {
-  animation: curtain-logo 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
+  animation: curtain-logo 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) 0.05s both;
 }
 .curtain-in .curtain-bar {
-  animation: grow-line 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+  animation: grow-line 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.05s both;
 }
 @keyframes curtain-in {
   from {

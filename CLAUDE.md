@@ -70,8 +70,11 @@ Full approved plan (Hebrew): `docs/plan.md`.
   `classic`, set with
   `<html data-theme>`; tokens in `globals.css`, list in `src/lib/theme.ts`. Use the
   semantic colour classes (`accent`, `on-accent`, `accent-ink`, `button`, `band`,
-  `on-band`, `highlight`…), never raw hex. Every theme must pass axe
-  (`tests/e2e/themes.spec.ts`). Picker off: `NEXT_PUBLIC_THEME_PICKER=off`.
+  `on-band`, `highlight`…), never raw hex. Gold `highlight` is only for main
+  actions (buttons, the showroom tile that links to /visit), never for badges
+  or plain facts. The store went with `logo`: the picker is OFF unless built
+  with `NEXT_PUBLIC_THEME_PICKER=on`, which also turns on the per-theme axe
+  tests (`tests/e2e/themes.spec.ts`, skipped otherwise).
 
 ## i18n rules (next-intl)
 
@@ -101,6 +104,11 @@ CategoryPage.tsx`, `ProductPage.tsx`.
 - Listing logic is pure and unit-tested in `listing.ts` (filters, sort, facets,
   URL format `?finish=gold&cc=128&price=20-100&stock=1&sort=price-asc`) and
   `variants.ts` (variant selection, WhatsApp text). UI only renders.
+- When every variant's size label is just its hole-to-hole distance
+  (`sizesAreHoleSpacing`), the product page calls the choice "מרחק בין חורים"
+  and shows the overall length under each size. The catalog's "size" filter
+  leaves out sizes that only repeat a hole spacing (`holeSpacingSizes`) and
+  keeps real sizes (knob diameter, leg length).
 - Filters/variant pickers keep state in React and mirror it to the URL with
   `history.replaceState` (instant UI; reading the URL only on load). Components
   using `useSearchParams` sit in `<Suspense>` with a full static fallback (SEO).
@@ -127,12 +135,16 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   second is the heavy teal line), facts mosaic (years count-up, open days,
   opening time, showroom; all from siteSettings), services marquee (pausable button + hover/focus; static list with
   reduced motion), "how it works" steps, phone action bar (`MobileActionBar`,
-  call/WhatsApp/Waze; a spacer keeps it off the footer), WhatsApp button in the
-  desktop header.
+  call/WhatsApp/Waze; a spacer keeps it off the footer; on a page with
+  `data-hero-actions` it appears only after those scroll away, so it never
+  covers the hero buttons; `scroll-padding-bottom` keeps focus above it),
+  WhatsApp button in the desktop header. Below `lg` the categories are
+  compact tiles; the alternating rows are for wide screens. The footer's
+  "come visit" band hides on pages that show `StoreVisit` (`data-store-visit`).
 - Motion lives in `globals.css` (end of file): `.rise`/`.mask-word` (hero
   entrance), `data-reveal="self|children"` (CSS scroll-driven, no JS),
   `.parallax`, `.draw`, `.count-up`, and the page transition curtain (`PageTransition.tsx`: the logo on
-  navy, rises and lifts). Everything sits inside
+  navy, rises and lifts, about 0.6 s in all). Everything sits inside
   `prefers-reduced-motion: no-preference`, and nothing hides content without
   it. Never move the hero video's pause button (`mediaClassName` targets only
   the `<video>`). Playwright runs with reduced motion so axe judges the final
@@ -157,7 +169,9 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   (silently accepted), configured, rate limit (binding, 3/min per IP), fields,
   Turnstile, then a D1 copy, then the Resend email. Without `RESEND_API_KEY`,
   `INQUIRY_TO_EMAIL` and `TURNSTILE_SECRET_KEY` (Wrangler secrets) it answers 503
-  `not_configured` and stores nothing; the form then offers phone/WhatsApp.
+  `not_configured` and stores nothing. `GET /api/inquiry` answers
+  `{ configured }`; while it's false the form shows only phone/WhatsApp
+  (no fields to fill in for nothing). If the check fails, the form stays.
 - Turnstile loads only when a form field (input/select/textarea) first gets
   focus, never on page view (the
   consent test covers `/contact`). CSP allows `challenges.cloudflare.com` for

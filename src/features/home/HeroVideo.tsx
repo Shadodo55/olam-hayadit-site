@@ -77,7 +77,9 @@ export function HeroVideo({
         type="button"
         onClick={toggle}
         // Icon only (a clean, quiet control); the name is for screen readers.
-        className="absolute end-4 bottom-4 z-10 flex size-11 items-center justify-center rounded-full bg-ink/55 text-paper transition-colors hover:bg-ink/80 focus-visible:outline-paper"
+        // Focus: a white ring on the button plus a navy outline, so it shows
+        // on a light picture and on dark video alike.
+        className="absolute end-4 bottom-4 z-10 flex size-11 items-center justify-center rounded-full bg-ink/55 text-paper transition-colors hover:bg-ink/80 focus-visible:ring-2 focus-visible:ring-paper focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
       >
         <span aria-hidden="true" className="inline-flex w-3 justify-center">
           {playing ? (

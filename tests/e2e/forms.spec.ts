@@ -15,6 +15,7 @@ const TURNSTILE_STUB = `window.turnstile = {
 async function setUp(
   page: Page,
   api: { status: number; body: unknown } = { status: 200, body: { ok: true } },
+  configured = true,
 ) {
   await page.addInitScript(() => {
     localStorage.setItem(
@@ -31,6 +32,12 @@ async function setUp(
   );
   const sent: unknown[] = [];
   await page.route("**/api/inquiry", async (route) => {
+    // GET: is sending set up? (the page asks on load)
+    if (route.request().method() === "GET")
+      return route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ configured }),
+      });
     sent.push(route.request().postDataJSON());
     await route.fulfill({
       status: api.status,
@@ -110,6 +117,27 @@ test.describe("contact form", () => {
       "href",
       /^tel:/,
     );
+  });
+
+  test("offers phone and WhatsApp instead of the fields until sending is set up", async ({
+    page,
+  }) => {
+    await setUp(page, undefined, false);
+    await page.goto("/contact");
+    const panel = page.getByTestId("form-inactive");
+    await expect(panel).toContainText("עוד לא פעילה");
+    await expect(page.getByLabel("שם מלא")).toHaveCount(0);
+    await expect(panel.getByRole("link").first()).toHaveAttribute(
+      "href",
+      /^tel:/,
+    );
+    const results = await new AxeBuilder({ page })
+      .withTags(WCAG_TAGS)
+      .analyze();
+    expect(
+      results.violations,
+      JSON.stringify(results.violations, null, 2),
+    ).toEqual([]);
   });
 
   test("shows the server's field errors", async ({ page }) => {

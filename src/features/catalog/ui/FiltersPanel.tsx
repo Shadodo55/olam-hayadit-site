@@ -6,6 +6,7 @@ import { useState } from "react";
 import { localized, type Locale } from "@/lib/i18n/locales";
 import {
   facetOptions,
+  holeSpacingSizes,
   priceBounds,
   type FilterState,
   type ProductCardData,
@@ -38,6 +39,11 @@ export function FiltersPanel({
   const t = useTranslations("catalog");
   const locale = useLocale() as Locale;
   const has = (f: EnabledFilter) => enabled.includes(f);
+  // Sizes that only repeat a hole spacing would list the same numbers twice:
+  // "size" keeps the real sizes (diameters, lengths) only.
+  const ccSizes = has("holeToHole")
+    ? holeSpacingSizes(cards)
+    : new Set<string>();
 
   const toggle = (facet: ListFacet, value: string, checked: boolean) => {
     if (facet === "cc") {
@@ -62,7 +68,12 @@ export function FiltersPanel({
     title: string,
     extra?: React.ReactNode,
   ) => {
-    const options = facetOptions(cards, state, facet);
+    const options = facetOptions(cards, state, facet).filter(
+      (option) =>
+        facet !== "size" ||
+        !ccSizes.has(option.value) ||
+        state.size.includes(option.value),
+    );
     if (options.length === 0) return null;
     const selected: string[] =
       facet === "cc" ? state.cc.map(String) : state[facet];

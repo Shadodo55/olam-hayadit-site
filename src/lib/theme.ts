@@ -3,10 +3,11 @@
  * under [data-theme="…"]; "logo" (the store's new logo) is the default and
  * needs no attribute.
  *
- * While the store is choosing colours, a small picker (ThemePicker) lets
- * visitors switch themes; the choice is kept in localStorage. Once a theme
- * is chosen: make it the default in globals.css and turn the picker off by
- * setting NEXT_PUBLIC_THEME_PICKER=off (or deleting the picker).
+ * The store went with the logo colours, so the picker (ThemePicker, in the
+ * footer) is off: visitors always see "logo". The other themes stay in the
+ * code for now; build with NEXT_PUBLIC_THEME_PICKER=on to bring the picker
+ * (and its tests, themes.spec.ts) back. To drop them for good, delete their
+ * CSS blocks, the picker, its head script and the theme test.
  */
 export const themes = ["logo", "petrol", "classic"] as const;
 export type Theme = (typeof themes)[number];
@@ -15,8 +16,7 @@ export const defaultTheme: Theme = "logo";
 // v2: the default changed to the new logo; earlier picks start over.
 export const THEME_STORAGE_KEY = "olam-hayadit.theme.v2";
 
-export const themePickerEnabled =
-  process.env.NEXT_PUBLIC_THEME_PICKER !== "off";
+export const themePickerEnabled = process.env.NEXT_PUBLIC_THEME_PICKER === "on";
 
 export function isTheme(value: unknown): value is Theme {
   return themes.includes(value as Theme);

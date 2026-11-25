@@ -1,5 +1,7 @@
 /**
  * POST /api/inquiry: the contact and professionals forms.
+ * GET /api/inquiry: whether sending is set up yet ({ configured }), so the
+ * pages can offer phone/WhatsApp instead of a form that can't send.
  *
  * Order of checks: same-origin → size → honeypot → configured → rate limit →
  * field validation → Turnstile → email the store (Resend) → save a copy in D1.
@@ -38,6 +40,17 @@ const MAX_BODY = 16 * 1024;
 const RETENTION_MONTHS = 12;
 const DEFAULT_FROM = "Olam HaYadit website <onboarding@resend.dev>";
 
+/** Email (Resend), the store's address and spam protection are all set. */
+function isConfigured(env: InquiryEnv): env is InquiryEnv & {
+  RESEND_API_KEY: string;
+  INQUIRY_TO_EMAIL: string;
+  TURNSTILE_SECRET_KEY: string;
+} {
+  return Boolean(
+    env.RESEND_API_KEY && env.INQUIRY_TO_EMAIL && env.TURNSTILE_SECRET_KEY,
+  );
+}
+
 export async function handleInquiry(
   request: Request,
   env: InquiryEnv,
@@ -46,6 +59,7 @@ export async function handleInquiry(
   const fail = (error: InquiryError, status: number, extra = {}) =>
     reply({ error, ...extra }, { status });
 
+  if (request.method === "GET") return reply({ configured: isConfigured(env) });
   if (request.method !== "POST") return fail("method_not_allowed", 405);
 
   // Only our own pages may post (browsers always send Origin on POST).
@@ -70,8 +84,7 @@ export async function handleInquiry(
   if (typeof body.website === "string" && body.website.trim() !== "")
     return reply({ ok: true });
 
-  if (!env.RESEND_API_KEY || !env.INQUIRY_TO_EMAIL || !env.TURNSTILE_SECRET_KEY)
-    return fail("not_configured", 503);
+  if (!isConfigured(env)) return fail("not_configured", 503);
 
   const ip = request.headers.get("cf-connecting-ip") ?? "unknown";
   if (env.INQUIRY_RATE_LIMIT) {

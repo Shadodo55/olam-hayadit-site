@@ -97,13 +97,27 @@ describe("POST /api/inquiry", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("only accepts POST", async () => {
+  it("only accepts GET and POST", async () => {
     const { env } = makeEnv();
     const response = await handleRequest(
-      new Request(`${ORIGIN}/api/inquiry`),
+      new Request(`${ORIGIN}/api/inquiry`, { method: "PUT" }),
       env,
     );
     expect(response.status).toBe(405);
+  });
+
+  it("tells the page whether sending is set up (and nothing else)", async () => {
+    const ready = await handleRequest(
+      new Request(`${ORIGIN}/api/inquiry`),
+      makeEnv().env,
+    );
+    expect(await ready.json()).toEqual({ configured: true });
+    const notYet = await handleRequest(
+      new Request(`${ORIGIN}/api/inquiry`),
+      makeEnv({ INQUIRY_TO_EMAIL: undefined }).env,
+    );
+    expect(notYet.status).toBe(200);
+    expect(await notYet.json()).toEqual({ configured: false });
   });
 
   it("silently drops bots that fill the honeypot", async () => {

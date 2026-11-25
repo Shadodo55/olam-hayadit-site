@@ -46,6 +46,8 @@ const input =
  * The contact / professionals form. Validates with the same rules as the
  * Worker, shows an error summary (focused) plus an error under each field,
  * and loads spam protection (Turnstile) on the first interaction only.
+ * Until sending is set up (the Worker says so), it offers phone and WhatsApp
+ * instead of fields people would fill in for nothing.
  */
 export function InquiryForm({
   kind,
@@ -68,6 +70,7 @@ export function InquiryForm({
 
   const [errors, setErrors] = useState<InquiryErrors>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [active, setActive] = useState(true);
   const [summaryKey, setSummaryKey] = useState(0);
   const summaryRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
@@ -115,6 +118,20 @@ export function InquiryForm({
           startTurnstile();
           setTimeout(() => resolve(token.current), 20_000);
         });
+
+  // Is sending switched on yet? If we can't tell (offline, no Worker), keep
+  // the form: a failed send still explains itself and offers phone/WhatsApp.
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/inquiry", { cache: "no-store", signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: unknown) => {
+        if ((data as { configured?: unknown } | null)?.configured === false)
+          setActive(false);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (summaryKey > 0) summaryRef.current?.focus();
@@ -213,6 +230,42 @@ export function InquiryForm({
               <span dir="ltr">{phone.display}</span>
             </a>
           </p>
+        )}
+      </div>
+    );
+  }
+
+  if (!active) {
+    return (
+      <div
+        className="rounded-sm border border-line bg-surface p-6 sm:p-8"
+        data-testid="form-inactive"
+      >
+        <p className="max-w-prose text-lg">{t("inactive")}</p>
+        {(phone || whatsappHref) && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {phone && (
+              <a
+                href={`tel:${phone.e164}`}
+                className={buttonClass("solid", "md")}
+              >
+                <PhoneIcon />
+                <span dir="ltr">{phone.display}</span>
+              </a>
+            )}
+            {whatsappHref && (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonClass("outline", "md")}
+              >
+                <ChatIcon />
+                {tHeader("whatsapp")}
+                <span className="sr-only"> {tCommon("opensInNewTab")}</span>
+              </a>
+            )}
+          </div>
         )}
       </div>
     );
