@@ -35,6 +35,10 @@ const sizes: Record<Size, string> = {
   sm: "min-h-11 px-3 text-sm",
 };
 
+/** Subcategory links ("chips"): the same shape on the home and category pages. */
+export const chipClass =
+  "inline-flex min-h-11 items-center gap-2 rounded-sm border border-line-strong bg-paper px-4 font-medium hover:border-accent";
+
 export function buttonClass(
   variant: Variant = "solid",
   size: Size = "md",

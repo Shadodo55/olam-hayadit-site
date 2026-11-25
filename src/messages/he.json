@@ -165,6 +165,8 @@
     "priceRange": "₪{min}–{max}",
     "inStock": "במלאי בחנות עכשיו",
     "howToMeasure": "איך מודדים?",
+    "showMore": "הצגת עוד {count}",
+    "showFewer": "הצגת פחות",
     "sort": "מיון",
     "sortNewest": "חדשים קודם",
     "sortPriceAsc": "מחיר: מהנמוך לגבוה",

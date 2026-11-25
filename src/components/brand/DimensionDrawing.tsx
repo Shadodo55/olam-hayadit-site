@@ -71,18 +71,22 @@ export function DimensionDrawing({
         <path d="M472 214 L487 222 L472 230" className="draw-fade" />
       </g>
       <rect
-        x="265"
-        y="206"
-        width="110"
-        height="32"
+        x="245"
+        y="200"
+        width="150"
+        height="44"
         className="draw-fade fill-paper"
       />
+      {/* Larger on phones, where the drawing is drawn at about half size. */}
       <text
-        className="draw-fade fill-ink"
+        className="draw-fade fill-ink text-[30px] sm:text-[22px]"
         x="320"
-        y="229"
+        y="232"
         textAnchor="middle"
-        style={{ font: "600 22px var(--font-assistant), Arial, sans-serif" }}
+        style={{
+          fontFamily: "var(--font-assistant), Arial, sans-serif",
+          fontWeight: 600,
+        }}
       >
         {mm} mm
       </text>

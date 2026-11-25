@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Breadcrumbs, type Crumb } from "@/components/ui/Breadcrumbs";
-import { buttonClass } from "@/components/ui/button";
+import { buttonClass, chipClass } from "@/components/ui/button";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import { pagePaths } from "@/lib/routes";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -213,10 +213,7 @@ async function CatalogLayout({
             <ul className="flex flex-wrap gap-2">
               {subcategories.map((sub) => (
                 <li key={sub.href}>
-                  <Link
-                    href={sub.href}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line-strong bg-paper px-4 font-medium hover:border-accent"
-                  >
+                  <Link href={sub.href} className={chipClass}>
                     {sub.label}
                     <span className="text-sm text-ink-muted tabular">
                       {sub.count}

@@ -45,7 +45,7 @@ export function ServicesMarquee({
         type="button"
         onClick={() => setPaused((value) => !value)}
         // Icon only; the name is for screen readers.
-        className="absolute end-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-on-band/25 bg-band text-on-band/80 transition-colors hover:bg-on-band/10 hover:text-on-band motion-reduce:hidden"
+        className="absolute end-3 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-on-band/25 bg-band text-on-band/80 transition-colors hover:bg-on-band/10 hover:text-on-band motion-reduce:hidden"
       >
         <svg
           viewBox="0 0 12 12"
