@@ -88,8 +88,14 @@ Full approved plan (Hebrew): `docs/plan.md`.
   Never import `NextIntlClientProvider` from a server file; use
   `src/lib/i18n/IntlProvider.tsx`.
 - Client components: `useTranslations(ns)`. Only the namespaces listed in
-  `clientMessagesFor()` ship to the browser; add a namespace there if a client
-  component needs it.
+  `clientMessagesFor()` ship to the browser (with every page); add a namespace
+  there if a client component needs it. Texts only one page needs ship with
+  that page through a nested `IntlProvider` (the forms: `formMessagesFor()`).
+- Keep what every page ships small: product cards carry only `src` and
+  `objectPosition` (`CardImage`), card links don't prefetch (`prefetch={false}`),
+  and client code never imports a module that reaches `lib/sanity/client.ts`
+  (e.g. `SEARCH_INDEX_PATH` lives in `useSearchIndex.ts`, not in the
+  build-time `search-index.ts`).
 - CMS-style bilingual data uses `Localized` + `localized()`: it falls back to Hebrew
   and reports `lang`, so render the fallback text with `lang="he"`.
 - Every page has its own route folder in both trees (there is no catch-all

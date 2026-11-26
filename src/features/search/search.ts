@@ -37,10 +37,6 @@ interface Doc {
   extra: string;
 }
 
-export type SearchHit =
-  | { kind: "product"; product: IndexProduct; score: number }
-  | { kind: "category"; category: IndexCategory; score: number };
-
 export interface Searcher {
   search(query: string): {
     products: IndexProduct[];

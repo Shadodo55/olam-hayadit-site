@@ -43,8 +43,6 @@ export interface SearchIndex {
   categories: IndexCategory[];
 }
 
-export const SEARCH_INDEX_PATH = "/search-index.json";
-
 function flattenCategories(
   tree: readonly Category[],
 ): (IndexCategory & { id: string })[] {

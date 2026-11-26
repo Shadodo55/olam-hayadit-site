@@ -43,12 +43,6 @@ export function ProductCard({
               priority={priority}
               className={`object-contain transition-opacity duration-300 ${card.hoverImage ? "group-hover:opacity-0" : ""}`}
               style={{ objectPosition: card.image.objectPosition }}
-              {...(card.image.blurDataURL
-                ? {
-                    placeholder: "blur" as const,
-                    blurDataURL: card.image.blurDataURL,
-                  }
-                : {})}
             />
             {card.hoverImage && (
               <Image
@@ -82,8 +76,12 @@ export function ProductCard({
         className="mt-3 font-display text-lg leading-snug group-hover:text-accent-ink"
         lang={title.isFallback ? "he" : undefined}
       >
+        {/* No prefetch: a listing can hold hundreds of cards, and loading
+            each product in the background costs phones real data. The page
+            loads on click, behind the page-change curtain. */}
         <Link
           href={localeHref(locale, productPath(card.slug))}
+          prefetch={false}
           className="after:absolute after:inset-0 focus-visible:outline-none"
         >
           {title.value}

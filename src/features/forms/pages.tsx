@@ -6,7 +6,9 @@ import { buttonClass } from "@/components/ui/button";
 import { ChatIcon, PhoneIcon, PinIcon } from "@/components/ui/icons";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { OpenStatus } from "@/features/store-info/OpenStatus";
+import { IntlProvider } from "@/lib/i18n/IntlProvider";
 import { localeHref, type Locale } from "@/lib/i18n/locales";
+import { formMessagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
 import {
   formatAddress,
@@ -148,13 +150,20 @@ function Form({
   settings: SiteSettings;
 }) {
   const phone = settings.phones.store ?? settings.phones.mobile;
+  // The form's texts ship only with the form pages, not with every page.
   return (
-    <InquiryForm
-      kind={kind}
-      privacyHref={localeHref(locale, pagePaths.privacy)}
-      phone={phone ? { display: phone.display, e164: phone.e164 } : null}
-      whatsappHref={whatsappUrl(settings.whatsapp)}
-    />
+    <IntlProvider
+      locale={locale}
+      messages={formMessagesFor(locale)}
+      timeZone="Asia/Jerusalem"
+    >
+      <InquiryForm
+        kind={kind}
+        privacyHref={localeHref(locale, pagePaths.privacy)}
+        phone={phone ? { display: phone.display, e164: phone.e164 } : null}
+        whatsappHref={whatsappUrl(settings.whatsapp)}
+      />
+    </IntlProvider>
   );
 }
 

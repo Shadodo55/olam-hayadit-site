@@ -1,5 +1,6 @@
 import en from "@/messages/en.json";
 import he from "@/messages/he.json";
+import { themePickerEnabled } from "@/lib/theme";
 import type { Locale } from "./locales";
 
 export type Messages = typeof he;
@@ -13,7 +14,11 @@ export function messagesFor(locale: Locale): Messages {
   return all[locale];
 }
 
-/** Namespaces that client components need. Keep this list small: it ships to the browser. */
+/**
+ * Namespaces that client components need on every page. Keep this list small:
+ * it ships with every page. The forms' texts ship only with the form pages
+ * (`formMessagesFor`), the colour picker's only when the picker is on.
+ */
 const clientNamespaces = [
   "common",
   "header",
@@ -26,15 +31,23 @@ const clientNamespaces = [
   "list",
   "hero",
   "map",
-  "theme",
-  "forms",
+  ...(themePickerEnabled ? (["theme"] as const) : []),
 ] as const;
 
-export function clientMessagesFor(
+function pick<K extends keyof Messages>(
   locale: Locale,
-): Pick<Messages, (typeof clientNamespaces)[number]> {
+  namespaces: readonly K[],
+): Pick<Messages, K> {
   const messages = all[locale];
-  return Object.fromEntries(
-    clientNamespaces.map((ns) => [ns, messages[ns]]),
-  ) as Pick<Messages, (typeof clientNamespaces)[number]>;
+  return Object.fromEntries(namespaces.map((ns) => [ns, messages[ns]])) as Pick<
+    Messages,
+    K
+  >;
 }
+
+export const clientMessagesFor = (locale: Locale) =>
+  pick(locale, clientNamespaces);
+
+/** For a nested provider around the inquiry form (it replaces, not adds to). */
+export const formMessagesFor = (locale: Locale) =>
+  pick(locale, ["common", "header", "forms"]);
