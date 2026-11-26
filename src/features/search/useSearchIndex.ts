@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SEARCH_INDEX_PATH, type SearchIndex } from "./search-index";
+import type { SearchIndex } from "./search-index";
+
+// Here, not in search-index.ts: that file builds the index at build time and
+// imports the Sanity client, which must not reach the browser.
+export const SEARCH_INDEX_PATH = "/search-index.json";
 
 /** One download per page view, shared by every component that needs it. */
 let pending: Promise<SearchIndex> | null = null;

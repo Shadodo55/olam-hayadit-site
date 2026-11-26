@@ -17,6 +17,16 @@ export interface CardVariant {
   stock: StockStatus;
 }
 
+/**
+ * What a card draws: the picture and its focus point. No alt text (the card's
+ * title names the product), sizes (the card has a fixed shape) or blur preview
+ * (the grey card background already holds the space). Every card ships with
+ * the page, so each field here costs bytes on every listing.
+ */
+export type CardImage = Pick<SiteImage, "src" | "objectPosition">;
+const cardImage = (image: SiteImage | undefined): CardImage | null =>
+  image ? { src: image.src, objectPosition: image.objectPosition } : null;
+
 /** Serializable product summary sent to the browser for listings. */
 export interface ProductCardData {
   id: string;
@@ -25,8 +35,8 @@ export interface ProductCardData {
   sku: string;
   brand: { slug: string; name: string } | null;
   material: { slug: string; name: Localized } | null;
-  image: SiteImage | null;
-  hoverImage: SiteImage | null;
+  image: CardImage | null;
+  hoverImage: CardImage | null;
   priceMin: Agorot;
   priceMax: Agorot;
   stock: StockStatus;
@@ -86,8 +96,8 @@ export function toCardData(product: Product): ProductCardData {
     material: product.material
       ? { slug: product.material.slug, name: product.material.name }
       : null,
-    image: product.images[0] ?? null,
-    hoverImage: product.images[1] ?? null,
+    image: cardImage(product.images[0]),
+    hoverImage: cardImage(product.images[1]),
     priceMin: product.price.min,
     priceMax: product.price.max,
     stock: product.stock,

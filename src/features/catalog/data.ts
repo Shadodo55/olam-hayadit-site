@@ -66,7 +66,3 @@ export function productsInCategory(
   const ids = new Set(categoryAndDescendantIds(category));
   return products.filter((p) => p.categoryIds.some((id) => ids.has(id)));
 }
-
-export async function getProductBySlug(slug: string): Promise<Product | null> {
-  return (await getProducts()).find((p) => p.slug === slug) ?? null;
-}
