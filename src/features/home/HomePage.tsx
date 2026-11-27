@@ -27,6 +27,7 @@ import { StoreVisit } from "@/features/store-info/StoreVisit";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
 import sanityImageLoader from "@/lib/sanity/image-loader";
 import { pagePaths } from "@/lib/routes";
+import { JsonLd, storeJsonLd } from "@/lib/seo/json-ld";
 import {
   formatAddress,
   getSiteSettings,
@@ -193,6 +194,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return (
     <>
+      <JsonLd data={storeJsonLd(settings, locale)} />
       {/* Hero: full-width media; the words sit on a solid panel that overlaps
           its lower edge on desktop (never text over the video itself). The
           panel's content rises in on load; the picture drifts on scroll. */}

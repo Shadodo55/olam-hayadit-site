@@ -12,3 +12,4 @@ studio/dist
 studio/.sanity
 studio/seed/images
 studio/seed/media
+.claude

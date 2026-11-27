@@ -21,6 +21,8 @@ const eslintConfig = defineConfig([
     "test-results/**",
     ".lighthouseci/**",
     ".wrangler/**",
+    // Local Claude Code skills (third-party, not site code; see .claude/skills/ECC-SOURCE.md).
+    ".claude/**",
     "studio/node_modules/**",
     "studio/dist/**",
     "studio/.sanity/**",

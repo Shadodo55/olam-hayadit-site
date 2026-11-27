@@ -9,7 +9,12 @@ import { MyListView } from "./MyListView";
 
 export function myListMetadata(locale: Locale): Metadata {
   return {
-    ...pageMetadata(locale, pagePaths.myList, messagesFor(locale).pages.myList),
+    ...pageMetadata(
+      locale,
+      pagePaths.myList,
+      messagesFor(locale).pages.myList,
+      messagesFor(locale).meta.pages.myList,
+    ),
     robots: { index: false },
   };
 }

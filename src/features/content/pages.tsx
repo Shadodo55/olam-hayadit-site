@@ -13,8 +13,10 @@ import { ProductGallery } from "@/features/catalog/ui/ProductGallery";
 import { ProductGrid } from "@/features/catalog/ui/ProductCard";
 import { StoreVisit } from "@/features/store-info/StoreVisit";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
-import { messagesFor } from "@/lib/i18n/messages";
+import { IntlProvider } from "@/lib/i18n/IntlProvider";
+import { clientMessagesWith, messagesFor } from "@/lib/i18n/messages";
 import { pagePaths, type PageKey } from "@/lib/routes";
+import { JsonLd, storeJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { getSiteSettings, whatsappUrl } from "@/lib/site/settings";
 import {
@@ -31,7 +33,13 @@ const container = "mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8";
 
 /** Metadata for a fixed page: its title from the messages, canonical, hreflang. */
 export function staticPageMetadata(locale: Locale, key: PageKey): Metadata {
-  return pageMetadata(locale, pagePaths[key], messagesFor(locale).pages[key]);
+  const messages = messagesFor(locale);
+  return pageMetadata(
+    locale,
+    pagePaths[key],
+    messages.pages[key],
+    messages.meta.pages[key],
+  );
 }
 
 /* ---------- visit the store ---------- */
@@ -44,6 +52,7 @@ export async function VisitPage({ locale }: { locale: Locale }) {
   ]);
   return (
     <div className={container}>
+      <JsonLd data={storeJsonLd(settings, locale)} />
       <PageHeader locale={locale} title={pages("visit")} intro={t("intro")} />
       <div className="mt-10">
         <StoreVisit locale={locale} settings={settings} showParking />
@@ -166,7 +175,12 @@ export async function cmsPageMetadata(
   const title = page
     ? localized(page.title, locale).value
     : messagesFor(locale).pages[key];
-  return pageMetadata(locale, pagePaths[key], title);
+  return pageMetadata(
+    locale,
+    pagePaths[key],
+    title,
+    messagesFor(locale).meta.pages[key],
+  );
 }
 
 export async function CmsPage({
@@ -325,7 +339,14 @@ export async function brandMetadata(
   slug: string,
 ): Promise<Metadata> {
   const brand = (await getBrands()).find((b) => b.slug === slug);
-  return brand ? pageMetadata(locale, `/brands/${slug}`, brand.name) : {};
+  return brand
+    ? pageMetadata(
+        locale,
+        `/brands/${slug}`,
+        brand.name,
+        messagesFor(locale).meta.brandDescription.replace("{name}", brand.name),
+      )
+    : {};
 }
 
 export async function BrandPage({
@@ -448,6 +469,10 @@ export async function projectMetadata(
         locale,
         `/projects/${slug}`,
         localized(project.title, locale).value,
+        messagesFor(locale).meta.projectDescription.replace(
+          "{name}",
+          localized(project.title, locale).value,
+        ),
       )
     : {};
 }
@@ -491,7 +516,13 @@ export async function ProjectPage({
         {...(description ? { intro: description.value } : {})}
       />
       <div className="mt-10 max-w-4xl">
-        <ProductGallery images={images} name={title.value} />
+        <IntlProvider
+          locale={locale}
+          messages={clientMessagesWith(locale, ["product"])}
+          timeZone="Asia/Jerusalem"
+        >
+          <ProductGallery images={images} name={title.value} />
+        </IntlProvider>
       </div>
       {cards.length > 0 && (
         <section aria-labelledby="project-products" className="mt-14">

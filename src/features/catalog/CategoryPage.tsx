@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { Breadcrumbs, type Crumb } from "@/components/ui/Breadcrumbs";
 import { buttonClass, chipClass } from "@/components/ui/button";
 import { localeHref, localized, type Locale } from "@/lib/i18n/locales";
+import { messagesFor } from "@/lib/i18n/messages";
 import { pagePaths } from "@/lib/routes";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { getSiteSettings, whatsappUrl } from "@/lib/site/settings";
@@ -71,7 +72,10 @@ export async function categoryMetadata(
     localized(category.name, locale).value,
     category.description
       ? localized(category.description, locale).value
-      : undefined,
+      : messagesFor(locale).meta.categoryDescription.replace(
+          "{name}",
+          localized(category.name, locale).value,
+        ),
   );
 }
 
@@ -250,7 +254,7 @@ async function CatalogLayout({
                   {t("results", { count: sorted.length })}
                 </p>
                 <div className="mt-8">
-                  <ProductGrid cards={sorted} />
+                  <ProductGrid cards={sorted} priorityCount={4} />
                 </div>
               </div>
             }

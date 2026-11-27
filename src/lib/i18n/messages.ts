@@ -16,8 +16,10 @@ export function messagesFor(locale: Locale): Messages {
 
 /**
  * Namespaces that client components need on every page. Keep this list small:
- * it ships with every page. The forms' texts ship only with the form pages
- * (`formMessagesFor`), the colour picker's only when the picker is on.
+ * it ships with every page. Texts one kind of page needs ship only with it,
+ * through a nested provider: the forms (`formMessagesFor`), the product
+ * picker and gallery, and search (`clientMessagesWith`). The colour picker's
+ * ship only when the picker is on.
  */
 const clientNamespaces = [
   "common",
@@ -26,8 +28,6 @@ const clientNamespaces = [
   "consent",
   "days",
   "catalog",
-  "product",
-  "search",
   "list",
   "hero",
   "map",
@@ -47,6 +47,16 @@ function pick<K extends keyof Messages>(
 
 export const clientMessagesFor = (locale: Locale) =>
   pick(locale, clientNamespaces);
+
+/**
+ * For a nested provider (it replaces the outer messages, not adds to them):
+ * every page's namespaces plus `extra`. The repeated namespaces are the same
+ * objects, so the page data carries them once.
+ */
+export const clientMessagesWith = <K extends keyof Messages>(
+  locale: Locale,
+  extra: readonly K[],
+) => pick(locale, [...clientNamespaces, ...extra]);
 
 /** For a nested provider around the inquiry form (it replaces, not adds to). */
 export const formMessagesFor = (locale: Locale) =>
