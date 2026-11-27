@@ -9,7 +9,7 @@ export const siteUrl =
  * While the site is under construction it must not be indexed.
  * Flip NEXT_PUBLIC_ALLOW_INDEXING=true at launch (see CLAUDE.md).
  */
-const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
+export const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
 
 /** Social preview image (public/og.png, from scripts/generate-brand-images.mjs). */
 const OG_IMAGE = { url: "/og.png", width: 1200, height: 630 };
@@ -64,6 +64,18 @@ export function baseMetadata(locale: Locale): Metadata {
     robots: allowIndexing
       ? { index: true, follow: true }
       : { index: false, follow: false },
+  };
+}
+
+/** The home page: a title that says what and where, not only the name. */
+export function homeMetadata(locale: Locale): Metadata {
+  const { meta } = messagesFor(locale);
+  return {
+    title: { absolute: meta.homeTitle },
+    openGraph: openGraph(locale, "/", {
+      title: meta.homeTitle,
+      description: meta.description,
+    }),
   };
 }
 

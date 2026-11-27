@@ -119,6 +119,7 @@ export function ProductGrid({
   headingLevel = 3,
   scroller = false,
   showNew = true,
+  priorityCount = 0,
 }: {
   cards: readonly ProductCardData[];
   headingLevel?: 2 | 3;
@@ -126,10 +127,20 @@ export function ProductGrid({
   scroller?: boolean;
   /** Off where the whole list is new products. */
   showNew?: boolean;
+  /**
+   * How many first pictures load at top priority. Only where the grid is
+   * the first thing on the page (the catalog): elsewhere it sits below the
+   * fold, and preloading it slows the top of the page on phones.
+   */
+  priorityCount?: number;
 }) {
   const layout = scroller
     ? "-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4 [&>li]:w-[72%] [&>li]:shrink-0 [&>li]:snap-start sm:[&>li]:w-auto"
-    : "grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 xl:grid-cols-4";
+    : // content-visibility: the browser skips drawing cards far off screen, so
+      // a long catalog stays quick on phones. Its paint containment would
+      // clip the card's focus ring and hover lift, so each item gets 8px of
+      // room (padding) that its negative margin takes back.
+      "grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 xl:grid-cols-4 [&>li]:-m-2 [&>li]:p-2 [&>li]:[content-visibility:auto] [&>li]:[contain-intrinsic-size:auto_30rem]";
   return (
     <ul className={layout}>
       {cards.map((card, index) => (
@@ -137,7 +148,7 @@ export function ProductGrid({
           <ProductCard
             card={card}
             headingLevel={headingLevel}
-            priority={index < 4}
+            priority={index < priorityCount}
             showNew={showNew}
           />
         </li>

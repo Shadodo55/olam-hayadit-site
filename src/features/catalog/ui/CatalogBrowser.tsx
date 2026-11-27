@@ -181,7 +181,7 @@ export function CatalogBrowser({
 
         <div className="mt-8">
           {visible.length ? (
-            <ProductGrid cards={visible} />
+            <ProductGrid cards={visible} priorityCount={4} />
           ) : (
             <p className="max-w-prose text-lg">{t("noResults")}</p>
           )}

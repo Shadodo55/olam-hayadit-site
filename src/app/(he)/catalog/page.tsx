@@ -8,6 +8,7 @@ export const metadata: Metadata = pageMetadata(
   "he",
   pagePaths.catalog,
   messagesFor("he").pages.catalog,
+  messagesFor("he").meta.pages.catalog,
 );
 
 export default function Page() {

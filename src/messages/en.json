@@ -1,7 +1,29 @@
 {
   "meta": {
     "siteName": "Olam HaYadit",
-    "description": "Handles, hardware and bathroom accessories for homes and professionals. Showroom at 16 Yad Harutsim St., Talpiot, Jerusalem."
+    "description": "Handles, hardware and bathroom accessories for homes and professionals. Showroom at 16 Yad Harutsim St., Talpiot, Jerusalem.",
+    "homeTitle": "Olam HaYadit | Handles & hardware showroom, Jerusalem",
+    "categoryDescription": "{name} at Olam HaYadit: models, finishes and prices including VAT, and a Talpiot, Jerusalem showroom to see and touch before you buy.",
+    "brandDescription": "{name} products at Olam HaYadit: prices including VAT on the site, and a showroom at 16 Yad Harutsim St., Talpiot, Jerusalem.",
+    "projectDescription": "{name}: a project with handles and hardware from Olam HaYadit, the showroom in Talpiot, Jerusalem.",
+    "pages": {
+      "catalog": "Handles, knobs, technical hardware and bathroom accessories with prices including VAT. Filter by finish and hole spacing, then visit the showroom.",
+      "search": "Search the Olam HaYadit catalog by name, SKU or category.",
+      "myList": "Your list: products you saved, to send us on WhatsApp or print before visiting the showroom.",
+      "brands": "The brands at the Olam HaYadit showroom in Talpiot, Jerusalem: handles, hardware and bathroom accessories.",
+      "professionals": "For interior designers, carpenters and kitchen makers: handles and hardware for a whole project from one place, stock checks by phone and WhatsApp.",
+      "projects": "Projects and inspiration: kitchens, bathrooms and wardrobes with handles and hardware from Olam HaYadit.",
+      "catalogs": "Catalogs to download as PDF: handles, hardware and bathroom accessories from Olam HaYadit.",
+      "visit": "Visit the showroom: 16 Yad Harutsim St., Talpiot Industrial Area, Jerusalem. Opening hours, directions with Waze and Google Maps, phone and WhatsApp.",
+      "about": "About Olam HaYadit: a family store for handles, hardware and bathroom accessories in the Talpiot Industrial Area, Jerusalem.",
+      "faq": "Answers to common questions about handles, hardware, sizes, stock and visiting the showroom in Talpiot, Jerusalem.",
+      "contact": "Contact Olam HaYadit: phone, WhatsApp and directions to the showroom at 16 Yad Harutsim St., Talpiot, Jerusalem.",
+      "measuringGuide": "How to measure a handle: the distance between screw centres decides whether a new handle fits the existing holes. A short guide with a drawing.",
+      "accessibility": "Accessibility statement of the Olam HaYadit website: what we did to make the site accessible, and how to contact us about it.",
+      "privacy": "Privacy policy of the Olam HaYadit website: what information is collected, why, and who receives it.",
+      "terms": "Terms of use of the Olam HaYadit website.",
+      "cookies": "Cookie policy of the Olam HaYadit website, and how to change your choice."
+    }
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -28,7 +50,6 @@
     "whatsapp": "WhatsApp",
     "navigate": "Navigate with Waze",
     "languageLabel": "עברית",
-    "languageName": "Hebrew",
     "callShort": "Call",
     "navigateShort": "Directions"
   },
@@ -99,7 +120,6 @@
     "tagline": "Handles and hardware. Chosen by hand.",
     "intro": "A showroom for handles, hardware and bathroom accessories in Talpiot, Jerusalem. Browse models, finishes and prices here, then come and see them in the store.",
     "toCatalog": "Browse the catalog",
-    "visitCta": "Hours and address",
     "proTitle": "For professionals",
     "proBody": "Interior designers, carpenters and kitchen makers: handles and hardware for a whole project, from one place.",
     "proCta": "Information for professionals",
@@ -115,7 +135,6 @@
     "visitTitle": "Come and see up close",
     "visitHeading": "Visit the showroom",
     "hoursHeading": "Opening hours",
-    "contactHeading": "Contact",
     "catalogsTitle": "Catalogs to download",
     "allCatalogs": "All catalogs",
     "projectsTitle": "Projects & inspiration",
@@ -209,8 +228,6 @@
     "size": "Size",
     "holeSpacing": "Hole spacing",
     "overallLength": "Length {value} mm",
-    "chooseFinish": "Choose a finish",
-    "chooseSize": "Choose a size",
     "notInThisFinish": "Not available in this finish",
     "priceIncVat": "incl. VAT",
     "whatsappCta": "Check availability on WhatsApp",
@@ -232,8 +249,7 @@
     "prevImage": "Previous image",
     "nextImage": "Next image",
     "sampleNotice": "This is a sample product for illustration only. The price, stock and image are not real.",
-    "noImage": "No image for this product yet",
-    "selectedVariant": "Selected: {summary}"
+    "noImage": "No image for this product yet"
   },
   "search": {
     "label": "What are you looking for?",
@@ -263,7 +279,6 @@
     "increase": "Increase quantity of {name}",
     "qtyOf": "Quantity of {name}",
     "remove": "Remove",
-    "removeLabel": "Remove {name} from the list",
     "removed": "{name} was removed from the list",
     "unavailable": "This product is no longer in the catalog. You can remove it.",
     "unitPrice": "Unit price",
@@ -291,19 +306,13 @@
     "title": "Map: {name}",
     "consentText": "The map is shown through Google Maps. Google may set its own cookies.",
     "showOnce": "Show the map",
-    "showAlways": "Always show maps",
-    "openGoogle": "Open in Google Maps",
-    "openWaze": "Navigate with Waze"
+    "showAlways": "Always show maps"
   },
   "visit": {
     "intro": "Our showroom is in the Talpiot industrial area. It is worth checking availability before making a special trip.",
     "addressTitle": "Address",
     "hoursTitle": "Opening hours",
-    "today": "Today",
-    "parkingTitle": "Parking",
-    "contactTitle": "Contact",
-    "mapTitle": "Map and directions",
-    "nowTitle": "Right now"
+    "parkingTitle": "Parking"
   },
   "guide": {
     "intro": "Want to replace a handle on an existing cabinet without drilling new holes? The measurement that matters is the distance between the centres of the two screw holes, called hole-to-hole or centre-to-centre.",

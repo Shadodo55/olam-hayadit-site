@@ -31,14 +31,24 @@ export function HeroVideo({
   useEffect(() => {
     const video = ref.current;
     if (!video) return;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (!reduce) {
-      video.play().catch(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Data saver on: keep the poster; the button still offers Play.
+    const connection = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection;
+    if (connection?.saveData) return;
+    // Start once the page has loaded, so the video (about 1.5 MB) doesn't
+    // compete with the text and pictures a phone on 4G must show first.
+    const start = () =>
+      void video.play().catch(() => {
         // Autoplay blocked (e.g. low-power mode): the poster stays and the button offers Play.
       });
+    if (document.readyState === "complete") {
+      start();
+      return;
     }
+    window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
   }, []);
 
   const toggle = () => {
@@ -55,7 +65,8 @@ export function HeroVideo({
         muted
         loop
         playsInline
-        preload="metadata"
+        // Nothing downloads before play starts (after the page has loaded).
+        preload="none"
         poster={poster ?? undefined}
         aria-hidden="true"
         tabIndex={-1}

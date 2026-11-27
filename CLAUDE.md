@@ -91,6 +91,11 @@ Full approved plan (Hebrew): `docs/plan.md`.
   `clientMessagesFor()` ship to the browser (with every page); add a namespace
   there if a client component needs it. Texts only one page needs ship with
   that page through a nested `IntlProvider` (the forms: `formMessagesFor()`).
+- Images at top priority only where they're the first thing on the page:
+  `ProductGrid priorityCount` (catalog 4, elsewhere 0), the product gallery's
+  main image. The hero video starts after `load`, not with Data Saver
+  (`preload="none"`). Long grids use `content-visibility: auto` (items get
+  `-m-2 p-2` so focus rings and the hover lift aren't clipped).
 - Keep what every page ships small: product cards carry only `src` and
   `objectPosition` (`CardImage`), card links don't prefetch (`prefetch={false}`),
   and client code never imports a module that reaches `lib/sanity/client.ts`
@@ -235,7 +240,18 @@ CategoryPage.tsx`, `ProductPage.tsx`.
   glassmorphism, shadows-on-cards, emoji or stock "happy people" photos. Tokens
   are in `src/app/globals.css` (`@theme`); notes in `docs/design-notes.md`.
 - Site is `noindex` until launch: set `NEXT_PUBLIC_ALLOW_INDEXING=true` and make the
-  Lighthouse SEO assertion an error at launch.
+  Lighthouse SEO assertion an error at launch. The same flag switches
+  `src/app/robots.ts` from "Disallow: /" to "Allow: /" plus the sitemap
+  (`src/app/sitemap.ts`: every public page with its English twin; sample
+  products/brands/projects left out).
+- SEO: every page has its own description (`meta.pages.*`, category/brand/
+  project templates in `src/messages`); the home title says what and where
+  (`homeMetadata`). Structured data (`src/lib/seo/json-ld.tsx`): HardwareStore
+  on home and /visit (confirmed facts only, missing ones left out), Product
+  with one Offer per variant on product pages, BreadcrumbList from every
+  `Breadcrumbs`. CSP keeps `'unsafe-inline'` for scripts on purpose: hashing
+  Next's 24-44 inline scripts per page costs ~2 KB a page and breaks if the CDN
+  ever injects a script; no visitor content is rendered as HTML.
 
 ## Structure
 
